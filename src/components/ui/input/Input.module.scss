@@ -1,0 +1,45 @@
+.input-container{
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 230px;
+    width: 230px;
+    
+    &.md{
+        label, input{
+            font-size: var(--fs-md);
+        }
+    }
+    
+
+    label{
+        font-size: var(--fs-xs);
+        color: var(--text-strong);
+        font-weight: var(--font-weight);
+    }
+
+    input{
+        font-weight: var(--font-weight);
+        width: 100%;
+        border-radius: 3px;
+        padding: 6px;
+        border: 1px solid var(--field-stroke);
+        background-color: var(--field-fill);
+        font-size: var(--fs-xs);
+        color: var(--text-strong);
+        font-family: var(--font-montserrat);
+
+        &:focus-visible{
+                outline: 1px solid var(--primary-color);
+            }
+
+        &::placeholder {
+            color: rgb(169, 169, 169);
+            font-weight: 400;
+        }
+    }
+
+    &.full{
+        width: 100%;
+    }
+}
