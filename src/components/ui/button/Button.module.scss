@@ -1,0 +1,85 @@
+.global-button{
+    padding: 4px;
+    border-radius: 4px;
+    border: none;
+    height: fit-content;
+    font-size: 12px;
+    min-width: 200px;
+    width: 230px;
+    font-family: var(--font-montserrat);
+    transition: all 0.1s ease-in-out;
+
+    &.dark{
+        background-color: var(--text-strong);
+        color: white;
+        border: 1px solid var(--text-strong);
+
+        &:hover{
+            background-color: white;
+            color: var(--text-strong);
+        }
+    }
+
+    &.light{
+        background-color: var(--field-fill);
+        border: 1px solid var(--field-stroke);
+        color: var(--text-light);
+
+        &:hover{
+            background-color: white;
+            color: var(--text-strong);
+        }
+
+    }
+
+    &.red{
+        background-color: var(--brand-red);
+        border: 1px solid red;
+        color: white;
+
+        &:hover{
+            background-color: white;
+            color: red;
+        }
+    }
+
+    &.green{
+        background-color: rgb(0, 153, 0);
+        border: 1px solid rgb(0, 153, 0);
+        color: white;
+
+        &:hover{
+            background-color: white;
+            color: rgb(0, 168, 0);
+        }
+    }
+
+    &.full{
+        width: 100%;
+    }
+
+    &.xxs{
+        font-size: 12px;
+    }
+
+    &.xs{
+        font-size: var(--fs-xs);
+         padding: 5px;
+        border-radius: 5px;
+    }
+
+    &.sm{
+        font-size: var(--fs-sm);
+         padding: 6px;
+        border-radius: 6px;
+    }
+
+    &.md{
+        font-size: var(--fs-md);
+    }
+
+    &.lg{
+        font-size: var(--fs-lg);
+    }
+
+}

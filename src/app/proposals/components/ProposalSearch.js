@@ -1,6 +1,5 @@
 import styles from './ProposalSearch.module.scss'
 import Input from '../../../components/ui/input/Input.js'
-import Button from '../../../components/ui/button/Button.js'
 
 export default function ProposalSearch(){
     return (
@@ -13,11 +12,13 @@ export default function ProposalSearch(){
                     width='full'
                 />
 
-                <Input
-                    label='Search Proposals:'
-                    name='proposal'
-                    placeholder='Proposal title, company name, client'
-                />
+                <div className={styles['button-container']}>
+                    <label>____</label>
+                    <button>
+                        Create Proposal
+                    </button>
+                </div>
+                
             </div>
 
             <div className={styles['search-section']}>
@@ -28,9 +29,11 @@ export default function ProposalSearch(){
                 />
 
                 <Input
-                    label='Search Proposals:'
+                    type='select'
+                    label='Select Filter'
                     name='proposal'
-                    placeholder='Proposal title, company name, client'
+                    placeholder='Proposal Type'
+                    values={['Where', 'who', 'when']}
                 />
 
                 <Input

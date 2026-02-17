@@ -13,3 +13,62 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+
+model User {
+   userId Int @id @default(autoincrement())
+   username String @unique
+   firstName String 
+   lastName String
+   userEmail String @unique
+   userPassword String 
+   accountStatus String
+   accountRole String
+   dateCreated DateTime @default(now())
+   dateUpdated DateTime @updatedAt
+
+   clientProfiles ClientProfile[]
+}
+
+model ClientProfile {
+  clientId Int @id @default(autoincrement())
+  userId Int
+  companyName String
+  companyEmail String?
+  companyAddress String?
+  website String?
+  dateCreated DateTime @default(now())
+
+  proposals Proposal[]
+  user User @relation(fields: [userId], references: userId, onDelete: Cascade)
+
+   @@index([userId])
+}
+
+model Proposal {
+  proposalId Int @id @default(autoincrement())
+  clientId Int
+  clientType String
+  proposalTitle String @unique
+  proposalType String
+  executiveSummary String @db.LongText
+  goalsAndObjectives String @db.LongText
+  proposedSolution String @db.LongText
+  statusId Int
+  createdBy Int
+  statusUpdated DateTime
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime @updatedAt
+
+  clientProfile ClientProfile @relation(fields: [clientId], references: clientId)
+  proposalStatus ProposalStatus @relation(fields: [statusId], references: statusId)
+  user User @relation(fields: [createdBy], references: userId)
+
+}
+
+model ProposalStatus {
+  statusId Int @id @default(autoincrement())
+  status String
+
+  proposals Proposal[]
+}
