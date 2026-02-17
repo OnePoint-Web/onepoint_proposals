@@ -25,7 +25,7 @@ model User {
    accountStatus String
    accountRole String
    dateCreated DateTime @default(now())
-   dateUpdated DateTime @updatedAt
+   dateUpdated DateTime? @updatedAt
 
    clientProfiles ClientProfile[]
 }
@@ -58,11 +58,13 @@ model Proposal {
   createdBy Int
   statusUpdated DateTime
   dateCreated DateTime @default(now())
-  dateUpdated DateTime @updatedAt
+  dateUpdated DateTime? @updatedAt
 
   clientProfile ClientProfile @relation(fields: [clientId], references: clientId)
   proposalStatus ProposalStatus @relation(fields: [statusId], references: statusId)
   user User @relation(fields: [createdBy], references: userId)
+
+  slaOffers SlaOffer[]
 
 }
 
@@ -71,4 +73,101 @@ model ProposalStatus {
   status String
 
   proposals Proposal[]
+}
+
+// SLA Offers
+
+model SlaOffer {
+  slaOfferId Int @id @default(autoincrement())
+  proposalId Int
+  selectedPackageId Int
+  basePrice Decimal @db.Decimal(10, 2)
+  discountType String
+  discountValue Decimal? @db.Decimal(10, 2)
+  discountDescription String?
+  taxableAmount Decimal @db.Decimal(10, 2)
+  taxApplicable Boolean
+  taxRate Decimal @db.Decimal(10, 2)
+  taxAmount Decimal @db.Decimal(10, 2)
+  taxReason String
+  finalPrice Decimal @db.Decimal(10, 2)
+  paymentTerms String
+  dateCreate DateTime @default(now())
+
+  packageDealItem PackageDealItem[]
+
+  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+  package Package @relation(fields: [selectedPackageId], references: packageId)
+}
+
+model Package{
+  packageId Int @id @default(autoincrement())
+  package String @unique
+  description String
+  proposedSolution String @db.LongText
+  basePrice Decimal @db.Decimal(10, 2)
+  isActive Boolean @default(true)
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime? @updatedAt
+
+  slaOffers SlaOffer[]
+  dealItems DealItem[]
+  packageDealItem PackageDealItem[]
+}
+
+model DealItem {
+  dealItemId Int @id @default(autoincrement())
+  packageId Int
+  dealItem String
+  itemType String
+  dateCreated DateTime @default(now())
+
+  dealEntries DealEntry[]
+
+  package Package @relation(fields: [packageId], references: packageId)
+}
+
+model DealEntry{
+  itemEntryId Int @id @default(autoincrement())
+  dealItemId Int
+  itemEntry String
+  displayOrder Int
+  dateCreated DateTime @default(now())
+
+  dealItem DealItem @relation(fields: [dealItemId], references: dealItemId)
+}
+
+model PackageDealItem {
+  dealItemId Int @id @default(autoincrement())
+  slaOfferId Int
+  packageDealItemId Int 
+  isCustom Boolean @default(false)
+  item String
+  itemType String
+  displayOrder Int
+  dateCreated DateTime @default(now())
+
+  slaOffer SlaOffer @relation(fields: [slaOfferId], references: slaOfferId)
+  dealItem DealItem @relation(fields: [packageDealItemId], references: dealItemId)
+}
+
+model PackageDealEntry{
+  itemEntryId Int @id @default(autoincrement())
+  dealItemId Int
+  itemEntry String
+  displayOrder Int
+  dateCreated DateTime @default(now())
+
+  packageDealItem PackageDealItem @relation(fields: [dealItemId], references: [dealItemId])
+}
+
+// Service Product offers
+
+model ServiceProductOffer {
+  serviceProductOfferId Int @id @default(autoincrement())
+  proposalId Int
+  description String
+  type String
+  isMultipleChoice Boolean @default(false)
+  subTotal Decimal @db.Decimal(10, 2)
 }
