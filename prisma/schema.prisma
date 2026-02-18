@@ -14,7 +14,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
+// Accounts
 model User {
    userId Int @id @default(autoincrement())
    username String @unique
@@ -23,11 +23,20 @@ model User {
    userEmail String @unique
    userPassword String 
    accountStatus String
-   accountRole String
+   accountRole Int
    dateCreated DateTime @default(now())
    dateUpdated DateTime? @updatedAt
 
+   role Role @relation(fields: [accountRole], references: roleId)
+
    clientProfiles ClientProfile[]
+}
+
+model Role {
+  roleId Int @id @default(autoincrement())
+  role String
+
+  users User[]
 }
 
 model ClientProfile {
@@ -45,6 +54,8 @@ model ClientProfile {
    @@index([userId])
 }
 
+
+// Proposals 
 model Proposal {
   proposalId Int @id @default(autoincrement())
   clientId Int
@@ -65,7 +76,10 @@ model Proposal {
   user User @relation(fields: [createdBy], references: userId)
 
   slaOffers SlaOffer[]
-
+  serviceProductOffers ServiceProductOffer[]
+  proposalViews ProposalView[]
+  selectedMembers SelectedMember[]
+  timlines Timeline[]
 }
 
 model ProposalStatus {
@@ -73,6 +87,62 @@ model ProposalStatus {
   status String
 
   proposals Proposal[]
+}
+
+model ProposalView {
+  viewId Int @id @default(autoincrement())
+  proposalId Int
+  clientId Int
+  dateViewed DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+}
+
+// Team Members
+model SelectedMember {
+  selectedMemberId Int @id @default(autoincrement())
+  proposalId Int
+  memberId Int
+
+  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+
+  teamMember TeamMember @relation(fields: [memberId], references: memberId)
+}
+
+model TeamMember{
+  memberId Int @id @default(autoincrement())
+  memberName String
+  memberRole String
+  memberImage String
+  description String
+  isActive Boolean @default(true)
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime? @updatedAt
+
+  selectedMembers SelectedMember[]
+}
+
+// Timelines
+model Timeline {
+  timelineId Int @id @default(autoincrement())
+  proposalId Int
+  timeFrame String
+  progress Int
+  assignedTo String?
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime? @updatedAt
+
+  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+
+  timelineScopeItems TimelineScopeItem[]
+}
+
+model TimelineScopeItem {
+  scopeItemId Int @id @default(autoincrement())
+  timelineId Int
+  scope String
+
+  timeline Timeline @relation(fields: [timelineId], references: timelineId)
 }
 
 // SLA Offers
@@ -170,4 +240,38 @@ model ServiceProductOffer {
   type String
   isMultipleChoice Boolean @default(false)
   subTotal Decimal @db.Decimal(10, 2)
+  discountType String
+  discountValue Decimal? @db.Decimal(10, 2)
+  discountDescription String? 
+  taxableAmount Decimal @db.Decimal(10, 2)
+  taxApplicable Decimal @db.Decimal(10, 2)
+  taxRate Decimal? @db.Decimal(10, 2)
+  taxAmount Decimal? @db.Decimal(10, 2)
+  taxReason String?
+  finalPrice Decimal @db.Decimal(10, 2)
+  paymentTerms String
+  dateCreated DateTime @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+
+  offerEntries OfferEntry[]
 }
+
+model OfferEntry {
+  offerEntryId Int @id @default(autoincrement())
+  serviceProductOfferId Int
+  serviceProductItem String
+  itemImage String?
+  itemPrice Decimal @db.Decimal(10, 2)
+  quantity Int
+  totalPrice Decimal @db.Decimal(10, 2)
+  itemDiscountType String?
+  itemDiscountValue Decimal? @db.Decimal(10, 2)
+  itemDiscountDescription String?
+  description String?
+  displayOrder Int
+  dateCreated DateTime @default(now())
+
+  serviceProductOffer ServiceProductOffer @relation(fields: [serviceProductOfferId], references: serviceProductOfferId)
+}
+
