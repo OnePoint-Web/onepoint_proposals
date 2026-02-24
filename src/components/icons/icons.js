@@ -5,6 +5,7 @@ import { MdStars } from "react-icons/md";
 import { HiUsers } from "react-icons/hi2";
 import { RiUserStarFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
+import { MdKeyboardArrowRight, MdError  } from "react-icons/md";
 
 export const Icons = {
     dashboard: BiSolidDashboard,
@@ -13,5 +14,8 @@ export const Icons = {
     products: AiFillProduct,
     services: MdStars,
     users: HiUsers,
-    clients:  RiUserStarFill
+    clients:  RiUserStarFill,
+    rightArrow: MdKeyboardArrowRight,
+    error: MdError,
 };
+

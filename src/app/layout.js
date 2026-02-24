@@ -3,6 +3,7 @@ import "./globals.css";
 import styles from "./layout.module.scss";
 import Header from '../components/layout/Header/Header.js'
 import Sidebar from '../components/layout/Sidebar/Sidebar.js'
+import Breadcrumbs from '../components/ui/breadcrumbs/Breadcrumbs.js'
 
 
 
@@ -31,11 +32,7 @@ export default function RootLayout({ children }) {
           
           <div className={styles['outlet-container']}>
 
-            <div className={styles['outlet-header']}>
-
-              <h2 className={styles['header-text']}>Dashboard</h2>
-
-            </div>
+            <Breadcrumbs/>
 
             <div className={styles.outlet}>
               {children} 

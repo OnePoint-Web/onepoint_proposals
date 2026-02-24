@@ -1,55 +1,48 @@
-.proposal-search-main{
+.search-section{
+    align-items: end;
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 20px;
-    padding: var(--padding-default);
-    box-sizing: border-box;
-    max-width: fit-content;
-    box-shadow: var(--box-shadow);
-    background-color: white;
-    border-radius: 8px;
-    
-    
-    .search-section{
-        align-items: end;
+
+    label{
+        font-size: var(--fs-xs);
+        color: var(--text-strong);
+        font-weight: var(--font-weight);
+    }
+
+    .button-container{
         display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
+        flex-direction: column;
+        gap: 7px;
+        min-width: 200px;
+        width: 230px;
 
         label{
-            font-size: var(--fs-xs);
-            color: var(--text-strong);
-            font-weight: var(--font-weight);
+            opacity: 0;
         }
 
-        .button-container{
+        button{
+            font-weight: var(--font-weight);
+            width: 100%;
+            border-radius: 3px;
+            padding: 6px;
+            border: 1px solid var(--field-stroke);
+            background-color: var(--text-strong);
+            font-size: var(--fs-xs);
+            color: white;
+            font-family: var(--font-montserrat);
+            transition: all 0.1s ease-in-out;
             display: flex;
-            flex-direction: column;
-            gap: 7px;
-            min-width: 200px;
-            width: 230px;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
 
-            label{
-                opacity: 0;
+            &:hover{
+                background-color: white;
+                color: var(--text-strong);
             }
 
-            button{
-                font-weight: var(--font-weight);
-                width: 100%;
-                border-radius: 3px;
-                padding: 6px;
-                border: 1px solid var(--field-stroke);
-                background-color: var(--text-strong);
-                font-size: var(--fs-xs);
-                color: white;
-                font-family: var(--font-montserrat);
-                transition: all 0.1s ease-in-out;
-
-                &:hover{
-                    background-color: white;
-                    color: var(--text-strong);
-                }
-            }
         }
     }
 }

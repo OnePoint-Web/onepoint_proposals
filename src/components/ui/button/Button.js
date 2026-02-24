@@ -7,12 +7,16 @@ export default function Button(
         border,
         size, // xxs, xs, sm, md, lg
         fit, //full, fixed (null)
+        icon,
         action,
     }
 ){
+
+    const Icon = icon;
+
     return(
-        <button className={`${styles['global-button']} ${styles[color]} ${styles[size]} ${styles[border]} ${styles[fit]}`}>
-            {label}
+        <button type={action} className={`${styles['global-button']} ${styles[color]} ${styles[size]} ${styles[border]} ${styles[fit]}`}>
+            {icon && (<Icon className={styles['btn-icon']}/>)} {label}
         </button>
     )
 }

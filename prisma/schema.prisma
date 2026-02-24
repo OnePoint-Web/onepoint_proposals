@@ -5,7 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -16,20 +16,21 @@ datasource db {
 
 // Accounts
 model User {
-   userId Int @id @default(autoincrement())
-   username String @unique
-   firstName String 
-   lastName String
-   userEmail String @unique
-   userPassword String 
-   accountStatus String
-   accountRole Int
-   dateCreated DateTime @default(now())
-   dateUpdated DateTime? @updatedAt
+  userId Int @id @default(autoincrement())
+  username String @unique
+  firstName String 
+  lastName String
+  userEmail String @unique
+  userPassword String 
+  accountStatus String
+  accountRole Int
+  dateCreated DateTime @default(now())
+  dateUpdated DateTime? @updatedAt
 
-   role Role @relation(fields: [accountRole], references: roleId)
+  role Role @relation(fields: [accountRole], references: roleId)
 
-   clientProfiles ClientProfile[]
+  proposals Proposal[]
+  clientProfiles ClientProfile[]
 }
 
 model Role {
@@ -182,7 +183,6 @@ model Package{
 
   slaOffers SlaOffer[]
   dealItems DealItem[]
-  packageDealItem PackageDealItem[]
 }
 
 model DealItem {
@@ -208,9 +208,8 @@ model DealEntry{
 }
 
 model PackageDealItem {
-  dealItemId Int @id @default(autoincrement())
+  packageDealItemId Int @id @default(autoincrement())
   slaOfferId Int
-  packageDealItemId Int 
   isCustom Boolean @default(false)
   item String
   itemType String
@@ -218,17 +217,18 @@ model PackageDealItem {
   dateCreated DateTime @default(now())
 
   slaOffer SlaOffer @relation(fields: [slaOfferId], references: slaOfferId)
-  dealItem DealItem @relation(fields: [packageDealItemId], references: dealItemId)
+  
+  packageDealEntries PackageDealEntry[]
 }
 
 model PackageDealEntry{
   itemEntryId Int @id @default(autoincrement())
-  dealItemId Int
+  packageDealItemId Int
   itemEntry String
   displayOrder Int
   dateCreated DateTime @default(now())
 
-  packageDealItem PackageDealItem @relation(fields: [dealItemId], references: [dealItemId])
+  packageDealItem PackageDealItem @relation(fields: [packageDealItemId], references: [packageDealItemId])
 }
 
 // Service Product offers
@@ -275,3 +275,35 @@ model OfferEntry {
   serviceProductOffer ServiceProductOffer @relation(fields: [serviceProductOfferId], references: serviceProductOfferId)
 }
 
+// Notifications
+model Notification{
+  notificationId Int @id @default(autoincrement())
+  userId Int
+  title String
+  message String
+  entityType String 
+  entityId Int
+  notificationType String
+  isRead Boolean @default(false)
+  createdAt DateTime @default(now())
+}
+
+model ActivityLogs{
+  activityId Int @id @default(autoincrement())
+  entityType String 
+  entityId Int
+  action String
+  performedBy Int
+  performedByRole String
+  metaData Json?
+  createdAt DateTime @default(now())
+
+}
+
+model NotificationRules{
+  ruleId Int @id @default(autoincrement())
+  eventAction String
+  entityType String
+  notifyRole String
+  isActive Boolean @default(true)
+}

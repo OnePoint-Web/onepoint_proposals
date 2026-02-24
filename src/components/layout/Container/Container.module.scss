@@ -1,0 +1,20 @@
+.container{
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: var(--padding-default);
+        box-sizing: border-box;
+        box-shadow: var(--box-shadow);
+        background-color: white;
+        border-radius: 8px;
+        min-height: 600px;
+    
+        &.full{
+            width: 100%;
+            margin-inline: auto;
+        }
+
+        &.fit{
+            max-width: fit-content;
+        }
+    }

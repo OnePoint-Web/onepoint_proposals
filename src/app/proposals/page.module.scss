@@ -1,18 +1,7 @@
-.page-container{
+.card-container{
+    display: grid;
     width: 100%;
-    height: 100%;
-    box-shadow: var(--box-shadow);
-    margin-inline: auto;
-    background-color: white;
-    border-radius: 8px;
-    padding: 20px;
-    box-sizing: border-box;
-
-     .card-container{
-        display: grid;
-        width: 100%;
-        gap: 16px;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        justify-items: stretch;
-    }
+    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    justify-items: stretch;
 }

@@ -1,7 +1,8 @@
 "use client"
-
 import styles from './ProposalsCard.module.scss'
 import Button from '../../../components/ui/button/Button.js'
+import {Icons} from '../../../components/icons/icons.js'
+
 
 
 export default function ProposalsCard(
