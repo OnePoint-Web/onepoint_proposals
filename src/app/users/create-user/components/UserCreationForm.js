@@ -3,6 +3,7 @@ import Form, {FormInputContainer} from '@/components/ui/form/Form.js'
 import Input from '@/components/ui/input/Input'
 import Button from '@/components/ui/button/Button'
 import styles from './UserCreationForm.module.scss'
+import {useState, useEffect} from 'react'
 import {useForm} from "react-hook-form"
 
 import {zodResolver} from '@hookform/resolvers/zod'
@@ -10,19 +11,65 @@ import {createUserSchema} from '@/schemas/user/createUser.schema.js'
 
 export default function CreateUserForm(){
 
+    const [roles, setRoles] = useState([{
+        id: '',
+        name: ''
+    }])
+
     const {
         register, 
-        handleSubmit,
-        formState: { errors},
+        handleSubmit,   
+        setValue,
+        setError,
+        formState: { errors, isSubmitting},
     } = useForm({
         resolver: zodResolver(createUserSchema)
     })
 
-    const onSubmit = (data) => console.log(createUserSchema.parse(data))
+    useEffect(() => {
+        fetch("/api/roles")
+        .then(res => res.json())
+        .then(data => {
+        const formattedRoles = data.map(role => ({
+            id: role.roleId,
+            name: role.role
+            }))
+            setRoles(formattedRoles)
+        })
+        .catch(err => console.error(err))
+
+        setValue("role", String(roles[0].roleId))
+    }, [])
+
+    roles && console.log(roles)
+
+    const onSubmit = async (data) => {
+        const res = await fetch("/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        })
+
+        const result = await res.json()
+        console.log(result)
+
+        if (!res.ok) {
+            if (result.field) {
+            setError(result.field, {
+                type: "server",
+                message: result.message,
+            })
+            return
+            }
+                console.error(result)
+                return
+        }
+
+        console.log("Success:", result)
+    }
 
     return(
         <Form onSubmit={handleSubmit(onSubmit)}>
-
 
         <fieldset className={styles['field-set']}>
 
@@ -108,6 +155,7 @@ export default function CreateUserForm(){
 
                 <Input
                     label='Password'
+                    type='password'
                     width="medium"
                     hideLabel={true}
                     placeholder='Confirm password'
@@ -116,6 +164,7 @@ export default function CreateUserForm(){
                     rules={{...register("confirm_password")}}
                 />
             </FormInputContainer>
+            
 
             <FormInputContainer
                 label='Role'
@@ -123,9 +172,9 @@ export default function CreateUserForm(){
 
                 <div className={` ${styles['input-child']}`}>
                     <Input
-                        label='Password'
+                        label='Role'
                         type='select'
-                        values={['Admin', 'Superadmin']}
+                        values={roles}
                         hideLabel={true}
                         placeholder='Confirm password'
                         error={errors.role ? 'error' : ''}
@@ -143,6 +192,7 @@ export default function CreateUserForm(){
                 size='xs'
                 color='dark'
                 action='submit'
+                disable={isSubmitting}
             />
 
         </Form>

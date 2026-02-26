@@ -15,9 +15,10 @@ export const createUserSchema = z.object({
         .min(8, {message: 'Password must be 8 characters minimum'})
         .regex(passwordRegex, "Password must contain uppercase, lowercase, number, and symbol"),
     confirm_password: z.string(),
-    role: z.string().min(1, {message: 'Please select a role'})
+    role: z.enum(["1", "2", "3"])
 }).refine((data) => data.password === data.confirm_password, {
     message: "Passwords do not match",
-    path: ["confirmPassword"], // path of error
+    path: ["confirm_password"], // path of error
   });
 
+  

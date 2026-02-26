@@ -15,7 +15,7 @@ export default function Input({
     size, /*sm, md, lg*/
 
     // values if form type = select
-    values =[''],
+    values,
 
     //react-hook-form
     rules,
@@ -67,16 +67,16 @@ export default function Input({
                 <div className={styles['input-wrapper']}>
                     <select
                     className={styles[error]}
+                    name={name}
+                    id={name}
                     {...rules}
                     >
                         {values.map((value, i) => {
                             return (
                                 <option 
-                                key={i} 
-                                name={name}
-                                id={name}
-                                value={value}>
-                                    {value}
+                                key={value.id} 
+                                value={value.id}>
+                                    {value.name}
                                 </option>
                             )}) 
                         }
