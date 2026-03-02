@@ -22,15 +22,23 @@ model User {
   lastName String
   userEmail String @unique
   userPassword String 
-  accountStatus String
+  accountStatus Int @default(1)
   accountRole Int
   dateCreated DateTime @default(now())
   dateUpdated DateTime? @updatedAt
 
   role Role @relation(fields: [accountRole], references: roleId)
+  userStatus AccountStatus @relation(fields: [accountStatus], references: statusId) 
 
   proposals Proposal[]
   clientProfiles ClientProfile[]
+}
+
+model AccountStatus {
+  statusId Int @id @default(autoincrement())
+  status String
+
+  users User[]
 }
 
 model Role {

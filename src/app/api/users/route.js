@@ -20,7 +20,7 @@ export async function POST(req){
                 lastName: data.last_name,
                 userEmail: data.email,
                 userPassword: hashedPassword,
-                accountStatus: "Active",
+                accountStatus: 1,
                 accountRole: parseInt(data.role),
             },
             select:{ 
@@ -71,5 +71,47 @@ export async function POST(req){
             { error: "Internal Server Error" },
             { status: 500 }
         )
+        }
+    }
+
+
+    export async function GET(req){
+        try{
+            const user = await prisma.user.findMany({
+                where: {
+                    accountRole:{
+                        in: [1, 2]
+                    }
+                },
+                select: {
+                    userId: true,
+                    username: true,
+                    firstName: true,
+                    lastName: true,
+                    userEmail: true,
+                    accountStatus: true,
+                    role: {
+                        select: {
+                            roleId: true,
+                            role: true,
+                        },
+                    },
+                    userStatus: {
+                        select: {
+                            statusId: true,
+                            status: true
+                        }
+                    },
+                    dateCreated: true
+                },
+            })
+
+            return NextResponse.json(user)
+
+        } catch(err){
+            return NextResponse.json(
+                { error: "Failed to fetch roles" },
+                { status: 500 }
+            )
         }
     }

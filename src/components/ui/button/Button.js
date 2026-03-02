@@ -9,13 +9,14 @@ export default function Button(
         fit, //full, fixed (null)
         icon,
         action,
+        disabled
     }
 ){
 
     const Icon = icon;
 
     return(
-        <button type={action} className={`${styles['global-button']} ${styles[color]} ${styles[size]} ${styles[border]} ${styles[fit]}`}>
+        <button disabled={disabled} type={action} className={`${styles['global-button']} ${styles[color]} ${styles[size]} ${styles[border]} ${styles[fit]}`}>
             {icon && (<Icon className={styles['btn-icon']}/>)} {label}
         </button>
     )

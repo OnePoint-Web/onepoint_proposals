@@ -3,17 +3,18 @@ import prisma from "@/lib/prisma"
 
 export async function GET() {
   try {
-    const roles = await prisma.role.findMany({
+    const status = await prisma.accountStatus.findMany({
       select: {
-        roleId: true,
-        role: true,
+        statusId: true,
+        status: true,
       },
     })
 
-    return NextResponse.json(roles)
+    return NextResponse.json(status)
   } catch (err) {
+    console.error(err)
     return NextResponse.json(
-      { error: "Failed to fetch roles" },
+      { error: "Failed to fetch acccount status" },
       { status: 500 }
     )
   }

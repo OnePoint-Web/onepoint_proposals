@@ -5,7 +5,7 @@
     width: fit-content;
     gap: 10px;
     border: none;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
 
 
@@ -22,3 +22,16 @@
     min-width: 200px;
     
 }
+
+.success{
+    margin-bottom: 5px;
+    width: fit-content;
+    background-color: rgb(229, 255, 229);
+    border-radius: 5px;
+    border: 1px solid rgb(40, 182, 40);
+    padding: 5px 10px;
+    
+    color: rgb(1, 100, 37) !important;
+}
+
+

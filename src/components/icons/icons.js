@@ -6,6 +6,7 @@ import { HiUsers } from "react-icons/hi2";
 import { RiUserStarFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
 import { MdKeyboardArrowRight, MdError  } from "react-icons/md";
+import { LuEyeClosed, LuEye  } from "react-icons/lu";
 
 export const Icons = {
     dashboard: BiSolidDashboard,
@@ -17,5 +18,8 @@ export const Icons = {
     clients:  RiUserStarFill,
     rightArrow: MdKeyboardArrowRight,
     error: MdError,
+    passwordEyeOpen: LuEye,
+    passwordEyeClosed: LuEyeClosed,
+
 };
 

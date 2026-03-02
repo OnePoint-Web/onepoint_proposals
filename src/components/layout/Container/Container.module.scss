@@ -7,11 +7,11 @@
         box-shadow: var(--box-shadow);
         background-color: white;
         border-radius: 8px;
-        min-height: 600px;
     
         &.full{
             width: 100%;
             margin-inline: auto;
+            min-height: 600px;
         }
 
         &.fit{

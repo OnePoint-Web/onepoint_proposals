@@ -32,6 +32,32 @@
         }
     }
 
+    .password-container{
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+
+        .password-toggle{
+            width: 40px;
+        }
+
+        button{
+            background-color: white;
+            border: 1px solid var(--field-stroke);
+            color: var(--text-strong);
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.1s ease-in-out;
+
+            &:hover{
+                background-color: var(--field-fill);
+                cursor: pointer;
+            }
+        }
+    }
+
     .input-wrapper{
         position: relative;
         width: 100%;

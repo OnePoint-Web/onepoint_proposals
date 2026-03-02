@@ -11,16 +11,19 @@ import {createUserSchema} from '@/schemas/user/createUser.schema.js'
 
 export default function CreateUserForm(){
 
+    const [isSuccess, setIsSuccess] = useState(false);
     const [roles, setRoles] = useState([{
         id: '',
         name: ''
     }])
+
 
     const {
         register, 
         handleSubmit,   
         setValue,
         setError,
+        reset,
         formState: { errors, isSubmitting},
     } = useForm({
         resolver: zodResolver(createUserSchema)
@@ -35,16 +38,15 @@ export default function CreateUserForm(){
             name: role.role
             }))
             setRoles(formattedRoles)
+            setValue("role", String(roles[0].roleId))
         })
         .catch(err => console.error(err))
-
-        setValue("role", String(roles[0].roleId))
     }, [])
 
-    roles && console.log(roles)
-
     const onSubmit = async (data) => {
-        const res = await fetch("/api/users", {
+        if (isSubmitting) return
+        try{
+            const res = await fetch("/api/users", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
@@ -65,7 +67,14 @@ export default function CreateUserForm(){
                 return
         }
 
+        reset()
+        setIsSuccess(true)
         console.log("Success:", result)
+
+        }catch(err){
+            setIsSuccess(false)
+            console.error(err)
+        }
     }
 
     return(
@@ -147,6 +156,7 @@ export default function CreateUserForm(){
                     errorMessage={errors.password && errors.password.message}
                     rules={{...register("password")}}
                 />
+                
             </FormInputContainer>
 
             <FormInputContainer
@@ -186,13 +196,14 @@ export default function CreateUserForm(){
             </FormInputContainer>
             
         </fieldset>
+           { isSuccess && <p className={styles.success}>User created successfully</p>}
 
             <Button 
-                label='Add User'
+                label={isSubmitting ? 'Creating user…' : 'Add User'}
                 size='xs'
                 color='dark'
                 action='submit'
-                disable={isSubmitting}
+                disabled={isSubmitting}
             />
 
         </Form>

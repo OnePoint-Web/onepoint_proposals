@@ -24,6 +24,11 @@ CREATE TABLE `Role` (
     PRIMARY KEY (`roleId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+INSERT INTO Role (roleId, role) VALUES
+(1, 'Admin'),
+(2, 'Superadmin'),
+(3, 'Client');
+
 -- CreateTable
 CREATE TABLE `ClientProfile` (
     `clientId` INTEGER NOT NULL AUTO_INCREMENT,
