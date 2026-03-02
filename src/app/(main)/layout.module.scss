@@ -1,0 +1,40 @@
+.main-layout{
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    width: 100vw;
+    background-color: var(--background);
+    font-family: var(--font-montserrat), system-ui, sans-serif;
+
+    @media screen and (max-width:850px) {
+         grid-template-columns: 0 1fr;
+    }
+
+    .main-outlet{
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        width: 100%;
+        
+
+        .outlet-container{
+             width: 100%;
+             max-width: 1280px;
+             display: flex;
+             flex-direction: column;    
+             min-height: 100vh;
+             overflow-x: scroll;
+
+        }
+
+        .outlet{
+            display: flex;
+            width: 94%;
+            min-height: 100vh;
+            justify-content: center;
+            margin-inline: auto;
+
+        }
+
+
+    }
+}

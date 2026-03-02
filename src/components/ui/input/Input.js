@@ -135,7 +135,7 @@ const SelectInput = ({name, values, placeholder, error, errorMessage, rules}) =>
             {values.map((value, i) => {
                 return (
                     <option 
-                    key={value.id} 
+                    key={i} 
                     value={value.id}>
                         {value.name}
                     </option>

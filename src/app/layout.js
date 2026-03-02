@@ -1,12 +1,9 @@
 import { Montserrat } from "next/font/google";
 import "./globals.css";
 import styles from "./layout.module.scss";
-import Header from '../components/layout/Header/Header.js'
-import Sidebar from '../components/layout/Sidebar/Sidebar.js'
-import Breadcrumbs from '../components/ui/breadcrumbs/Breadcrumbs.js'
-
-
-
+import Header from '@/components/layout/Header/Header.js'
+import Sidebar from '@/components/layout/Sidebar/Sidebar.js'
+import Breadcrumbs from '@/components/ui/breadcrumbs/Breadcrumbs.js'
 
 const montserratSans = Montserrat({
   variable: "--font-montserrat",
@@ -23,26 +20,9 @@ export default function RootLayout({ children }) {
   
   return (
     <html lang="en">
-      <body className={`${styles['main-layout']} ${montserratSans.variable}`}>
-        
-        <Sidebar/>
+      <body className={`${styles['parent-layout']} ${montserratSans.variable}`}>
 
-        <main className={styles['main-outlet']}>
-          <Header/>
-          
-          <div className={styles['outlet-container']}>
-
-            <Breadcrumbs/>
-
-            <div className={styles.outlet}>
-              {children} 
-            </div>
-            
-          </div>
-
-           
-          
-        </main>
+        {children}
         
       </body>
     </html>
