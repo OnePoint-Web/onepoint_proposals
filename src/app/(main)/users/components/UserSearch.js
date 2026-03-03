@@ -55,7 +55,6 @@ export default function UserSearch(){
                         name='user'
                         placeholder='Username, email, etc...'
                         size='sm'
-                        width='full'
                     ></Input>
 
                     <Input
@@ -65,7 +64,6 @@ export default function UserSearch(){
                         values={status}
                         placeholder='Username, email, etc...'
                         size='sm'
-                        width='full'
                     ></Input>
 
                     <Input
@@ -73,7 +71,6 @@ export default function UserSearch(){
                         name='user'
                         placeholder='Username, email, etc...'
                         size='sm'
-                        width='full'
                     ></Input>
                 </div>
             

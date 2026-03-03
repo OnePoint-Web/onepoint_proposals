@@ -16,7 +16,7 @@ export default function Input({
     placeholder,
 
     value, // optional
-    width, // full, (leave blank for default size), mediums
+    width, // full, (leave blank for default size), medium
     size, /*sm, md, lg*/
 
     // values if form type = select
@@ -97,6 +97,7 @@ export default function Input({
 
 const PasswordInput = ({name, error, placeholder, errorMessage, showPassword, rules}) => {
     return(
+        
         <div className={styles['input-wrapper']}>
             <input 
             className={styles[error]}

@@ -46,11 +46,11 @@ export default function CreateUserForm(){
     const onSubmit = async (data) => {
         if (isSubmitting) return
         try{
-            const res = await fetch("/api/users", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
-        })
+                const res = await fetch("/api/users", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            })
 
         const result = await res.json()
         console.log(result)
@@ -78,7 +78,10 @@ export default function CreateUserForm(){
     }
 
     return(
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form 
+        header='Create User'
+        description='Create a brand new user account for OnePoint proposals'
+        onSubmit={handleSubmit(onSubmit)}>
 
         <fieldset className={styles['field-set']}>
 
@@ -180,7 +183,7 @@ export default function CreateUserForm(){
                 label='Role'
             >
 
-                <div className={` ${styles['input-child']}`}>
+               
                     <Input
                         label='Role'
                         type='select'
@@ -191,7 +194,7 @@ export default function CreateUserForm(){
                         errorMessage={errors.role && errors.role.message}
                         rules={{...register("role")}}
                     />
-                </div>
+         
                 
             </FormInputContainer>
             

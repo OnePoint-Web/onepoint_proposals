@@ -1,11 +1,9 @@
 .input-container{
-    display: flex;
+    display: flex;  
     flex-direction: column;
     gap: 7px;
     min-width: 200px;
     width: 230px;
-
-    
     
     &.md{
         label, input{
@@ -132,12 +130,13 @@
     
 
     &.full{
-        flex-grow: 1;
+        width: 100%;
+        flex: 1;
 
     }
 
     &.medium{
-        width: 430px;
+        width: 400px;
     }
 
    
