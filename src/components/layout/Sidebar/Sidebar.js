@@ -31,8 +31,8 @@ export default function Sidebar(){
               <nav className={styles['sidebar-items']}>
 
                 <Link 
-                    href='/' 
-                    className={`${styles.item} ${pathname === '/' ? styles.active : ''}`} >
+                    href='/dashboard' 
+                    className={`${styles.item} ${pathname === '/dashboard' ? styles.active : ''}`} >
                     <DashboardIcon className={styles['icon']}/>
                     Dashboard
                 </Link>

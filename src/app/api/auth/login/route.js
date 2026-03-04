@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server'
 import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
+// import jwt from 'jsonwebtoken'
+import { SignJWT } from "jose"
 import prisma from '@/lib/prisma'
 
 
@@ -26,7 +27,7 @@ export async function POST(req){
 
     if(!valid){
         return NextResponse.json(
-            {tpye: 'error', message: "Invalid Credentials"},
+            {type: 'error', message: "Invalid Credentials"},
             {status: 401}
         )
     }
@@ -37,16 +38,18 @@ export async function POST(req){
             { status: 403 }
         )
     }
+    
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET)
 
-    const token = jwt.sign(
+    const token = await new SignJWT(
         {
             userId: user.userId,
             role: user.role.roleId,
             status: user.userStatus.statusId
-        },
-        process.env.JWT_SECRET,
-        {expiresIn: '1d'}
-    )
+        })
+        .setProtectedHeader({ alg: "HS256" })
+        .setExpirationTime("1d")
+        .sign(secret)
 
     const res = NextResponse.json({success: true})
 

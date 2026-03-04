@@ -1,13 +1,18 @@
 import { Montserrat } from "next/font/google";
 import "../globals.css";
+import requireAuth from '@/lib/auth.js'
+
 import styles from "./layout.module.scss";
 import Header from '../../components/layout/Header/Header.js'
 import Sidebar from '../../components/layout/Sidebar/Sidebar.js'
 import Breadcrumbs from '../../components/ui/breadcrumbs/Breadcrumbs.js'
 
 
-export default function RootLayout({ children }) {
-  
+
+export default async function RootLayout({ children }) {
+
+  const user = await requireAuth()
+
   return (
         <div className={`${styles['main-layout']}`}>
           <Sidebar/>
@@ -24,9 +29,7 @@ export default function RootLayout({ children }) {
               </div>
               
             </div>
-
-            
-            
+                        
           </main>
           
         </div>

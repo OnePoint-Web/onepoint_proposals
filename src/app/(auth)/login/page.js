@@ -8,11 +8,13 @@ import {useForm} from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import {useEffect, useState} from 'react'
 import {userLoginSchema} from '@/schemas/user/userLogin.schema.js'
+import {useRouter} from 'next/navigation'
 
 export default function Login(){
     const [credentials, setCredentials] = useState([]);
     const [isError, setIsError] = useState([{error: false, message: ''}])
-    
+    const router = useRouter()
+
     const {
         register,
         handleSubmit,
@@ -25,6 +27,7 @@ export default function Login(){
 
     const onLogin = async (data) => {
         if(isSubmitting) return
+
         try{
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
@@ -33,13 +36,13 @@ export default function Login(){
             })
 
             const result = await res.json()
-            console.log(result.message)
 
             if(result.type === 'error'){
                 setIsError( {error: true, message: result.message})
+                return
             }
 
-            console.log(result)
+            router.push("/")
 
         }catch(err){
 
@@ -53,7 +56,7 @@ export default function Login(){
             <div className={styles['form-container']}>
 
                 <p>Please enter your details</p>
-                <h2>Welcome Back</h2>
+                <h2 onClick={() => console.log('jwt', process.env.JWT_SECRET)} >Welcome Back</h2>
                 
 
                 <hr></hr>

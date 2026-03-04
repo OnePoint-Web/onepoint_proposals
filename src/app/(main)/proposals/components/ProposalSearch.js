@@ -3,6 +3,7 @@ import Input from '@/components/ui/input/Input.js'
 import Container from '@/components/layout/Container/Container.js'
 import {Icons} from '@/components/icons/icons.js'
 
+
 export default function ProposalSearch(){
 
     const ProposalsIcon = Icons.proposals
