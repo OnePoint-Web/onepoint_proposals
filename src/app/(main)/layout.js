@@ -1,6 +1,7 @@
 import { Montserrat } from "next/font/google";
 import "../globals.css";
-import requireAuth from '@/lib/auth.js'
+import requireAuth from "@/lib/auth";
+import { AuthProvider } from "@/context/AuthContext";
 
 import styles from "./layout.module.scss";
 import Header from '../../components/layout/Header/Header.js'
@@ -14,24 +15,27 @@ export default async function RootLayout({ children }) {
   const user = await requireAuth()
 
   return (
-        <div className={`${styles['main-layout']}`}>
-          <Sidebar/>
+    <AuthProvider>
+      <div className={`${styles['main-layout']}`}>
+        <Sidebar/>
 
-          <main className={styles['main-outlet']}>
-            <Header/>
-            
-            <div className={styles['outlet-container']}>
-
-              <Breadcrumbs/>
-
-              <div className={styles.outlet}>
-                {children} 
-              </div>
-              
-            </div>
-                        
-          </main>
+        <main className={styles['main-outlet']}>
+          <Header/>
           
-        </div>
+          <div className={styles['outlet-container']}>
+
+            <Breadcrumbs/>
+
+            <div className={styles.outlet}>
+              {children} 
+            </div>
+            
+          </div>
+                      
+        </main>
+        
+      </div>
+    </AuthProvider>
+        
   );
 }

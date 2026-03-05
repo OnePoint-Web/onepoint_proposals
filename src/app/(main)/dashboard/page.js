@@ -1,23 +1,20 @@
 "use client"
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout'
 import Container from '@/components/layout/Container/Container'
+import useAuthAccess from '@/hooks/auth/authAccess'
+import {useAuth} from '@/context/AuthContext'
 
 
 export default function Dashboard(){
 
-    const onLogout = async () => {
-        console.log('loggin out')
-        await fetch('/api/auth/logout', {
-            method: 'POST'
-        })
-        console.log('jwt', process.env.JWT_SECRET)
-        window.location.href = '/login'
-    }
+    const {user, onLogout} = useAuth()
+
+    const {isAccessible} = useAuthAccess(1)
 
     return (
         <ChildLayout>
             <Container>
-                <button onClick={onLogout}>logout</button>
+                {isAccessible && user &&  <button onClick={() => onLogout()}>{user.username}</button>} 
             </Container>
         </ChildLayout>
     )

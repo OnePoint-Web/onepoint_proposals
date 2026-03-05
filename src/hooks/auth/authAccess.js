@@ -1,15 +1,28 @@
 "use client"
 import { useState, useEffect } from "react"
+import { useAuth } from "@/context/AuthContext"
 
-export default function useAuthAccess() {
+export default function useAuthAccess(access) {
+
   const [isAccessible, setIsAccessible] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  const {user} = useAuth()
+
   useEffect(() => {
     const checkAccess = async () => {
+
       try {
-        const res = await fetch("/api/auth/check")
-        if (res.ok) setIsAccessible(true)
+
+        if (!user){
+          console.log('user error')
+           setIsAccessible(false)
+           return
+        }
+        
+        if (user && user.accountRole === Number(access)){
+            setIsAccessible(true)
+        } 
         else setIsAccessible(false)
       } catch {
         setIsAccessible(false)
@@ -17,8 +30,10 @@ export default function useAuthAccess() {
         setLoading(false)
       }
     }
+    
     checkAccess()
-  }, [])
+  }, [user, access])
 
   return { isAccessible, loading }
+
 }

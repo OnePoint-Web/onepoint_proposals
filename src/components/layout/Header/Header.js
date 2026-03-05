@@ -1,16 +1,12 @@
 import styles from './Header.module.scss';
-
+import HeaderProfile from './HeaderProfile/HeaderProfile.js'
 
 const Header = () => {
     return(
         <div className={styles.header}>
             <div></div>
-            <div className={styles['user-container']}>
-                <div className={styles['icon-container']}>
-                    
-                </div>
 
-            </div>
+            <HeaderProfile/>
             
         </div>
     )

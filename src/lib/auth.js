@@ -18,4 +18,5 @@ export default async function requireAuth(){
     }catch{
         redirect('/login')
     }
+    
 }

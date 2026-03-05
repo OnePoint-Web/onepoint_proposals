@@ -2,6 +2,8 @@ import {cookies} from 'next/headers'
 import {redirect} from 'next/navigation'
 import {jwtVerify} from 'jose'
 
+
+// Redirect path "/": Authenticates user login and decide where to redirect in client side
 export default async function Home() {
 
   const cookieStore = await cookies()
@@ -21,7 +23,6 @@ export default async function Home() {
 
   } catch(err){
     console.error("JWT ERROR:", err.code)
-    console.log('catch return to login')
     redirect("/login")
   }
 
