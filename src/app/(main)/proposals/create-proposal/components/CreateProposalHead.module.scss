@@ -1,0 +1,19 @@
+.proposal-head{
+    width: 100%;
+    max-width: 580px;
+    display: flex;
+    flex-direction: column;
+
+    h3{
+        color: var(--text-light);
+        font-weight: 600;
+        font-size: var(--fs-md);
+    }
+}
+
+.head-container{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}

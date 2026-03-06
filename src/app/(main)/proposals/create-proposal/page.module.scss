@@ -1,0 +1,44 @@
+.create-proposal-body{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+     p{
+        color: var(--text-light);
+        font-size: var(--fs-xs);
+        font-weight: 600;
+    }
+
+
+    h3{
+        color: var(--text-light);
+        font-weight: 600;
+    }
+
+    .proposal-body-child{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+
+        p{
+            color: var(--text-light);
+            font-size: var(--fs-xs);
+            font-weight: 600;
+        }
+
+        .child-container{
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+
+            .team-selection-container{
+                display: flex;
+                flex-direction: row;
+                gap: 8px;
+            }
+        }
+    }
+}

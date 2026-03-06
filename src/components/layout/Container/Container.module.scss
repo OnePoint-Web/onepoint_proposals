@@ -17,4 +17,8 @@
         &.fit{
             max-width: fit-content;
         }
+
+        &.fullwidth{
+            width: 100%;
+        }
     }
