@@ -7,6 +7,7 @@ import { RiUserStarFill } from "react-icons/ri";
 import { CgNotes } from "react-icons/cg";
 import { MdKeyboardArrowRight, MdError  } from "react-icons/md";
 import { LuEyeClosed, LuEye  } from "react-icons/lu";
+import { IoMdNotifications } from "react-icons/io";
 
 export const Icons = {
     dashboard: BiSolidDashboard,
@@ -20,6 +21,7 @@ export const Icons = {
     error: MdError,
     passwordEyeOpen: LuEye,
     passwordEyeClosed: LuEyeClosed,
+    notification: IoMdNotifications
 
 };
 

@@ -1,19 +1,88 @@
-.header-profile-container{
+.header-element-container{
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    position: relative;
+    
+    .profile-container{
         width: 100px;
         border: 1px solid var(--field-stroke);
         border-radius: 10px;
         display: flex;
         flex-direction: row;
         align-items: center;
-        padding: 8px;
+        padding: 8px 10px;
         background-color: white;
-        min-width: 300px;
+        min-width: 280px;
+        gap: 10px;
+        
+
+        .profile{
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            border: 1px solid var(--field-stroke);
+            background-color: var(--field-fill);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+            font-size: 10px
+        }
+        
+        p{
+            font-size: 12px;
+            color: var(--text-strong);
+
+            span{
+                font-weight: 500;
+                color: var(--brand-red)
+            }
+        }
+    }
+
+    .notif-icon{
+                width: 25px;
+                height: 25px;
+                fill: var(--text-strong);
+        }
+
+        
 
         .icon-container{
-            width: 30px;
-            height: 30px;
-            background-color: var(--field-fill);
-            background-color: var(--field-stroke);
-            border-radius: 50%;
+            width: auto;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notification-container{
+            position: absolute;
+            top: 110%;
+            left: 0;
+            width: 100%;
+            height: auto;
+            min-height: 250px;
+            box-shadow: var(--box-shadow);
+            background-color: white;
+            border: 1px solid var(--field-stroke);
+            border-radius: 5px;
+            display: none;
+            flex-direction: column;
+            padding: 5px 10px;
+            box-sizing: border-box;
+            gap: 5px;
+
+            h3{
+                color: var(--text-light);
+                font-size: var(--fs-xs);
+                font-weight: 500;
+            }
+
+            &.active{
+                display: flex;
+            }
         }
 }
