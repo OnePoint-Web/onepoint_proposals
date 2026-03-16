@@ -1,0 +1,9 @@
+.checkbox-container{
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    color: var(--text-light);
+    font-size: 12px;
+    margin-bottom: 10px;
+}
