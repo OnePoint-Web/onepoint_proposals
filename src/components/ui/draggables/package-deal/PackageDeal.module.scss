@@ -1,0 +1,140 @@
+.package-deal-container{
+    position: relative;
+    display: flex;
+    gap: 14px;
+    width: 100%;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 16px;
+    padding-right: 50px;
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid var(--field-stroke);
+    overflow: hidden;
+    flex-wrap: wrap;
+    align-items: flex-start;
+
+    .deals-child{   
+        display: flex;
+        flex-direction: column;  
+        width: fit-content;
+        gap: 16px;
+        height: fit-content;
+        padding-left: 3px;
+        padding-right: 3px;
+        padding-bottom: 10px;
+    }
+
+    .item-container{
+        border: 1px solid var(--field-stroke);
+        min-height: 135px;
+        padding: 15px 15px;
+        box-sizing: border-box;
+        border-radius: 4px;
+        box-shadow: var(--box-shadow);
+        min-width: 200px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        color: var(--text-light);
+
+        label{
+            font-size: 14px;
+        }
+
+        textarea{
+            background-color: var(--field-fill);
+            border-radius: 4px;
+            flex: 1;
+            resize: none;
+            font-family: var(--font-montserrat);
+            color: var(--text-light);
+            padding: 5px;
+
+            &:focus{
+                outline: 1px solid black;
+            }
+        }
+
+        .item-input{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
+
+            .item-btns-container{
+                border: 1px solid var(--field-stroke);
+                border-radius: 4px;
+                display: flex;
+                flex-direction: row;
+
+                .item-btn{
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 3px 6px;
+                    box-sizing: border-box;
+                }
+            }
+        }
+
+        .add-item-btn{
+            background-color: var(--field-fill);
+            border: 1px dashed var(--field-stroke);
+            border-radius: 4px;
+            width: 100%;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: row;
+            gap: 10px;
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+
+            .add-btn{
+                color: var(--field-stroke)
+            }
+
+            &:hover{
+                background-color: rgb(227, 227, 227);
+            }
+        }
+
+        
+    }
+
+    .handlers{
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: fit-content;
+        color: var(--text-light);
+        border-left: 1px solid var(--field-stroke);
+
+        hr{
+            width: 100%;
+        }
+
+        .handler-btn{
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 10px;
+
+            &.drag{
+                flex: 1;
+            }
+
+        }
+    }
+
+   
+}

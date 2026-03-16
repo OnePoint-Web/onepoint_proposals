@@ -26,6 +26,7 @@ export default function Input({
     rules,
     error,
     errorMessage,
+    onChange = null
 
 }){
 
@@ -87,6 +88,7 @@ export default function Input({
                     placeholder={placeholder}
                     values={values}
                     rules={rules}
+                    onChange={onChange}
                 />
             )
             }
@@ -115,22 +117,21 @@ const PasswordInput = ({name, error, placeholder, errorMessage, showPassword, ru
                         <p>{errorMessage}</p>
                     </div>
                 </>
-            }
-                
+            }  
         </div>
-
         
     )
 }
 
 
-const SelectInput = ({name, values, placeholder, error, errorMessage, rules}) => {
+const SelectInput = ({name, values, placeholder, error, errorMessage, rules, onChange}) => {
     return (
     <div className={styles['input-wrapper']}>
         <select
         className={styles[error]}
         name={name}
         id={name}
+        onChange={onChange}
         {...rules}
         >
             {values.map((value, i) => {
