@@ -1,0 +1,31 @@
+.menubar-container{
+    width: 100%;
+    background-color: var(--text-strong);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    padding: 8px;
+    display: flex;
+    gap: 4px;
+
+    .editor-btns{
+        padding: 5px;
+        border-radius: 4px;
+        border: none;
+        background-color: var(--field-fill);
+        color: var(--text-strong);
+        font-size: 12px;
+        font-weight: 500;
+        font-family: var(--font-montserrat);
+        transition: all 0.1s ease-in-out;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+
+        &:hover{
+            background-color: white;
+        }
+    }
+    
+}
