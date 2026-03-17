@@ -27,21 +27,19 @@
             font-size: var(--fs-xs);
             font-weight: 600;
         }
+    }
 
-        .child-container{
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
+    .child-container{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
 
 
-            .team-selection-container{
-                display: grid;
-                grid-template-rows: repeat(4, auto);
-                grid-auto-flow: column;                /* fill rows first, then create new column */
-                grid-auto-columns: auto;               /* automatic column width */
-            }
-
-            
+        .team-selection-container{
+            display: grid;
+            grid-template-rows: repeat(4, auto);
+            grid-auto-flow: column;                /* fill rows first, then create new column */
+            grid-auto-columns: auto;               /* automatic column width */
         }
     }
 }

@@ -7,84 +7,144 @@ import CreateProposalHead from './components/CreateProposalHead'
 import Input from '@/components/ui/input/Input'
 import Checkbox from '@/components/ui/checkbox/Checkbox'
 import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
+import CreateSLAPackage from './CreateSLAPackage.js'
+
+import {useState, useReducer, useEffect} from 'react'
+import {arrayMove} from '@dnd-kit/sortable';
+
+const initialDeals = [
+    {
+        id: crypto.randomUUID(),
+        item: '',
+        item_type: '',
+        display_order: 1,
+        items: [
+        {
+            id: crypto.randomUUID(),
+            entry: '',
+            order: 1
+        }
+        ]
+    }
+]
 
 
-import PackageDeal from '@/components/ui/draggables/package-deal/PackageDeal.js'
-import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemButton.js'
+const recalcOrder = (list, field) =>
+  list.map((item, index) => ({
+    ...item,
+    [field]: index + 1
+  }))
 
-import {useState, useReducer} from 'react'
+const dealsReducer = (state, action) => {
+  switch (action.type) {
 
-import {SortableContext, arrayMove} from '@dnd-kit/sortable';
-import { DndContext } from '@dnd-kit/core'
+    case 'ADD_DEAL':
+      return [
+        ...state,
+        {
+          id: crypto.randomUUID(),
+          item: '',
+          item_type: '',
+          display_order: state.length + 1,
+          items: [{ id: crypto.randomUUID(), entry: '', order: 1 }]
+        }
+      ]
+
+    case 'REORDER_DEALS': {
+      const oldIndex = state.findIndex(d => d.id === action.payload.activeId)
+      const newIndex = state.findIndex(d => d.id === action.payload.overId)
+      const reordered = arrayMove(state, oldIndex, newIndex)
+      return recalcOrder(reordered, "display_order")
+    }
+
+    case 'UPDATE_DEAL':
+      return state.map(deal =>
+        deal.id === action.payload.dealId
+          ? { ...deal, ...action.payload.data }
+          : deal
+      )
+
+    case 'ADD_ITEM':
+      return state.map(deal =>
+        deal.id === action.payload.dealId
+          ? {
+              ...deal,
+              items: [
+                ...deal.items,
+                { id: crypto.randomUUID(), entry: '', order: deal.items.length + 1 }
+              ]
+            }
+          : deal
+      )
+
+    case 'UPDATE_ITEM':
+      return state.map(deal =>
+        deal.id === action.payload.dealId
+          ? {
+              ...deal,
+              items: deal.items.map(item =>
+                item.id === action.payload.itemId
+                  ? { ...item, ...action.payload.data }
+                  : item
+              )
+            }
+          : deal
+      )
+
+    case 'REORDER_ITEMS': {
+      const { dealId, activeId, overId } = action.payload
+      return state.map(deal => {
+        if (deal.id !== dealId) return deal
+
+        const oldIndex = deal.items.findIndex(i => i.id === activeId)
+        const newIndex = deal.items.findIndex(i => i.id === overId)
+        const reorderedItems = arrayMove(deal.items, oldIndex, newIndex)
+
+        return {
+          ...deal,
+          items: recalcOrder(reorderedItems, "order")
+        }
+      })
+    }
+
+    case 'DELETE_DEAL':
+        return state.filter(deal => deal.id !== action.payload.dealId)
+
+    case 'DELETE_ITEM':
+    return state.map(deal =>
+        deal.id === action.payload.dealId
+        ? { ...deal, items: deal.items.filter(item => item.id !== action.payload.itemId) }
+        : deal
+    )
+
+    default:
+      return state
+  }
+}
+    
 
 
 export default function CreateProposal(){
 
+    const [proposalType, setProposalType] = useState('SLA Package')
+    const [clientType, setClientType] = useState('Taxable')
 
-    const [deals, setDeals] = useState([
-        {
-            id: crypto.randomUUID(),
-            item: '',
-            item_type: '',
-            display_order: '',
-            items: [{
-                id: crypto.randomUUID(),
-                entry: '',
-                order: ''
-            }]
-        }
-    ])
-
-    const addItem = () => {
-        const newItem = {
-            id: crypto.randomUUID(),
-            item: "",
-            item_type: '',
-            display_order: "",
-            items: [{
-                id: crypto.randomUUID(),
-                entry: '',
-                order: ''
-            }]
-        }
-        setDeals(prev => [...prev, newItem])
-    }
-
-     const addListItem = (dealId) => {
-        console.log('clicked')
-        const newListItem = {
-            id: crypto.randomUUID(),
-            entry: '',
-            order: ''
-        }
-        setDeals(prev =>
-            prev.map(deal =>
-                deal.id === dealId
-                    ? { ...deal, items: [...deal.items, newListItem] }
-                    : deal
-            )
-        )
-    }
-
-    const handleDragEnd = (event) => {
-        const { active, over } = event;
-
-        if (active.id !== over.id) {
-            setDeals((prevDeals) => {
-            const oldIndex = prevDeals.findIndex(deal => deal.id === active.id);
-            const newIndex = prevDeals.findIndex(deal => deal.id === over.id);
-            return arrayMove(prevDeals, oldIndex, newIndex);
-            });
-        }
-    };
-
+    const [deals, dispatch] = useReducer(dealsReducer, initialDeals)
 
     return(
         <ChildLayout>
-            <CreateProposalHead>
-            </CreateProposalHead>
+            <CreateProposalHead 
+            setProposalType={setProposalType}
+            serClientType={setClientType}
+            />
 
             <Container>
+
+                <CreateSLAPackage
+                        deals={deals}
+                        dispatch={dispatch}
+                    />
+
                 <div className={styles['create-proposal-body']}>
                     <h3>
                         Partnership Program Proposal
@@ -101,7 +161,7 @@ export default function CreateProposal(){
                             />
                         </div>
 
-                    <hr></hr>
+                        <hr></hr>
 
                         <div className={styles['child-container']}>
                             <p>Team (leave blank if not applicable)</p>
@@ -122,7 +182,7 @@ export default function CreateProposal(){
 
                     <hr></hr>
 
-                    <p>Executive Summary</p>
+                    {/* <p>Executive Summary</p>
 
                         <RichTextEditor/>
 
@@ -137,27 +197,12 @@ export default function CreateProposal(){
                     <p>Proposed Solution</p>
                         <RichTextEditor/>
 
-                    <hr></hr>
+                    <hr></hr> */}
 
                     <p>Package Deals and Inclusions</p>
 
-                    <DndContext onDragEnd={handleDragEnd}>
-                        <SortableContext items={deals.map(i => i.id)}>
-                            {deals.map(item => (
-                                <PackageDeal 
-                                    key={item.id} 
-                                    id={item.id}
-                                    dealItems={item.items}
-                                    addListItem={() => addListItem(item.id)}
-                                    setDeals={setDeals}
-                                />
-                            ))}
-
-                        </SortableContext>
-                    </DndContext>
-                        
-
-                    <AddItemButton addItem={addItem}/>
+                    
+                    
                         
 
                     <hr></hr>

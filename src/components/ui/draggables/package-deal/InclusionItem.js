@@ -11,18 +11,31 @@ const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 const AddIcon = Icons.plusButton
 
-export default function InclusionsItem({ listItems, addListItem, onReorder }) {
+export default function InclusionsItem({ listItems, dealId, dispatch }) {
 
     const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over) return;
+      const { active, over } = event
+      if (!over || active.id === over.id) return
 
-    if (active.id !== over.id) {
-        const oldIndex = listItems.findIndex(item => item.id === active.id);
-        const newIndex = listItems.findIndex(item => item.id === over.id);
-        onReorder(arrayMove(listItems, oldIndex, newIndex));
+      dispatch({
+        type: 'REORDER_ITEMS',
+        payload: { dealId, activeId: active.id, overId: over.id }
+      })
     }
-    };
+
+    const addListItem = () => {
+      dispatch({
+        type: 'ADD_ITEM',
+        payload: { dealId }
+      })
+    }
+
+    const deleteItem = (itemId) => {
+      dispatch({
+        type: 'DELETE_ITEM',
+        payload: { dealId, itemId: itemId }
+      })
+    }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
@@ -31,7 +44,12 @@ export default function InclusionsItem({ listItems, addListItem, onReorder }) {
           <label>Item Inclusions/Scope:</label>
 
           {listItems.map(item => (
-            <SortableItem key={item.id} item={item} />
+            <SortableItem 
+              key={item.id} 
+              item={item} 
+              deleteItem={() => deleteItem(item.id)}
+              dispatch={dispatch}
+              dealId={dealId}/>
           ))}
 
           <div className={styles['add-item-btn']} onClick={addListItem}>
@@ -44,16 +62,28 @@ export default function InclusionsItem({ listItems, addListItem, onReorder }) {
 }
 
 // Each list item
-function SortableItem({ item }) {
+function SortableItem({ item, deleteItem, dispatch, dealId }) {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id })
   const style = { transform: CSS.Transform.toString(transform), transition }
 
   return (
     <div ref={setNodeRef} style={style} className={styles['item-input']} {...attributes}>
-      <Input hideLabel="true" width="full" value={item.entry} />
+      <Input 
+        hideLabel
+        width="full" 
+        value={item.entry} 
+        onChange={(e) =>
+          dispatch({
+            type: 'UPDATE_ITEM',
+            payload: { dealId, itemId: item.id, data: { entry: e.target.value } }
+          })
+        }
+        />
 
       <div className={styles['item-btns-container']}>
-        <div className={styles['item-btn']}>
+        <div className={styles['item-btn']}
+          onClick={deleteItem}
+        >
           <DeleteIcon />
         </div>
 

@@ -11,7 +11,7 @@ import { CSS } from '@dnd-kit/utilities';
 const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 
-export default function PackageDeal({dealItems, addListItem, id, setDeals}){
+export default function PackageDeal({dealItems, addListItem, id, dispatch}){
     
     const [itemType, setItemType] = useState('Paragraph')
 
@@ -22,19 +22,30 @@ export default function PackageDeal({dealItems, addListItem, id, setDeals}){
         transition,
     };
 
-    const updateDealItems = (dealId, newItems) => {
-        setDeals(prev =>
-            prev.map(deal =>
-            deal.id === dealId ? { ...deal, items: newItems } : deal
-            )
-        )
+    const handleDeleteDeal = (dealId) => {
+        dispatch({
+            type: 'DELETE_DEAL',
+            payload: { dealId }
+        })
     }
-
 
     return(
         <div className={styles['package-deal-container']} ref={setNodeRef} style={style} {...attributes}>
 
             <div className={styles['deals-child']}>
+                <Input
+                    label='Item:'
+                    name='deal_item'
+                    type="text"
+                    onChange={(e) => {
+                        dispatch({
+                            type: 'UPDATE_DEAL',
+                            payload: { dealId: id, data: {item: e.target.value} }
+                            
+                        })
+                    }}
+                />
+                
                 <Input
                     label='Deal Item type:'
                     type='select'
@@ -42,12 +53,15 @@ export default function PackageDeal({dealItems, addListItem, id, setDeals}){
                             {id: 'Paragraph', name: 'Paragraph'}, 
                             {id: 'List', name: 'List'}
                         ]}
-                    onChange={(e) => setItemType(e.target.value)}
+                    onChange={(e) => {
+                        dispatch({
+                            type: 'UPDATE_DEAL',
+                            payload: { dealId: id, data: {item_type: e.target.value} }
+                        })
+                        setItemType(e.target.value)
+                    }}
                 />
-
-                <Input
-                    label='Package:'
-                />
+                
             </div>
 
             {itemType === 'Paragraph' ? (
@@ -57,16 +71,17 @@ export default function PackageDeal({dealItems, addListItem, id, setDeals}){
                 <InclusionsItem
                     listItems={dealItems}
                     addListItem={addListItem}
-                    onReorder={(newItems) =>
-                        updateDealItems(id, newItems)
-                    }
+                    dealId={id}
+                    dispatch={dispatch}
                 />
             )}
            
 
             <div className={styles['handlers']}>
 
-                <div className={`${styles['handler-btn']} ${styles['delete']}`}>   
+                <div className={`${styles['handler-btn']} ${styles['delete']}`}
+                    onClick={() => handleDeleteDeal(id)}
+                >   
                     <DeleteIcon className={styles.icon}></DeleteIcon>
                 </div>
 
