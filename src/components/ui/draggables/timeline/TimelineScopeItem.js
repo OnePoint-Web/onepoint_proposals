@@ -11,48 +11,48 @@ const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 const AddIcon = Icons.plusButton
 
-export default function InclusionsItem({ listItems, dealId, dispatch }) {
+export default function TimelineScopeItem({ scopes, timelineId, dispatch }) {
 
     const handleDragEnd = (event) => {
       const { active, over } = event
       if (!over || active.id === over.id) return
 
       dispatch({
-        type: 'REORDER_ITEMS',
-        payload: { dealId, activeId: active.id, overId: over.id }
+        type: 'REORDER_SCOPE',
+        payload: { timelineId, activeId: active.id, overId: over.id }
       })
     }
 
-    const addListItem = () => {
+    const addScope = () => {
       dispatch({
-        type: 'ADD_ITEM',
-        payload: { dealId }
+        type: 'ADD_SCOPE',
+        payload: { timelineId }
       })
     }
 
-    const deleteItem = (itemId) => {
+    const deleteScope = (scopeId) => {
       dispatch({
-        type: 'DELETE_ITEM',
-        payload: { dealId, itemId: itemId }
+        type: 'DELETE_SCOPE',
+        payload: { timelineId, scopeId: scopeId }
       })
     }
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <SortableContext items={listItems.map(i => i.id)}>
+      <SortableContext items={scopes.map(i => i.id)}>
         <div className={styles['item-container']}>
-          <label>Item Inclusions/Scope:</label>
+          <label>Scope:</label>
 
-          {listItems.map(item => (
+          {scopes.map(item => (
             <SortableItem 
               key={item.id} 
-              item={item} 
-              deleteItem={() => deleteItem(item.id)}
+              scope={item} 
+              deleteScope={() => deleteScope(item.id)}
               dispatch={dispatch}
-              dealId={dealId}/>
+              timelineId={timelineId}/>
           ))}
 
-          <div className={styles['add-item-btn']} onClick={addListItem}>
+          <div className={styles['add-item-btn']} onClick={addScope}>
             <AddIcon className={styles['add-btn']} />
           </div>
         </div>
@@ -62,8 +62,8 @@ export default function InclusionsItem({ listItems, dealId, dispatch }) {
 }
 
 // Each list item
-function SortableItem({ item, deleteItem, dispatch, dealId }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id })
+function SortableItem({ scope, deleteScope, dispatch, timelineId }) {
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: scope.id })
   const style = { transform: CSS.Transform.toString(transform), transition }
 
   return (
@@ -71,18 +71,18 @@ function SortableItem({ item, deleteItem, dispatch, dealId }) {
       <Input 
         hideLabel
         width="full" 
-        value={item.entry} 
+        value={scope.scope} 
         onChange={(e) =>
           dispatch({
-            type: 'UPDATE_ITEM',
-            payload: { dealId, itemId: item.id, data: { entry: e.target.value } }
+            type: 'UPDATE_SCOPE',
+            payload: { timelineId, scopeId: scope.id, data: { entry: e.target.value } }
           })
         }
         />
 
       <div className={styles['item-btns-container']}>
         <div className={styles['item-btn']}
-          onClick={deleteItem}
+          onClick={deleteScope}
         >
           <DeleteIcon />
         </div>

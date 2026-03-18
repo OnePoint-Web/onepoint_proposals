@@ -7,121 +7,14 @@ import CreateProposalHead from './components/CreateProposalHead'
 import Input from '@/components/ui/input/Input'
 import Checkbox from '@/components/ui/checkbox/Checkbox'
 import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
-import CreateSLAPackage from './CreateSLAPackage.js'
+import PackageDealsSection from './components/PackageDealsSection.js'
+import TimelineSection from './components/TimelineSection'
 
+import {proposalReducer} from './reducers/proposalReducer'
+import {createDeal, createTimeline} from './reducers/factories'
 import {useState, useReducer, useEffect} from 'react'
-import {arrayMove} from '@dnd-kit/sortable';
-
-const initialDeals = [
-    {
-        id: crypto.randomUUID(),
-        item: '',
-        item_type: '',
-        display_order: 1,
-        items: [
-        {
-            id: crypto.randomUUID(),
-            entry: '',
-            order: 1
-        }
-        ]
-    }
-]
 
 
-const recalcOrder = (list, field) =>
-  list.map((item, index) => ({
-    ...item,
-    [field]: index + 1
-  }))
-
-const dealsReducer = (state, action) => {
-  switch (action.type) {
-
-    case 'ADD_DEAL':
-      return [
-        ...state,
-        {
-          id: crypto.randomUUID(),
-          item: '',
-          item_type: '',
-          display_order: state.length + 1,
-          items: [{ id: crypto.randomUUID(), entry: '', order: 1 }]
-        }
-      ]
-
-    case 'REORDER_DEALS': {
-      const oldIndex = state.findIndex(d => d.id === action.payload.activeId)
-      const newIndex = state.findIndex(d => d.id === action.payload.overId)
-      const reordered = arrayMove(state, oldIndex, newIndex)
-      return recalcOrder(reordered, "display_order")
-    }
-
-    case 'UPDATE_DEAL':
-      return state.map(deal =>
-        deal.id === action.payload.dealId
-          ? { ...deal, ...action.payload.data }
-          : deal
-      )
-
-    case 'ADD_ITEM':
-      return state.map(deal =>
-        deal.id === action.payload.dealId
-          ? {
-              ...deal,
-              items: [
-                ...deal.items,
-                { id: crypto.randomUUID(), entry: '', order: deal.items.length + 1 }
-              ]
-            }
-          : deal
-      )
-
-    case 'UPDATE_ITEM':
-      return state.map(deal =>
-        deal.id === action.payload.dealId
-          ? {
-              ...deal,
-              items: deal.items.map(item =>
-                item.id === action.payload.itemId
-                  ? { ...item, ...action.payload.data }
-                  : item
-              )
-            }
-          : deal
-      )
-
-    case 'REORDER_ITEMS': {
-      const { dealId, activeId, overId } = action.payload
-      return state.map(deal => {
-        if (deal.id !== dealId) return deal
-
-        const oldIndex = deal.items.findIndex(i => i.id === activeId)
-        const newIndex = deal.items.findIndex(i => i.id === overId)
-        const reorderedItems = arrayMove(deal.items, oldIndex, newIndex)
-
-        return {
-          ...deal,
-          items: recalcOrder(reorderedItems, "order")
-        }
-      })
-    }
-
-    case 'DELETE_DEAL':
-        return state.filter(deal => deal.id !== action.payload.dealId)
-
-    case 'DELETE_ITEM':
-    return state.map(deal =>
-        deal.id === action.payload.dealId
-        ? { ...deal, items: deal.items.filter(item => item.id !== action.payload.itemId) }
-        : deal
-    )
-
-    default:
-      return state
-  }
-}
-    
 
 
 export default function CreateProposal(){
@@ -129,9 +22,31 @@ export default function CreateProposal(){
     const [proposalType, setProposalType] = useState('SLA Package')
     const [clientType, setClientType] = useState('Taxable')
 
-    const [deals, dispatch] = useReducer(dealsReducer, initialDeals)
+    const [proposalState, dispatch] = useReducer(proposalReducer, null);
+
+    useEffect(() => {
+    const initialProposal = {
+        id: crypto.randomUUID(),
+        clientId: '',
+        clientType: '',
+        proposalTitle: '',
+        proposalType: '',
+        executiveSummary: '',
+        goalsAndObjectives: '',
+        proposedSolution: '',
+        executiveVideo: '',
+        deals: [createDeal()],
+        timelines: [createTimeline()]
+    };
+
+    dispatch({ type: 'INIT_PROPOSAL', payload: initialProposal });
+    }, []);
+      
+    if (!proposalState) return <p></p>;
 
     return(
+
+        
         <ChildLayout>
             <CreateProposalHead 
             setProposalType={setProposalType}
@@ -139,11 +54,6 @@ export default function CreateProposal(){
             />
 
             <Container>
-
-                <CreateSLAPackage
-                        deals={deals}
-                        dispatch={dispatch}
-                    />
 
                 <div className={styles['create-proposal-body']}>
                     <h3>
@@ -182,7 +92,7 @@ export default function CreateProposal(){
 
                     <hr></hr>
 
-                    {/* <p>Executive Summary</p>
+                    <p>Executive Summary</p>
 
                         <RichTextEditor/>
 
@@ -197,13 +107,14 @@ export default function CreateProposal(){
                     <p>Proposed Solution</p>
                         <RichTextEditor/>
 
-                    <hr></hr> */}
+                    <hr></hr>
 
                     <p>Package Deals and Inclusions</p>
 
-                    
-                    
-                        
+                        <PackageDealsSection
+                            deals={proposalState.deals}
+                            dispatch={dispatch}
+                        />
 
                     <hr></hr>
 
@@ -212,7 +123,11 @@ export default function CreateProposal(){
                     <hr></hr>
 
                     <p>Timeline</p>
-
+                        
+                        <TimelineSection
+                            timelines={proposalState.timelines}
+                            dispatch={dispatch}
+                        />
                     <hr></hr>
 
                     <p>Pricing and Tax</p>

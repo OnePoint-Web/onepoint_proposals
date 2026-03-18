@@ -1,4 +1,4 @@
-import styles from './page.module.scss'
+import styles from '../page.module.scss'
 import {useReducer} from 'react'
 import PackageDeal from '@/components/ui/draggables/package-deal/PackageDeal.js'
 import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemButton.js'
@@ -6,7 +6,7 @@ import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemBut
 import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core'
 
-export default function CreateSLAPackage({deals, dispatch}){
+export default function PackageDealsSection({deals, dispatch}){
 
 
     const addDeal = () => {

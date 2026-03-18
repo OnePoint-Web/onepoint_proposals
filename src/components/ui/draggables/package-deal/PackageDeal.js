@@ -1,5 +1,5 @@
 'use client'
-import styles from './PackageDeal.module.scss'
+import styles from '../DraggablesItem.module.scss'
 import {Icons} from '@/components/icons/icons.js'
 import Input from '@/components/ui/input/Input.js'
 import {useState} from 'react'
@@ -70,7 +70,6 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
             (   
                 <InclusionsItem
                     listItems={dealItems}
-                    addListItem={addListItem}
                     dealId={id}
                     dispatch={dispatch}
                 />
