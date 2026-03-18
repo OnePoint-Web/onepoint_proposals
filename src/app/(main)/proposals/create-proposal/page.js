@@ -130,11 +130,63 @@ export default function CreateProposal(){
                         />
                     <hr></hr>
 
-                    <p>Pricing and Tax</p>
                     
+                        
+                         <div className={styles['proposal-body-child']}>
+                        
+                        <div className={styles['child-container']}>
+                            <p>Pricing and Tax</p>
+                            <Input
+                            label='Select Package' 
+                            />
+
+                            <Input
+                            label='Subtotal (discount applied)' 
+                            />
+
+                            <Input
+                            label='Subtotal + GST(10%)' 
+                            />
+
+                            <Input
+                            label='Total' 
+                            />
+                        </div>
+
+                        <hr></hr>
+
+                        <div className={styles['child-container']}>
+                            <p>Discount</p>
+
+                            <Input
+                            label='Discount Type' 
+                            />
+
+                            <Input
+                            label='Discount Value' 
+                            />
+
+                            <Input
+                                label='Discount Description:'
+                                width='medium'
+                                type='textarea'
+                            />
+
+
+                            
+                        </div>
+                       
+                    </div>
+
+
                     <hr></hr>
 
                     <p>Payment Terms</p>
+
+                    <Input
+                        width='full'
+                        type='textarea'
+                    />
 
                 </div>
             </Container>

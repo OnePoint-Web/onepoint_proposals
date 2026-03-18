@@ -12,15 +12,6 @@ export const timelineReducer = (timelines, action) => {
 
     case 'ADD_TIMELINE': 
       return [...timelines, createTimeline()]
-    
-
-    // case 'REORDER_TIMELINE': {
-    //   const oldIndex = timelines.findIndex(t => t.id === action.payload.activeId)
-    //   const newIndex = timelines.findIndex(t => t.id === action.payload.overId)
-    //   if (oldIndex === -1 || newIndex === -1) return timelines
-    //   const reordered = arrayMove(timelines, oldIndex, newIndex)
-    //   return recalcOrder(reordered, "display_order")
-    // }
 
     case 'UPDATE_TIMELINE':
       return timelines.map(t =>
