@@ -56,8 +56,31 @@ export default function Input({
                     <button type='button' onClick={() => setShowPassword(prev => !prev)} className={styles['password-toggle']}>{showPassword ? <EyeOpen/> : <EyeClose/>}</button>
                 </div>
                     
+            ) : type === 'textarea' ? (
+
+                <div className={`${styles['input-wrapper']}`}>
+                    <textarea 
+                    className={styles[error]}
+                        type={type} 
+                        name={name} 
+                        id={name} 
+                        placeholder={placeholder} 
+                        {...rules}
+                    />
+
+                    {error && 
+                        <>
+                            <ErrorIcon className={styles.icon}/>
+                            <div className={styles['error-message']}>
+                                <p>{errorMessage}</p>
+                            </div>
+                        </>
+                    }
+                        
+                </div>
+
             ) : (
-            
+                
                 <div className={styles['input-wrapper']}>
                     <input 
                     className={styles[error]}
