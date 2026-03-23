@@ -4,193 +4,47 @@ import styles from './page.module.scss'
 import Container from '@/components/layout/Container/Container'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout'
 import CreateProposalHead from './components/CreateProposalHead'
-import Input from '@/components/ui/input/Input'
-import Checkbox from '@/components/ui/checkbox/Checkbox'
-import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
-import PackageDealsSection from './components/PackageDealsSection.js'
-import TimelineSection from './components/TimelineSection'
+
+import CreateProposalBody from './CreateProposalBody'
 
 import {proposalReducer} from './reducers/proposalReducer'
-import {createDeal, createTimeline} from './reducers/factories'
-import {useState, useReducer, useEffect} from 'react'
-
-
-
+import {createInitialProposal} from './reducers/factories'
+import {useReducer, useEffect} from 'react'
 
 export default function CreateProposal(){
-
-    const [proposalType, setProposalType] = useState('SLA Package')
-    const [clientType, setClientType] = useState('Taxable')
 
     const [proposalState, dispatch] = useReducer(proposalReducer, null);
 
     useEffect(() => {
-    const initialProposal = {
-        id: crypto.randomUUID(),
-        clientId: '',
-        clientType: '',
-        proposalTitle: '',
-        proposalType: '',
-        executiveSummary: '',
-        goalsAndObjectives: '',
-        proposedSolution: '',
-        executiveVideo: '',
-        deals: [createDeal()],
-        timelines: [createTimeline()]
-    };
-
-    dispatch({ type: 'INIT_PROPOSAL', payload: initialProposal });
+        dispatch({
+        type: 'INIT_PROPOSAL',
+        payload: createInitialProposal({
+            proposalType: 'SLA Proposal',
+            clientType: 'Taxable',
+        }),
+        });
     }, []);
-      
+
+
     if (!proposalState) return <p></p>;
 
-    return(
-
+     return(
+        
         
         <ChildLayout>
+            
             <CreateProposalHead 
-            setProposalType={setProposalType}
-            serClientType={setClientType}
+            dispatch={dispatch}
             />
 
             <Container>
 
-                <div className={styles['create-proposal-body']}>
-                    <h3>
-                        Partnership Program Proposal
-                    </h3>
-
-                    <hr></hr>
-
-                    <div className={styles['proposal-body-child']}>
-
-                        <div className={styles['child-container']}>
-                            <p>Proposal Solution Package:</p>
-                            <Input
-                            label='Select Package' 
-                            />
-                        </div>
-
-                        <hr></hr>
-
-                        <div className={styles['child-container']}>
-                            <p>Team (leave blank if not applicable)</p>
-
-                            <div className={styles['team-selection-container']}> 
-                                <Checkbox label='hellafasevsrbo'/>
-                                <Checkbox label='hello'/>
-                                <Checkbox label='hello'/>
-                                <Checkbox label='hello'/>
-                                <Checkbox label='hello'/>
-                                <Checkbox label='hello'/>
-                                <Checkbox label='hello'/>
-                            </div>
-                            
-                        </div>
-                       
-                    </div>
-
-                    <hr></hr>
-
-                    <p>Executive Summary</p>
-
-                        <RichTextEditor/>
-
-                    <hr></hr>
-
-                    <p>Goals and Objectives</p>
-
-                        <RichTextEditor/>
-                        
-                    <hr></hr>
-
-                    <p>Proposed Solution</p>
-                        <RichTextEditor/>
-
-                    <hr></hr>
-
-                    <p>Package Deals and Inclusions</p>
-
-                        <PackageDealsSection
-                            deals={proposalState.deals}
-                            dispatch={dispatch}
-                        />
-
-                    <hr></hr>
-
-                    <p>Package Description</p>
-
-                    <hr></hr>
-
-                    <p>Timeline</p>
-                        
-                        <TimelineSection
-                            timelines={proposalState.timelines}
-                            dispatch={dispatch}
-                        />
-                    <hr></hr>
-
-                    
-                        
-                         <div className={styles['proposal-body-child']}>
-                        
-                        <div className={styles['child-container']}>
-                            <p>Pricing and Tax</p>
-                            <Input
-                            label='Select Package' 
-                            />
-
-                            <Input
-                            label='Subtotal (discount applied)' 
-                            />
-
-                            <Input
-                            label='Subtotal + GST(10%)' 
-                            />
-
-                            <Input
-                            label='Total' 
-                            />
-                        </div>
-
-                        <hr></hr>
-
-                        <div className={styles['child-container']}>
-                            <p>Discount</p>
-
-                            <Input
-                            label='Discount Type' 
-                            />
-
-                            <Input
-                            label='Discount Value' 
-                            />
-
-                            <Input
-                                label='Discount Description:'
-                                width='medium'
-                                type='textarea'
-                            />
-
-
-                            
-                        </div>
-                       
-                    </div>
-
-
-                    <hr></hr>
-
-                    <p>Payment Terms</p>
-
-                    <Input
-                        width='full'
-                        type='textarea'
-                    />
-
-                </div>
+                <CreateProposalBody proposalState={proposalState} dispatch={dispatch}/>
+        
             </Container>
 
         </ChildLayout>
     )
 }
+
+

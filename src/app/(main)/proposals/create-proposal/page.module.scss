@@ -42,4 +42,12 @@
             grid-auto-columns: auto;               /* automatic column width */
         }
     }
+
+    .video-container{
+        width: 100%;
+        height: 300px;
+        border: 1px solid var(--field-stroke);
+        border-radius: 4px;
+        max-width: 500px;
+    }
 }

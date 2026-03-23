@@ -30,3 +30,66 @@ export const createTimelineScope = () => ({
   startDate: '',
   endDate: ''
 })
+
+export const createItem = () => ({
+    id: crypto.randomUUID(),
+    item: '',
+    itemImageUR: '',
+    itemPrice: '',
+    quantity: null,
+    totalPrice: null,
+    discountType: '',
+    discountValue: null,
+    discountDescription: '',
+    itemDescription: '',
+    displayOrder: null
+})
+
+export const createInitialProposal = ({ proposalType, clientType }) => {
+  const base = {
+    id: crypto.randomUUID(),
+    clientId: '',
+    clientType,
+    proposalTitle: '',
+    proposalType,
+    executiveSummary: '',
+    goalsAndObjectives: '',
+    execVideoUrl: '',
+    proposedSolution: '',
+    proposalDescription: '',
+    discountType: '',
+    discountValue: null,
+    discountDescription: '',
+    taxableAmount: '',
+    taxApplicable: '',
+    taxRate: '',
+    taxAmount: '',
+    taxReason: '',
+    finalPrice: null,
+    paymentTerms: '',
+    timelines: [createTimeline()],
+  };
+
+  if (proposalType === 'SLA Proposal') {
+    return {
+      ...base,
+      selectedPackage: '',
+      basePrice: null,
+      deals: [createDeal()],
+    };
+  }
+
+  if (
+    proposalType === 'Product Proposal' ||
+    proposalType === 'Service Proposal'
+  ) {
+    return {
+      ...base,
+      subTotal: null,
+      isMultipleChoice: false,
+      items: [createItem()],
+    };
+  }
+
+  return base;
+}
