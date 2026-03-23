@@ -1,12 +1,12 @@
 import ChildLayout from "@/components/layout/ChildLayout/ChildLayout";
 import Container from "@/components/layout/Container/Container.js"
-import UserCreateForm from './components/UserCreationForm.js'
+import ClientCreationForm from './components/ClientCreationForm.js'
 
 export default function CreateUser(){
    return( 
     <ChildLayout>
         <Container>
-            <UserCreateForm/>
+            <ClientCreationForm/>
         </Container>
     </ChildLayout>
     
