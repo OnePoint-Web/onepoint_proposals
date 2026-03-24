@@ -12,6 +12,7 @@ const ProductsIcon = Icons.products
 const ServicesIcon = Icons.services
 const UsersIcon = Icons.users;
 const ClientsIcon = Icons.clients
+const TeamsIcon = Icons.teamIcon
 
 export default function Sidebar(){
 
@@ -97,6 +98,25 @@ export default function Sidebar(){
 
                     <Link href='/services/add-service' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/services/add-service' ? styles.active : ''}`}>
                         Add New Service
+                    </Link>
+
+                <Link 
+                    href='/teams-and-members' 
+                    className={styles['item']}>
+                    <TeamsIcon className={styles['icon']}/> 
+                    Teams and Members
+                </Link>
+
+                    <Link href='/teams-and-members' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/teams-and-members' ? styles.active : ''}`}>
+                        List Teams
+                    </Link>
+
+                    <Link href='/teams-and-members/add-member' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/teams-and-members/add-member' ? styles.active : ''}`}>
+                        Add Member
+                    </Link>
+
+                    <Link href='/teams-and-members/create-team' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/teams-and-members/create-team' ? styles.active : ''}`}>
+                        Create Teams
                     </Link>
 
                 <p className={styles['item-section']}> ACCOUNTS </p>

@@ -12,6 +12,7 @@ import { BsTypeItalic, BsTypeUnderline, BsTypeBold } from "react-icons/bs";
 import { FaListUl,  FaListOl } from "react-icons/fa";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { FiPlusCircle } from "react-icons/fi";
+import { FaIdBadge } from "react-icons/fa";
 
 export const Icons = {
     dashboard: BiSolidDashboard,
@@ -33,7 +34,9 @@ export const Icons = {
     orderedList: FaListOl,
     delete: FaRegTrashCan,
     drag: MdDragIndicator,
-    plusButton: FiPlusCircle
+    plusButton: FiPlusCircle,
+    teamIcon: FaIdBadge,
+
 
 };
 
