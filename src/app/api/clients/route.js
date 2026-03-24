@@ -2,7 +2,7 @@ import { NextResponse } from "next/server"
 import { createClientSchema } from "@/schemas/client/createClient.schema"
 import prisma from "@/lib/prisma"
 import bcrypt from 'bcryptjs'
-import { Prisma } from '@prisma/client'
+
 
 
 export async function POST(req){

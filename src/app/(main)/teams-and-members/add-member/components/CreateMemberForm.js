@@ -8,7 +8,7 @@ import {useState, useEffect} from 'react'
 import {useForm} from "react-hook-form"
 
 import {zodResolver} from '@hookform/resolvers/zod'
-import {createClientSchema} from '@/schemas/client/createClient.schema.js'
+import {createMemberSchema} from '@/schemas/member/createMember.schema.js'
 
 export default function CreateMemberForm(){
     
@@ -23,42 +23,47 @@ export default function CreateMemberForm(){
         reset,
         formState: { errors, isSubmitting},
     } = useForm({
-        resolver: zodResolver(createClientSchema)
+        resolver: zodResolver(createMemberSchema)
     })
 
     const onSubmit = async (data) => {
-  try {
-    const formData = new FormData()
+        try {
+            const formData = new FormData()
 
-    Object.entries(data).forEach(([key, value]) => {
-      formData.append(key, value)
-    })
+            Object.entries(data).forEach(([key, value]) => {
+            formData.append(key, value)
+            })
 
-    if (imageFile) {
-      formData.append('image', imageFile)
+            if (imageFile && imageFile.size > 2_000_000) {
+            alert("Image too large")
+            return
+            }
+
+            if (imageFile) {
+            formData.append('image', imageFile)
+            }
+
+            const res = await fetch('/api/members', {
+            method: 'POST',
+            body: formData
+            })
+
+            const result = await res.json()
+
+            if (!res.ok) {
+            console.error(result)
+            return
+            }
+
+            reset()
+            setImageFile(null)
+            setIsSuccess(true)
+
+        } catch (err) {
+            console.error(err)
+            setIsSuccess(false)
+        }
     }
-
-    const res = await fetch('/api/members', {
-      method: 'POST',
-      body: formData
-    })
-
-    const result = await res.json()
-
-    if (!res.ok) {
-      console.error(result)
-      return
-    }
-
-    reset()
-    setImageFile(null)
-    setIsSuccess(true)
-
-  } catch (err) {
-    console.error(err)
-    setIsSuccess(false)
-  }
-}
 
     return(
         <Form 
@@ -72,13 +77,13 @@ export default function CreateMemberForm(){
                 label='Member Name'
             >
                 <Input
-                    label='Username:'
+                    label='Member name:'
                     width="medium"
                     hideLabel={true}
-                    placeholder='Account username...'
-                    error={errors.username ? 'error' : ''}
-                    errorMessage={errors.username && errors.username.message}
-                    rules={{...register("username")}}
+                    placeholder='Full Name...'
+                    error={errors.member_name ? 'error' : ''}
+                    errorMessage={errors.member_name && errors.member_name  .message}
+                    rules={{...register("member_name")}}
                 />
             </FormInputContainer>
             
@@ -88,13 +93,13 @@ export default function CreateMemberForm(){
             >
 
                 <Input
-                    label='First Name'
+                    label='Role'
                     width="medium"
                     hideLabel={true}
-                    placeholder='User first name...'
-                    error={errors.first_name ? 'error' : ''}
-                    errorMessage={errors.first_name && errors.first_name.message}
-                    rules={{...register("first_name")}}
+                    placeholder='Member role/position...'
+                    error={errors.role ? 'error' : ''}
+                    errorMessage={errors.role && errors.role.message}
+                    rules={{...register("role")}}
                 />
             </FormInputContainer>
 
@@ -103,30 +108,15 @@ export default function CreateMemberForm(){
             >
 
                 <Input
-                    label='Last Name'
+                    label='Description'
                     width="medium"
                     hideLabel={true}
-                    placeholder='User last name...'
-                    error={errors.last_name ? 'error' : ''}
-                    errorMessage={errors.last_name && errors.last_name.message}
-                    rules={{...register("last_name")}}
+                    placeholder='Member description...'
+                    error={errors.description ? 'error' : ''}
+                    errorMessage={errors.description && errors.description.message}
+                    rules={{...register("description")}}
                 />
-            </FormInputContainer>
-
-            <FormInputContainer
-                label='Status'
-            >
-
-                <Input
-                    label='Email'
-                    width="medium"
-                    hideLabel={true}
-                    placeholder='Account email...'
-                    error={errors.email ? 'error' : ''}
-                    errorMessage={errors.email && errors.email.message}
-                    rules={{...register("email")}}
-                />
-            </FormInputContainer>    
+            </FormInputContainer> 
             
         </fieldset>
 
@@ -140,7 +130,7 @@ export default function CreateMemberForm(){
                 
         </fieldset >
 
-           { isSuccess && <p className={styles.success}>Client account created successfully</p>}
+           { isSuccess && <p className={styles.success}>Member added successfully</p>}
 
             <Button 
                 label={isSubmitting ? 'Creating account..' : 'Add Client'}
