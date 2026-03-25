@@ -26,6 +26,32 @@
         padding-bottom: 10px;
     }
 
+    .items-child{   
+        display: flex;
+        flex-direction: row;  
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 16px;
+        padding-left: 3px;
+        padding-right: 3px;
+        padding-bottom: 10px;
+    }
+
+    .item-child-container{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+
+
+        .items-inner-container{
+            display: flex;
+            flex: 1;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+    }
+
     .item-container{
         border: 1px solid var(--field-stroke);
         min-height: 135px;

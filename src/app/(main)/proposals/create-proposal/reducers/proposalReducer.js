@@ -28,7 +28,6 @@ export function proposalReducer(state, action) {
       clientType: action.payload,
     };
 
-
     default:
     return {
       ...state,

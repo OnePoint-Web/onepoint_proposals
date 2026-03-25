@@ -4,6 +4,7 @@ import Input from '@/components/ui/input/Input'
 import Checkbox from '@/components/ui/checkbox/Checkbox'
 import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
 import PackageDealsSection from './components/PackageDealsSection.js'
+import ProposalItemSection from './components/ProposalItemSection'
 import TimelineSection from './components/TimelineSection'
 
 
@@ -140,12 +141,23 @@ export default function CreateProposalBody({dispatch, proposalState}){
         <hr></hr>
 
         
-        {proposalState.proposalType === 'SLA Proposal' && (
+        {proposalState.proposalType === 'SLA Proposal' ? (
             <>
             <p>Package Deals and Inclusions</p>
 
             <PackageDealsSection
                 deals={proposalState.deals}
+                dispatch={dispatch}
+            />
+
+            <hr></hr>
+            </>
+        ) : (
+            <>
+            <p>Products</p>
+
+            <ProposalItemSection
+                items={proposalState.items}
                 dispatch={dispatch}
             />
 
