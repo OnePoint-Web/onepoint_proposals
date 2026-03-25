@@ -59,6 +59,7 @@
     .input-wrapper{
         position: relative;
         width: 100%;
+        overflow: hidden;
 
         .icon{
             position: absolute;
@@ -90,6 +91,43 @@
             p{
                 font-size: 10px;
                 color: red;
+            }
+        }
+
+        .number-control{
+            overflow: hidden;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            right: 3px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 15px;
+            height: 84%;
+            border: 1px solid var(--field-stroke);
+            border-radius: 3px;
+           
+
+            hr{
+                border-top: 1px solid var(--field-stroke);
+            }
+
+            .number-btn-container{
+                height: 50%;
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+
+                .number-control-icon{
+                    fill: var(--text-strong);
+                    height: 13px;
+                }
+
+                &:hover{
+                    background-color: rgb(211, 211, 211);
+                }
             }
         }
     }
@@ -127,10 +165,20 @@
     }
     }
 
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+    }
+
+    input{
+        padding-right: 24px;
+    }
+
     textarea{
         resize: none;
         min-height: 100px;
-        }
+    }
 
     
 
@@ -142,6 +190,15 @@
 
     &.medium{
         width: 400px;
+    }
+
+    &.small{
+        width: 200px;
+    }
+
+    &.xsmall{
+        min-width: 60px;
+        width: 80px;
     }
 
    

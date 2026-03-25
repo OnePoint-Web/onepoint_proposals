@@ -1,11 +1,13 @@
 "use client"
 import styles from './Input.module.scss'
 import {Icons} from '@/components/icons/icons.js'
-import {useState} from 'react'
+import {useState, useRef} from 'react'
 
 const ErrorIcon = Icons.error;
 const EyeOpen = Icons.passwordEyeOpen
 const EyeClose = Icons.passwordEyeClosed
+const ArrowDropDown = Icons.arrowDropDown
+const ArrowDropUp = Icons.arrowDropUp
 
 export default function Input({
     type = 'text', //text, email, number, etc. Special case with 'select', switches out component
@@ -16,11 +18,13 @@ export default function Input({
     placeholder,
 
     value, // optional
-    width, // full, (leave blank for default size), medium
+    width, // small, full, (leave blank for default size), medium
     size, /*sm, md, lg*/
 
     // values if form type = select
     values, //format: {{id: '', name: ''}}
+
+    min = 0, // minimum amount for number input
 
     //react-hook-form
     rules,
@@ -52,6 +56,7 @@ export default function Input({
                         errorMessage={errorMessage}
                         showPassword={showPassword}
                         rules={rules}
+                        
                     />
                     <button type='button' onClick={() => setShowPassword(prev => !prev)} className={styles['password-toggle']}>{showPassword ? <EyeOpen/> : <EyeClose/>}</button>
                 </div>
@@ -79,6 +84,16 @@ export default function Input({
                         
                 </div>
 
+            ) : type === 'number' ? (
+                <NumberInput
+                    name={name}
+                    error={error}
+                    placeholder={placeholder}
+                    errorMessage={errorMessage}
+                    min={min}
+                    rules={rules}
+                    onChange={onChange}
+                />
             ) : (
                 
                 <div className={styles['input-wrapper']}>
@@ -88,6 +103,7 @@ export default function Input({
                         name={name} 
                         id={name} 
                         placeholder={placeholder} 
+                        onChange={onChange}
                         {...rules}
                     />
 
@@ -179,4 +195,69 @@ const SelectInput = ({name, values, placeholder, error, errorMessage, rules, onC
         }
     </div>
     )
+}
+
+
+const NumberInput = ({name, error, value, errorMessage, rules, onChange, min}) => {
+  const inputRef = useRef(null)
+  const rhfOnChange = rules?.onChange
+
+  // Emit a change event to parent and RHF if needed
+  const emitChange = (newValue) => {
+    const event = { target: { name, value: newValue } }
+
+    // Trigger RHF onChange if provided
+    if (rhfOnChange) rhfOnChange(event)
+
+    // Trigger parent onChange
+    if (onChange) onChange(event)
+
+    // Update input DOM value
+    if (inputRef.current) inputRef.current.value = newValue
+  }
+
+  const getCurrentValue = () => {
+    const val = Number(inputRef.current?.value)
+    return isNaN(val) ? min : val
+  }
+
+  const handleIncrement = () => emitChange(getCurrentValue() + 1)
+  const handleDecrement = () => emitChange(Math.max(min, getCurrentValue() - 1))
+
+  return (
+    <div className={styles['input-wrapper']}>
+      <input
+        ref={inputRef}
+        className={styles[error]}
+        type="number"
+        name={name}
+        min={min}
+        defaultValue={min} // start at min if not set
+        {...rules}
+        onChange={(e) => {
+          if (rhfOnChange) rhfOnChange(e)
+          if (onChange) onChange(e)
+        }}
+      />
+
+      <div className={styles['number-control']}>
+        <div className={styles['number-btn-container']} onClick={handleIncrement}>
+          <ArrowDropUp className={styles['number-control-icon']} />
+        </div>
+        <hr />
+        <div className={styles['number-btn-container']} onClick={handleDecrement}>
+          <ArrowDropDown className={styles['number-control-icon']} />
+        </div>
+      </div>
+
+      {error && (
+        <>
+          <ErrorIcon className={styles.icon} />
+          <div className={styles['error-message']}>
+            <p>{errorMessage}</p>
+          </div>
+        </>
+      )}
+    </div>
+  )
 }
