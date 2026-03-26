@@ -2,7 +2,7 @@
 import styles from '../DraggablesItem.module.scss'
 import {Icons} from '@/components/icons/icons.js'
 import Input from '@/components/ui/input/Input.js'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -10,9 +10,7 @@ import { CSS } from '@dnd-kit/utilities';
 const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 
-export default function ProductItem({id, dispatch}){
-    
-    const [itemType, setItemType] = useState('Paragraph')
+export default function ProductItem({id, items, dispatch}){
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -20,6 +18,8 @@ export default function ProductItem({id, dispatch}){
         transform: CSS.Transform.toString(transform),
         transition,
     };
+
+     const item = items.find(i => i.id === id) || {}
 
     const handleDeleteItem = (itemId) => {
         dispatch({
@@ -42,26 +42,33 @@ export default function ProductItem({id, dispatch}){
                         label='Item:'
                         name='proposal_item'
                         type="text"
+                        placeholder='Item name...'
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
-                                payload: { itemId: id, data: {item: e.target.value} }
-                                
+                                payload: { 
+                                    itemId: id, 
+                                    data: {item: e.target.value} 
+                                }
                             })
                         }}
                     />
                     
                     <Input
                         label='Price:'
+                        name='item_base_price'
                         type='text'
                         width='small'
-                        // onChange={(e) => {
-                        //     dispatch({
-                        //         type: 'UPDATE_DEAL',
-                        //         payload: { dealId: id, data: {item_type: e.target.value} }
-                        //     })
-                        //     setItemType(e.target.value)
-                        // }}
+                        placeholder='Item price...'
+                        onChange={(e) => {
+                            dispatch({
+                                type: 'UPDATE_PRODUCT_ITEM',
+                                payload: { 
+                                    itemId: id, 
+                                    data: {itemPrice: e.target.value} 
+                                }
+                            })
+                        }}
                     />
 
                     <Input 
@@ -70,33 +77,34 @@ export default function ProductItem({id, dispatch}){
                         width='xsmall'
                         name='quantity'
                         min='1'
+                        onChange={(e) => {
+                            dispatch({
+                                type: 'UPDATE_PRODUCT_ITEM',
+                                payload: { 
+                                    itemId: id, 
+                                    data: {quantity: Number(e.target.value)} 
+                                }
+                            })
+                        }}
                     >
                     </Input>
 
                     <Input
                         label='Total:'
+                        name='total_price'
                         type='text'
                         width='small'
-                        // onChange={(e) => {
-                        //     dispatch({
-                        //         type: 'UPDATE_DEAL',
-                        //         payload: { dealId: id, data: {item_type: e.target.value} }
-                        //     })
-                        //     setItemType(e.target.value)
-                        // }}
+                        value={item.totalPrice || 0}
+                        disabled={true}
                     />
 
                     <Input
-                        label='Subtotal - discount:'
+                        label='Discounted total:'
+                        name='discounted_total'
                         type='text'
                         width='small'
-                        // onChange={(e) => {
-                        //     dispatch({
-                        //         type: 'UPDATE_DEAL',
-                        //         payload: { dealId: id, data: {item_type: e.target.value} }
-                        //     })
-                        //     setItemType(e.target.value)
-                        // }}
+                        disabled={true}
+                        value={item.discountedTotal || 0}
                     />
 
                     
@@ -108,13 +116,14 @@ export default function ProductItem({id, dispatch}){
                 <div className={`${styles['items-child']}`}>
                     <Input
                         label='Notes/Description:'
-                        name='proposal_item'
+                        name='item_description'
                         type="textarea"
                         width='full'
+                        placeholder='Enter item description here...'
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
-                                payload: { itemId: id, data: {item: e.target.value} }
+                                payload: { itemId: id, data: {itemDescription: e.target.value} }
                                 
                             })
                         }}
@@ -122,42 +131,50 @@ export default function ProductItem({id, dispatch}){
 
                     <div className={styles['items-inner-container']}>
                         <Input
-                            label='Subtotal - discount:'
-                            type='text'
+                            label='Item Discount Type:'
+                            type='select'
+                            values={[
+                                {id: 'None', name: 'No Discount'},
+                                {id: 'Fixed', name: 'Fixed Amount'},
+                                {id: 'Percentage', name: '(%) Percentage'}
+                            ]}
                             width='small'
-                            // onChange={(e) => {
-                            //     dispatch({
-                            //         type: 'UPDATE_DEAL',
-                            //         payload: { dealId: id, data: {item_type: e.target.value} }
-                            //     })
-                            //     setItemType(e.target.value)
-                            // }}
+                            onChange={(e) => {
+                            dispatch({
+                                type: 'UPDATE_PRODUCT_ITEM',
+                                payload: { itemId: id, data: {discountType: e.target.value} }
+                                
+                            })
+                        }}
+                       
                         />
 
                         <Input
-                            label='Subtotal - discount:'
+                            label='Discount amount:'
                             type='text'
                             width='small'
-                            // onChange={(e) => {
-                            //     dispatch({
-                            //         type: 'UPDATE_DEAL',
-                            //         payload: { dealId: id, data: {item_type: e.target.value} }
-                            //     })
-                            //     setItemType(e.target.value)
-                            // }}
+                            placeholder='0'
+                            onChange={(e) => {
+                                dispatch({
+                                    type: 'UPDATE_PRODUCT_ITEM',
+                                    payload: { itemId: id, data: {discountValue: Number(e.target.value)}}
+                                    
+                                })
+                            }}
                         />
 
                         <Input
-                            label='Subtotal - discount:'
+                            label='Discount reason:'
                             type='text'
                             width='full'
-                            // onChange={(e) => {
-                            //     dispatch({
-                            //         type: 'UPDATE_DEAL',
-                            //         payload: { dealId: id, data: {item_type: e.target.value} }
-                            //     })
-                            //     setItemType(e.target.value)
-                            // }}
+                            placeholder='Voucher, promo, sale...'
+                            onChange={(e) => {
+                            dispatch({
+                                type: 'UPDATE_PRODUCT_ITEM',
+                                payload: { itemId: id, data: {discountDescription: e.target.value} }
+                                
+                            })
+                        }}
                         />
 
                     </div>
