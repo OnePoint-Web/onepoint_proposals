@@ -36,11 +36,12 @@ export const createItem = () => ({
     item: '',
     itemImageUR: '',
     itemPrice: '',
-    quantity: null,
+    quantity: 1,
     totalPrice: null,
     discountType: '',
     discountValue: null,
     discountDescription: '',
+    discountedTotal: null,
     itemDescription: '',
     displayOrder: null
 })
