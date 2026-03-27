@@ -10,7 +10,9 @@ import { CSS } from '@dnd-kit/utilities';
 const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 
-export default function ProductItem({id, items, dispatch}){
+export default function ProductServiceItem({id, items, dispatch, proposalType}){
+
+    let typeProposal = proposalType !== 'SLA Proposal' && proposalType === 'Product Proposal' ? 'Item' : 'Service'
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -39,10 +41,10 @@ export default function ProductItem({id, items, dispatch}){
             <div className={styles['item-child-container']}>
                 <div className={`${styles['items-child']}`}>
                     <Input
-                        label='Item:'
+                        label={`${typeProposal}:`}
                         name='proposal_item'
                         type="text"
-                        placeholder='Item name...'
+                        placeholder={`${typeProposal} name...`}
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
@@ -59,7 +61,7 @@ export default function ProductItem({id, items, dispatch}){
                         name='item_base_price'
                         type='text'
                         width='small'
-                        placeholder='Item price...'
+                        placeholder={`${typeProposal} price...`}
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
@@ -71,7 +73,7 @@ export default function ProductItem({id, items, dispatch}){
                         }}
                     />
 
-                    <Input 
+                    {proposalType === 'Product Proposal' && (<Input 
                         label='Quantity:'
                         type='number'
                         width='xsmall'
@@ -87,7 +89,7 @@ export default function ProductItem({id, items, dispatch}){
                             })
                         }}
                     >
-                    </Input>
+                    </Input>)}
 
                     <Input
                         label='Total:'
@@ -119,7 +121,7 @@ export default function ProductItem({id, items, dispatch}){
                         name='item_description'
                         type="textarea"
                         width='full'
-                        placeholder='Enter item description here...'
+                        placeholder={`Enter ${typeProposal} description and notes here:`}
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
@@ -131,7 +133,7 @@ export default function ProductItem({id, items, dispatch}){
 
                     <div className={styles['items-inner-container']}>
                         <Input
-                            label='Item Discount Type:'
+                            label={`${typeProposal} discount type:`}
                             type='select'
                             values={[
                                 {id: 'None', name: 'No Discount'},

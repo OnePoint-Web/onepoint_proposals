@@ -12,12 +12,12 @@ export default function CreateProposalHead({dispatch}){
                     placeholder='Enter Proposal title here..'
                     onChange={(e) => {
                         dispatch({
-                            type: 'SET_FIELD',
-                            field: 'proposalTitle',
-                            value: e.target.value,
+                            type: 'UPDATE_PROPOSAL_FIELD',
+                            payload: {proposalTitle: e.target.value}
                         })
                     }}
                 />
+
             </div>
 
             <hr></hr>
@@ -37,20 +37,26 @@ export default function CreateProposalHead({dispatch}){
                      <Input
                         label='Client Type:'
                         type='select'
-                        onChange={(e) => {
-                            dispatch({
-                                type: 'SET_CLIENT_TYPE',
-                                payload: e.target.value,
-                            });
-                        }}
                         values={[
                             {id: 'Taxable', name: 'Taxable (+10% GST)'},
                             {id: 'Non-Taxable', name: 'Non-taxable'},
                         ]}
+                        onChange={(e) => {
+                           dispatch({
+                                type: 'SET_CLIENT_TYPE',
+                                payload: e.target.value
+                            })
+                        }}
                     />
+
                      <Input
                         label='Select Proposal Type:'
                         type='select'
+                        values={[
+                            {id: 'SLA Proposal', name: 'SLA Proposal'},
+                            {id: 'Service Proposal', name: 'Service Proposal'},
+                            {id: 'Product Proposal', name: 'Product Proposal'},
+                        ]}
                         onChange={(e) => {
                             dispatch({
                                 type: 'SET_PROPOSAL_TYPE',
@@ -58,11 +64,7 @@ export default function CreateProposalHead({dispatch}){
                             });
                         }}
 
-                        values={[
-                            {id: 'SLA Proposal', name: 'SLA Proposal'},
-                            {id: 'Service Proposal', name: 'Service Proposal'},
-                            {id: 'Product Proposal', name: 'Product Proposal'},
-                        ]}
+                        
                     />
             </div>
             

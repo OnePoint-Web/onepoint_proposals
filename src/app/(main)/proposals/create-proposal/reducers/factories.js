@@ -47,6 +47,7 @@ export const createItem = () => ({
 })
 
 export const createInitialProposal = ({ proposalType, clientType }) => {
+ 
   const base = {
     id: crypto.randomUUID(),
     clientId: '',
@@ -69,6 +70,12 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
     finalPrice: null,
     paymentTerms: '',
     timelines: [createTimeline()],
+
+    // These fields are for UI only. Will not be passed to database
+    subtotal: null,
+    totalItemDiscount: null,
+    baseAmount: null,
+    globalDiscountAmount: null,
   };
 
   if (proposalType === 'SLA Proposal') {
@@ -86,7 +93,6 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
   ) {
     return {
       ...base,
-      subTotal: null,
       isMultipleChoice: false,
       items: [createItem()],
     };

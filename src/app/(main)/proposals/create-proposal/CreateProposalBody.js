@@ -6,6 +6,7 @@ import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
 import PackageDealsSection from './components/PackageDealsSection.js'
 import ProposalItemSection from './components/ProposalItemSection'
 import TimelineSection from './components/TimelineSection'
+import PriceSection from './components/PriceSection'
 
 
 export default function CreateProposalBody({dispatch, proposalState}){
@@ -159,12 +160,12 @@ export default function CreateProposalBody({dispatch, proposalState}){
             <ProposalItemSection
                 items={proposalState.items}
                 dispatch={dispatch}
+                proposalType={proposalState.proposalType}
             />
 
             <hr></hr>
             </>
         )}
-
 
         {proposalState.proposalType === 'SLA Proposal' ? (
             <p>Package Description</p>
@@ -197,52 +198,12 @@ export default function CreateProposalBody({dispatch, proposalState}){
 
         <hr></hr>
 
-                <div className={styles['proposal-body-child']}>
-            
-            <div className={styles['child-container']}>
-                <p>Pricing and Tax</p>
-                <Input
-                label='Select Package' 
-                />
-
-                <Input
-                label='Subtotal (discount applied)' 
-                />
-
-                <Input
-                label='Subtotal + GST(10%)' 
-                />
-
-                <Input
-                label='Total' 
-                />
-            </div>
-
-            <hr></hr>
-
-            <div className={styles['child-container']}>
-                <p>Discount</p>
-
-                <Input
-                label='Discount Type' 
-                />
-
-                <Input
-                label='Discount Value' 
-                />
-
-                <Input
-                    label='Discount Description:'
-                    width='medium'
-                    type='textarea'
-                />
-
-
-                
-            </div>
-            
-        </div>
-
+       
+        <PriceSection
+            proposalState={proposalState}
+            dispatch={dispatch}
+            propsalType=''
+        />
 
         <hr></hr>
 

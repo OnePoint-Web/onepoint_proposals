@@ -1,13 +1,13 @@
 import styles from '../page.module.scss'
 import {useReducer} from 'react'
-import ProductItem from '@/components/ui/draggables/product-service/ProductItem.js'
+import ProductServiceItem from '@/components/ui/draggables/product-service/ProductServiceItem.js'
 import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemButton.js'
 
 import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core'
 
 
-export default function ProposalItemSection({items, dispatch}){
+export default function ProposalItemSection({items, dispatch, proposalType}){
 
 
     const addItem = () => {
@@ -30,17 +30,18 @@ export default function ProposalItemSection({items, dispatch}){
             <DndContext onDragEnd={handleDragEnd}>
                 <SortableContext items={items.map(i => i.id)}>
                     {items.map(item => (
-                        <ProductItem 
+                        <ProductServiceItem 
                             key={item.id} 
                             id={item.id}
                             dispatch={dispatch}
+                            items={items}
+                            proposalType={proposalType}
                         />
                     ))}
 
                 </SortableContext>
             </DndContext>
                 
-
             <AddItemButton 
                 addItem={addItem}
             />

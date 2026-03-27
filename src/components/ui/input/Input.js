@@ -16,6 +16,7 @@ export default function Input({
     hideLabel=false,
     weight,
     placeholder,
+    disabled = false,
 
     value, // optional
     width, // small, full, (leave blank for default size), medium
@@ -71,6 +72,7 @@ export default function Input({
                         id={name} 
                         placeholder={placeholder} 
                         {...rules}
+                        onChange={onChange}
                     />
 
                     {error && 
@@ -105,6 +107,8 @@ export default function Input({
                         placeholder={placeholder} 
                         onChange={onChange}
                         {...rules}
+                        disabled={disabled}
+                        {...(value !== undefined ? { value } : {})}
                     />
 
                     {error && 

@@ -162,7 +162,11 @@
          &:focus-visible{
                 outline: 1px solid red;
             }
-    }
+        }
+
+        &:disabled{
+            background-color: rgb(222, 222, 222);
+        }
     }
 
     input[type="number"]::-webkit-inner-spin-button,
