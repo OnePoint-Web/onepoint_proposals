@@ -9,7 +9,7 @@ import TimelineSection from './components/TimelineSection'
 import PriceSection from './components/PriceSection'
 
 
-export default function CreateProposalBody({dispatch, proposalState}){
+export default function CreateProposalBody({dispatch, proposalState, errors}){
     
     return(
 
@@ -46,6 +46,7 @@ export default function CreateProposalBody({dispatch, proposalState}){
                 <p>Proposal Solution Package:</p>
                 <Input
                 label='Select Package'
+                error={errors['proposalTitle']}
                 onChange={(e) => {
                 dispatch({
                     type: 'SET_FIELD',
@@ -97,6 +98,8 @@ export default function CreateProposalBody({dispatch, proposalState}){
                     <Input
                         label='Executive video URL:'
                         width='medium'
+                        error={errors.execVideoUrl}
+                        errorMessage={errors.execVideoUrl}
                         onChange={(e) =>
                             dispatch({
                                 type: 'SET_FIELD',
@@ -117,11 +120,11 @@ export default function CreateProposalBody({dispatch, proposalState}){
         <p>Goals and Objectives</p>
 
             <RichTextEditor
-            onChange={(e) => {
+            onChange={(html) => {
                 dispatch({
                     type: 'SET_FIELD',
                     field: 'gaolsAndObjectives',
-                    value: e.target.value
+                    value: html
                 })
             }}
             />
@@ -130,11 +133,11 @@ export default function CreateProposalBody({dispatch, proposalState}){
 
         <p>Proposed Solution</p>
             <RichTextEditor
-            onChange={(e) => {
+            onChange={(html) => {
                 dispatch({
                     type: 'SET_FIELD',
                     field: 'proposedSolution',
-                    value: e.target.value
+                    value: html
                 })
             }}
             />
@@ -149,6 +152,7 @@ export default function CreateProposalBody({dispatch, proposalState}){
             <PackageDealsSection
                 deals={proposalState.deals}
                 dispatch={dispatch}
+                errors={errors}
             />
 
             <hr></hr>
@@ -161,6 +165,7 @@ export default function CreateProposalBody({dispatch, proposalState}){
                 items={proposalState.items}
                 dispatch={dispatch}
                 proposalType={proposalState.proposalType}
+                errors={errors}
             />
 
             <hr></hr>
@@ -178,6 +183,8 @@ export default function CreateProposalBody({dispatch, proposalState}){
         <Input
             width='full'
             type='textarea'
+            error={errors.proposalDescription}
+            errorMessage={errors.proposalDescription}
             onChange={(e) => {
                 dispatch({
                     type: 'SET_FIELD',
@@ -194,6 +201,7 @@ export default function CreateProposalBody({dispatch, proposalState}){
             <TimelineSection
                 timelines={proposalState.timelines}
                 dispatch={dispatch}
+                errors={errors}
             />
 
         <hr></hr>
@@ -202,7 +210,7 @@ export default function CreateProposalBody({dispatch, proposalState}){
         <PriceSection
             proposalState={proposalState}
             dispatch={dispatch}
-            propsalType=''
+            errors={errors}
         />
 
         <hr></hr>
@@ -212,6 +220,8 @@ export default function CreateProposalBody({dispatch, proposalState}){
         <Input
             width='full'
             type='textarea'
+            error={errors.paymentTerms}
+            errorMessage={errors.paymentTerms}
             onChange={(e) => {
                 dispatch({
                     type: 'SET_FIELD',

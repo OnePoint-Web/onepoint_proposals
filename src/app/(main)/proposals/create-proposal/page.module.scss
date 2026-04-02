@@ -41,6 +41,37 @@
             grid-auto-flow: column;                /* fill rows first, then create new column */
             grid-auto-columns: auto;               /* automatic column width */
         }
+
+        &.pricing{
+            width: 100%;
+            max-width: 400px;
+            min-width: 200px;
+        }
+
+        table{  
+            width: 100%;
+            border-collapse: collapse;
+
+           
+
+            td{
+                width: fit-content;
+                border-bottom: 1px solid var(--field-stroke);
+                padding: 10px;
+
+                .cell-content{
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-between;
+                }
+            }
+            
+            .pricing-text, .pricing-values{
+                font-size: 13px;
+                font-weight: 500;
+            }
+        }
     }
 
     .video-container{
@@ -50,4 +81,12 @@
         border-radius: 4px;
         max-width: 500px;
     }
+}
+
+.proposal-submit-container{
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 10px;
 }

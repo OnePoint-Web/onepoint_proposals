@@ -23,9 +23,11 @@ export default function Input({
     size, /*sm, md, lg*/
 
     // values if form type = select
+    defaultValue,
     values, //format: {{id: '', name: ''}}
 
     min = 0, // minimum amount for number input
+    max,
 
     //react-hook-form
     rules,
@@ -91,9 +93,12 @@ export default function Input({
                     name={name}
                     error={error}
                     placeholder={placeholder}
+                    defaultValue={value}
                     errorMessage={errorMessage}
+                    disabled={disabled  }
                     min={min}
                     rules={rules}
+                    max={max}
                     onChange={onChange}
                 />
             ) : (
@@ -202,7 +207,7 @@ const SelectInput = ({name, values, placeholder, error, errorMessage, rules, onC
 }
 
 
-const NumberInput = ({name, error, value, errorMessage, rules, onChange, min}) => {
+const NumberInput = ({name, error, defaultValue, errorMessage, rules, onChange, min, max, disabled}) => {
   const inputRef = useRef(null)
   const rhfOnChange = rules?.onChange
 
@@ -221,13 +226,29 @@ const NumberInput = ({name, error, value, errorMessage, rules, onChange, min}) =
   }
 
   const getCurrentValue = () => {
-    const val = Number(inputRef.current?.value)
-    return isNaN(val) ? min : val
-  }
+        const val = Number(inputRef.current?.value)
+        return isNaN(val) ? min : val
+    }
 
-  const handleIncrement = () => emitChange(getCurrentValue() + 1)
-  const handleDecrement = () => emitChange(Math.max(min, getCurrentValue() - 1))
+    const handleIncrement = () => {
+    let newValue = getCurrentValue() + 1
 
+    if (max !== undefined) {
+        newValue = Math.min(newValue, max)
+    }
+
+    emitChange(newValue)
+    }
+
+    const handleDecrement = () => {
+    let newValue = getCurrentValue() - 1
+
+    if (min !== undefined) {
+        newValue = Math.max(newValue, min)
+    }
+
+  emitChange(newValue)
+}
   return (
     <div className={styles['input-wrapper']}>
       <input
@@ -236,11 +257,24 @@ const NumberInput = ({name, error, value, errorMessage, rules, onChange, min}) =
         type="number"
         name={name}
         min={min}
+        disabled={disabled}
+        max={max}
         defaultValue={min} // start at min if not set
         {...rules}
         onChange={(e) => {
-          if (rhfOnChange) rhfOnChange(e)
-          if (onChange) onChange(e)
+            let val = Number(e.target.value)
+
+            if (!isNaN(val)) {
+                if (min !== undefined) val = Math.max(val, min)
+                if (max !== undefined) val = Math.min(val, max)
+            }
+
+            const event = { target: { name, value: val } }
+
+            if (rhfOnChange) rhfOnChange(event)
+            if (onChange) onChange(event)
+
+            if (inputRef.current) inputRef.current.value = val
         }}
       />
 

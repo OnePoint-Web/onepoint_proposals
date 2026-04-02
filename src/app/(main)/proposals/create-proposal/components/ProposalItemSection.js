@@ -7,7 +7,7 @@ import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core'
 
 
-export default function ProposalItemSection({items, dispatch, proposalType}){
+export default function ProposalItemSection({items, dispatch, proposalType, errors}){
 
 
     const addItem = () => {
@@ -29,12 +29,14 @@ export default function ProposalItemSection({items, dispatch, proposalType}){
                         
             <DndContext onDragEnd={handleDragEnd}>
                 <SortableContext items={items.map(i => i.id)}>
-                    {items.map(item => (
+                    {items.map((item, index) => (
                         <ProductServiceItem 
                             key={item.id} 
                             id={item.id}
                             dispatch={dispatch}
                             items={items}
+                            errors={errors}
+                            index={index}
                             proposalType={proposalType}
                         />
                     ))}

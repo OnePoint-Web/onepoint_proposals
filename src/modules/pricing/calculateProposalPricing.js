@@ -5,15 +5,18 @@ export function calculateProposalPricing({
   discountValue,
   taxApplicable,
   taxRate,
-  basePrice
+  basePrice,
+
 }) {
+
+  console.log(basePrice, proposalType)
   let subtotal = 0
   let totalItemDiscount = 0
   let baseAmount = 0
 
   // STEP 1: Base amount
 
-  if (proposalType === 'SLA') {
+  if (proposalType === 'SLA Proposal') {
     subtotal = basePrice || 0
     baseAmount = subtotal
   } else {
@@ -42,6 +45,38 @@ export function calculateProposalPricing({
     baseAmount = subtotal - totalItemDiscount
   }
 
+  const totalEnteredItemDiscount = items.reduce((sum, item) => {
+    if (!item.discountValue) return sum
+
+    if (item.discountType === 'Percentage') {
+      const itemTotal = item.itemPrice * item.quantity
+      return sum + (itemTotal * (item.discountValue / 100))
+    }
+
+    if (item.discountType === 'Fixed') {
+      return sum + item.discountValue
+    }
+
+    return sum
+  }, 0)
+
+  const calculateTotalEnteredGlobalDiscount = () => {
+    if(discountType === 'Percentage'){
+      const totalEnteredAmount = baseAmount *( discountValue / 100);
+      return Number(totalEnteredAmount)
+    }
+
+    if(discountType === 'Fixed'){
+      return Number(discountValue)
+    }
+
+    return 0
+}
+
+const totalEnteredGlobalDiscount = calculateTotalEnteredGlobalDiscount();
+
+const totalDiscountAmount = totalEnteredGlobalDiscount + totalEnteredItemDiscount;
+
   // STEP 2: Global discount
 
   let globalDiscountAmount = 0
@@ -59,6 +94,9 @@ export function calculateProposalPricing({
 
   globalDiscountAmount = Math.min(baseAmount, globalDiscountAmount)
 
+  
+  const totalAppliedDiscount = Number(globalDiscountAmount + totalItemDiscount)
+
   const afterGlobalDiscount = Math.max(
     0,
     baseAmount - globalDiscountAmount
@@ -72,7 +110,7 @@ export function calculateProposalPricing({
       : 0
 
   const finalPrice = afterGlobalDiscount + taxAmount
-
+  
   return {
     subtotal,
     totalItemDiscount,
@@ -80,6 +118,12 @@ export function calculateProposalPricing({
     globalDiscountAmount,
     afterGlobalDiscount,
     taxAmount,
-    finalPrice
+    finalPrice,
+
+    totalEnteredItemDiscount,
+    totalEnteredGlobalDiscount,
+
+    totalDiscountAmount,
+    totalAppliedDiscount
   }
 }

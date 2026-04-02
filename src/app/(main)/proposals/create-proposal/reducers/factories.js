@@ -8,6 +8,12 @@ export const createDeal = () => ({
             
 })
 
+export const createDealItem = () => ({
+    id: crypto.randomUUID(),
+    entry: '',
+    order: null
+})
+
 export const createTimeline = () => (
     {
         id: crypto.randomUUID(),
@@ -17,12 +23,6 @@ export const createTimeline = () => (
         scopes: [createTimelineScope()]
     }
 )
-
-export const createDealItem = () => ({
-    id: crypto.randomUUID(),
-    entry: '',
-    order: null
-})
 
 export const createTimelineScope = () => ({
   id: crypto.randomUUID(),
@@ -34,7 +34,6 @@ export const createTimelineScope = () => ({
 export const createItem = () => ({
     id: crypto.randomUUID(),
     item: '',
-    itemImageUR: '',
     itemPrice: '',
     quantity: 1,
     totalPrice: null,
@@ -63,26 +62,31 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
     discountValue: null,
     discountDescription: '',
     taxableAmount: '',
-    taxApplicable: '',
-    taxRate: '',
-    taxAmount: '',
+    taxApplicable: true,
+    taxRate: 10,
+    taxAmount: null,
     taxReason: '',
     finalPrice: null,
     paymentTerms: '',
     timelines: [createTimeline()],
 
     // These fields are for UI only. Will not be passed to database
-    subtotal: null,
-    totalItemDiscount: null,
-    baseAmount: null,
-    globalDiscountAmount: null,
+    subtotal: null, //proposal subtotla/base price (depending if SLA or service/product proposal)
+    totalItemDiscount: null, //total APPLIED discount, not total discount amount
+    baseAmount: null, //base amount of SLA proposal/ base total price of items in service/product proposal
+    globalDiscountAmount: null, //applied global discount amount 
+    totalEnteredItemDiscount: null, //the total entered item discount amount 
+    totalEnteredGlobalDiscount: null, //total entered global discount amount
+    totalDiscountAmount: null,
+    totalAppliedDiscount: null,
+    validationErrors: {}
   };
 
   if (proposalType === 'SLA Proposal') {
     return {
       ...base,
       selectedPackage: '',
-      basePrice: null,
+      basePrice: 0,
       deals: [createDeal()],
     };
   }

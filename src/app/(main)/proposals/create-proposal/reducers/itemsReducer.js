@@ -46,17 +46,18 @@ export function itemsReducer(items = [], action) {
       return items.map(item => {
         if (item.id !== action.payload.itemId) return item
 
-        const updatedItem = {
-          ...item,
-          ...action.payload.data
-        }
+        let updatedItem = { ...item, ...action.payload.data }
 
+        // business rules for discounts
+        const type = (updatedItem.discountType || '').toLowerCase()
+        if (type === 'none') updatedItem.discountValue = 0
+        if (type === 'percentage') updatedItem.discountValue = Math.min(updatedItem.discountValue || 0, 100)
+        if (type === 'fixed') updatedItem.discountValue = Math.max(updatedItem.discountValue || 0, 0)
+
+        // calculate totals
         const totals = calculateTotals(updatedItem)
 
-        return {
-          ...updatedItem,
-          ...totals
-        }
+        return { ...updatedItem, ...totals }
     })
 
     case 'DELETE_PRODUCT_ITEM': {

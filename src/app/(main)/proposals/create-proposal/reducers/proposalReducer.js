@@ -49,28 +49,50 @@ export function proposalReducer(state, action) {
       };
     }
 
-    default:
-      const updatedItems =
-        state.proposalType === 'Product Proposal' || state.proposalType === 'Service Proposal'
-          ? itemsReducer(state.items, action)
-          : state.items
+    case 'SET_VALIDATION_ERRORS':
+      return {
+        ...state,
+        validationErrors: action.payload
+      }
+
+    case 'CLEAR_VALIDATION_ERRORS':
+      return {
+        ...state,
+        validationErrors: {}
+      }
+
+    default: {
+    const isItemProposal =
+      state.proposalType === 'Product Proposal' ||
+      state.proposalType === 'Service Proposal'
+
+      const isSLA = state.proposalType === 'SLA Proposal'
+
+      const updatedItems = isItemProposal
+        ? itemsReducer(state.items || [], action)
+        : undefined
+
+      const updatedDeals = isSLA
+        ? dealsReducer(state.deals || [], action)
+        : undefined
 
       const newState = {
         ...state,
-        items: updatedItems,
-        deals:
-          state.proposalType === 'SLA Proposal'
-            ? dealsReducer(state.deals, action)
-            : state.deals,
+        ...(isItemProposal && { items: updatedItems }),
+        ...(isSLA && { deals: updatedDeals }),
         timelines: timelineReducer(state.timelines, action),
       }
-      
-      const needsPricingUpdate = updatedItems !== state.items
+
+      const needsPricingUpdate =
+        updatedItems !== state.items ||
+        updatedDeals !== state.deals ||
+        newState.basePrice !== state.basePrice
 
       if (needsPricingUpdate) {
         return { ...newState, ...calculateProposalPricing(newState) }
       }
 
       return newState
+    }
   }
 }
