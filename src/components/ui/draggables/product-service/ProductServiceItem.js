@@ -11,6 +11,11 @@ const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 
 export default function ProductServiceItem({id, items, dispatch, proposalType, index, errors}){
+
+    function roundToTwo(num) {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+    }
+
     const currentItem = items.find(i => i.id === id) || {}
 
     const getDiscountConfig = () => {
@@ -77,7 +82,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                     <Input
                         label='Price:'
                         name='item_base_price'
-                        type='text'
+                        type='number'
                         width='small'
                         error={errors[`items.${index}.itemPrice`]}
                         errorMessage={errors[`items.${index}.itemPrice`]}
@@ -87,7 +92,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                                 type: 'UPDATE_PRODUCT_ITEM',
                                 payload: { 
                                     itemId: id, 
-                                    data: {itemPrice: e.target.value} 
+                                    data: {itemPrice: roundToTwo(e.target.value)} 
                                 }
                             })
                         }}
@@ -179,7 +184,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         />
 
                         <Input
-                        key={currentItem.discountType + id}
+                            key={currentItem.discountType + id}
                             label='Discount amount:'
                             type='number'
                             width='small'
@@ -198,10 +203,12 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         />
 
                         <Input
+                            key={currentItem.discountType + '3' + id}
                             label='Discount reason:'
                             type='text'
                             width='full'
                             placeholder='Voucher, promo, sale...'
+                            disabled={discountConf.disabled}
                             onChange={(e) => {
                                 dispatch({
                                     type: 'UPDATE_PRODUCT_ITEM',

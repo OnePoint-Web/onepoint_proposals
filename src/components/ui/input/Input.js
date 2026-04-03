@@ -71,6 +71,7 @@ export default function Input({
                     className={styles[error]}
                         type={type} 
                         name={name} 
+                        disabled={disabled  }
                         id={name} 
                         placeholder={placeholder} 
                         {...rules}

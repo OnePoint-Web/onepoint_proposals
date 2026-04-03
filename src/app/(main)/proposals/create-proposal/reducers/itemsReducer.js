@@ -7,6 +7,10 @@ const recalcOrder = (list, field) =>
     [field]: index + 1
   }))
 
+function roundToTwo(num) {
+return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+  
 const calculateTotals = (item) => {
   const price = Number(item.itemPrice) || 0
   const qty = Number(item.quantity) || 0
@@ -23,8 +27,8 @@ const calculateTotals = (item) => {
   }
 
   return {
-    totalPrice: subtotal,
-    discountedTotal: discountedTotal >= 0 ? discountedTotal : 0
+    totalPrice: roundToTwo(subtotal),
+    discountedTotal: discountedTotal >= 0 ? roundToTwo(discountedTotal) : 0
   }
 }
 

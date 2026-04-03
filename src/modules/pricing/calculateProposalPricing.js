@@ -1,3 +1,7 @@
+function roundToTwo(num) {
+  return Math.round((num + Number.EPSILON) * 100) / 100;
+}
+
 export function calculateProposalPricing({
   proposalType,
   items = [],
@@ -112,18 +116,18 @@ const totalDiscountAmount = totalEnteredGlobalDiscount + totalEnteredItemDiscoun
   const finalPrice = afterGlobalDiscount + taxAmount
   
   return {
-    subtotal,
-    totalItemDiscount,
-    baseAmount, //price after item discounts  
-    globalDiscountAmount,
-    afterGlobalDiscount,
-    taxAmount,
-    finalPrice,
+  subtotal: roundToTwo(subtotal),
+  totalItemDiscount: roundToTwo(totalItemDiscount),
+  baseAmount: roundToTwo(baseAmount),
+  globalDiscountAmount: roundToTwo(globalDiscountAmount),
+  afterGlobalDiscount: roundToTwo(afterGlobalDiscount),
+  taxAmount: roundToTwo(taxAmount),
+  finalPrice: roundToTwo(finalPrice),
 
-    totalEnteredItemDiscount,
-    totalEnteredGlobalDiscount,
+  totalEnteredItemDiscount: roundToTwo(totalEnteredItemDiscount),
+  totalEnteredGlobalDiscount: roundToTwo(totalEnteredGlobalDiscount),
 
-    totalDiscountAmount,
-    totalAppliedDiscount
+  totalDiscountAmount: roundToTwo(totalDiscountAmount),
+  totalAppliedDiscount: roundToTwo(totalAppliedDiscount)
   }
 }

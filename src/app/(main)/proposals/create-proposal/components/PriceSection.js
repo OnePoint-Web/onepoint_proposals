@@ -3,6 +3,21 @@ import Input from '@/components/ui/input/Input'
 
 export default function PriceSection({dispatch, proposalState}){
 
+    const getDiscountConfig = () => {
+        switch (proposalState.discountType) {
+            case 'None':
+                return { disabled: true, max: 0 }
+            case 'Percentage':
+                return { disabled: false, max: 100 }
+            case 'Fixed':
+                return { disabled: false, max: undefined }
+            default:
+                return { disabled: true, max: 0 }
+        }
+    }
+
+    const discountConf = getDiscountConfig()
+
     return(
          <div className={styles['proposal-body-child']}>
             
@@ -136,8 +151,13 @@ export default function PriceSection({dispatch, proposalState}){
                 />
 
                 <Input
+                key={proposalState.discountType + proposalState.id}
                 label='Discount Value' 
                 placeholder='0'
+                type='number'
+                defaultValue={proposalState.discountAmount ?? 0}
+                disabled={discountConf.disabled}
+                max={discountConf.max}
                 onChange={(e) => {
                     dispatch({
                         type: "UPDATE_PROPOSAL_FIELD",
@@ -147,9 +167,11 @@ export default function PriceSection({dispatch, proposalState}){
                 />
 
                 <Input
+                    key={proposalState.discountType}
                     label='Discount Description:'
                     width='medium'
                     type='textarea'
+                    disabled={discountConf.disabled}
                     placeholder='Voucher, promo, sale...'
                     onChange={(e) => {
                         dispatch({

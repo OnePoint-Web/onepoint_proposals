@@ -37,16 +37,19 @@ export function proposalReducer(state, action) {
       ...createInitialProposal({ proposalType: action.payload, clientType: state.clientType }),
       proposalTitle: state.proposalTitle,
       executiveSummary: state.executiveSummary,
+      
     };
 
     case 'SET_CLIENT_TYPE': {
       const nonTaxable = action.payload === 'Non-Taxable';
-      return {
+      const newState = {
         ...state,
         clientType: action.payload,
         taxApplicable: !nonTaxable,
         taxRate: !nonTaxable ? 10 : 0
       };
+
+      return { ...newState, ...calculateProposalPricing(newState) }
     }
 
     case 'SET_VALIDATION_ERRORS':
