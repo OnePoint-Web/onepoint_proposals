@@ -32,6 +32,19 @@ export function proposalReducer(state, action) {
       return newState
     }
 
+    case 'TOGGLE_TEAM_MEMBER': {
+    const id = action.payload;
+
+    const exists = state.selectedTeamMembers.includes(id);
+
+    return {
+      ...state,
+      selectedTeamMembers: exists
+        ? state.selectedTeamMembers.filter(memberId => memberId !== id)
+        : [...state.selectedTeamMembers, id]
+    };
+  }
+
     case 'SET_PROPOSAL_TYPE':
       return {
       ...createInitialProposal({ proposalType: action.payload, clientType: state.clientType }),

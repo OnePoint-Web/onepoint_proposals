@@ -53,6 +53,7 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
     clientType,
     proposalTitle: '',
     proposalType,
+    proposalPackage: '',
     executiveSummary: '',
     goalsAndObjectives: '',
     execVideoUrl: '',
@@ -68,6 +69,7 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
     taxReason: '',
     finalPrice: null,
     paymentTerms: '',
+    selectedTeamMembers: [],
     timelines: [createTimeline()],
 
     // These fields are for UI only. Will not be passed to database
@@ -85,7 +87,7 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
   if (proposalType === 'SLA Proposal') {
     return {
       ...base,
-      selectedPackage: '',
+      proposalPackage: '',
       basePrice: 0,
       deals: [createDeal()],
     };

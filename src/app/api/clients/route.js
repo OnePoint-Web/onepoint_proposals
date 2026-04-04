@@ -106,9 +106,8 @@ export async function GET(req){
                 userEmail: true,
                 accountStatus: true,
                 dateCreated: true,
-                    include: {
-                        clientProfile: true,
-                    },
+                clientProfiles: true,
+                    
             }     
         })
 

@@ -60,6 +60,7 @@ const baseProposalSchema = z.object({
     clientId: z.string().min(1, 'Client is required'),
     clientType: z.string().min(1),
     proposalTitle: z.string().min(1, 'Title is required'),
+    proposalPackage: z.string().min(1, 'Proposal package is required'),
     executiveSummary: z.string().optional(),
     goalsAndObjectives: z.string().optional(),
     execVideoUrl: z.union([

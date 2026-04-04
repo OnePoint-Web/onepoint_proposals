@@ -1,5 +1,5 @@
 'use client'
-import { z } from 'zod'
+import { date, z } from 'zod'
 import styles from './page.module.scss'
 import Container from '@/components/layout/Container/Container'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout'
@@ -17,6 +17,7 @@ import { proposalSchema } from '@/schemas/proposal/createProposal.schema'
 export default function CreateProposal(){
 
     const [proposalState, dispatch] = useReducer(proposalReducer, null);
+
 
     useEffect(() => {
         dispatch({
@@ -92,6 +93,7 @@ export default function CreateProposal(){
             <CreateProposalHead 
             dispatch={dispatch}
             errors={proposalState.validationErrors}
+            proposalState={proposalState}
             />
 
             <Container>

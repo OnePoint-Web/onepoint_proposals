@@ -1,7 +1,24 @@
 import Container from '@/components/layout/Container/Container'
+import ComboBox from '@/components/ui/combobox/ComboBox'
 import Input from '@/components/ui/input/Input'
 import styles from './CreateProposalHead.module.scss'
-export default function CreateProposalHead({dispatch, errors}){
+import {useState, useEffect} from 'react'
+export default function CreateProposalHead({proposalState, dispatch, errors}){
+    const [options, setOptions] = useState([])
+
+    useEffect(() => {
+            fetch("/api/clients")
+            .then(res => res.json())
+            .then(data => {
+                const clientOptions = data.map(user => ({
+                    id: user.userId,
+                    name: user.firstName + ' ' + user.lastName,
+                }))
+            setOptions(clientOptions)
+            })
+            
+        }, [])
+
     return(
         <Container fit='fullwidth'>
             <div className={styles['proposal-head']}>
@@ -25,15 +42,17 @@ export default function CreateProposalHead({dispatch, errors}){
             <hr></hr>
 
             <div className={styles['head-container']}>
-                    <Input
+                    <ComboBox
+                        placeholder='Select Client..'
                         label='Select Client:'
                         error={errors.clientId}
+                        options={options}
+                        value={proposalState.clientId}
                         errorMessage={errors.clientId}
-                        onChange={(e) => {
+                        onSelect={(value) => {
                             dispatch({
-                                type: 'SET_FIELD',
-                                field: 'clientId',
-                                value: e.target.value,
+                                type: 'UPDATE_PROPOSAL_FIELD',
+                                payload: {clientId: value},
                             })
                         }}
                     />

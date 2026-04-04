@@ -7,12 +7,30 @@ import PackageDealsSection from './components/PackageDealsSection.js'
 import ProposalItemSection from './components/ProposalItemSection'
 import TimelineSection from './components/TimelineSection'
 import PriceSection from './components/PriceSection'
+import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
 
+import {useEffect, useState} from 'react'
 
 export default function CreateProposalBody({dispatch, proposalState, errors}){
-    
-    return(
 
+    const [members, setMembers] = useState([])
+
+    useEffect(() => {
+        fetch('/api/members')
+        .then(res => res.json())
+        .then(data => {
+            const membersOptions = data.map(member => ({
+                id: member.memberId,
+                name: member.memberName,
+                role: member.memberRole,
+                memberImage: member.memberImage,
+                description: member.description
+            }))
+            setMembers(membersOptions)
+        })
+    }, [])
+
+    return(
         <div className={styles['create-proposal-body']}>
 
         {proposalState.proposalType === 'SLA Proposal' && (
@@ -43,15 +61,15 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
         {proposalState.proposalType === 'SLA Proposal' && (
             <>
             <div className={styles['child-container']}>
-                <p>Proposal Solution Package:</p>
+                <p>Proposal Package:</p>
                 <Input
                 label='Select Package'
-                error={errors['proposalTitle']}
+                error={errors['proposalPackage']}
+                errorMessage={errors.proposalPackage}
                 onChange={(e) => {
                 dispatch({
-                    type: 'SET_FIELD',
-                    field: 'packageType',
-                    value: e.target.value
+                    type: 'UPDATE_PROPOSAL_FIELD',
+                    payload: {packageType: e.target.value},
                 })
             }} 
                 />
@@ -66,13 +84,21 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
                 <p>Team (leave blank if not applicable)</p>
 
                 <div className={styles['team-selection-container']}> 
-                    <Checkbox label='hellafasevsrbo'/>
-                    <Checkbox label='hello'/>
-                    <Checkbox label='hello'/>
-                    <Checkbox label='hello'/>
-                    <Checkbox label='hello'/>
-                    <Checkbox label='hello'/>
-                    <Checkbox label='hello'/>
+                    {
+                        members.map(member => (
+                             <Checkbox key={member.id} 
+                             label={member.name}
+                             checked={proposalState.selectedTeamMembers.includes(member.id)}
+                             onChange={() =>
+                                dispatch({
+                                type: 'TOGGLE_TEAM_MEMBER',
+                                payload: member.id
+                                })
+                            }
+                             />
+                        ))
+                    }
+        
                 </div>
                 
             </div>
@@ -86,9 +112,9 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
             <RichTextEditor
                 onChange={(html) => {
                 dispatch({
-                    type: 'SET_FIELD',
-                    field: 'executiveSummary',
-                    value: html
+                    type: 'UPDATE_PROPOSAL_FIELD',
+                    payload: {executiveSummary: html},
+                   
                 })
             }}
             />
@@ -98,20 +124,20 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
                     <Input
                         label='Executive video URL:'
                         width='medium'
+                        placeholder='Enter video url here..'
                         error={errors.execVideoUrl}
                         errorMessage={errors.execVideoUrl}
                         onChange={(e) =>
                             dispatch({
-                                type: 'SET_FIELD',
-                                field: 'execVideoUrl',
-                                value: e.target.value
+                                type: 'UPDATE_PROPOSAL_FIELD',
+                                payload: {execVideoUrl:  e.target.value},
                             })
                         }
                     />
                 
-                    <div className={styles['video-container']}>
-                        
-                    </div>
+                    <VideoPlayer
+                        url={proposalState.execVideoUrl}
+                    />
                 
             </div>
             
@@ -122,9 +148,8 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
             <RichTextEditor
             onChange={(html) => {
                 dispatch({
-                    type: 'SET_FIELD',
-                    field: 'gaolsAndObjectives',
-                    value: html
+                    type: 'UPDATE_PROPOSAL_FIELD',
+                    payload: {gaolsAndObjectives:  html},
                 })
             }}
             />
@@ -135,9 +160,8 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
             <RichTextEditor
             onChange={(html) => {
                 dispatch({
-                    type: 'SET_FIELD',
-                    field: 'proposedSolution',
-                    value: html
+                    type: 'UPDATE_PROPOSAL_FIELD',
+                    payload: {proposedSolution:  html},
                 })
             }}
             />
@@ -187,9 +211,8 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
             errorMessage={errors.proposalDescription}
             onChange={(e) => {
                 dispatch({
-                    type: 'SET_FIELD',
-                    field: 'proposalDescription',
-                    value: e.target.value
+                    type: 'UPDATE_PROPOSAL_FIELD',
+                    payload: {proposalDescription:  e.target.value},
                 })
             }}
         />
@@ -224,9 +247,8 @@ export default function CreateProposalBody({dispatch, proposalState, errors}){
             errorMessage={errors.paymentTerms}
             onChange={(e) => {
                 dispatch({
-                    type: 'SET_FIELD',
-                    field: 'paymentTerms',
-                    value: e.target.value
+                    type: 'UPDATE_PROPOSAL_FIELD',
+                    payload: {paymentTerms: e.target.value}
                 })
             }}
         />

@@ -56,3 +56,33 @@ export async function POST(req) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }
+
+export async function GET(req){
+    try{
+
+        const member = await prisma.teamMember.findMany({
+            where: {
+                isActive: true,
+            },
+            select: {
+                memberId: true,
+                memberName: true,
+                memberRole: true,
+                memberImage: true,
+                description: true,
+                isActive: true,
+                dateCreated: true,
+                dateUpdated: true,
+                    
+            }     
+        })
+
+        return NextResponse.json(member)
+
+    }catch(err){
+        return NextResponse.json(
+            {error: "Failed to fetch members"},
+            {status: 500}
+        )
+    }
+}
