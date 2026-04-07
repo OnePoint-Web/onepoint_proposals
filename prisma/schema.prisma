@@ -159,7 +159,7 @@ model TimelineScopeItem {
 model SlaOffer {
   slaOfferId Int @id @default(autoincrement())
   proposalId Int
-  selectedPackageId Int
+  slaPackage String
   basePrice Decimal @db.Decimal(10, 2)
   discountType String
   discountValue Decimal? @db.Decimal(10, 2)
@@ -176,20 +176,18 @@ model SlaOffer {
   packageDealItem PackageDealItem[]
 
   proposal Proposal @relation(fields: [proposalId], references: proposalId)
-  package Package @relation(fields: [selectedPackageId], references: packageId)
 }
 
 model Package{
   packageId Int @id @default(autoincrement())
   package String @unique
   description String
-  proposedSolution String @db.LongText
+  proposedSolution String? @db.LongText
   basePrice Decimal @db.Decimal(10, 2)
   isActive Boolean @default(true)
   dateCreated DateTime @default(now())
   dateUpdated DateTime? @updatedAt
 
-  slaOffers SlaOffer[]
   dealItems DealItem[]
 }
 
@@ -198,6 +196,7 @@ model DealItem {
   packageId Int
   dealItem String
   itemType String
+  displayOrder Int
   dateCreated DateTime @default(now())
 
   dealEntries DealEntry[]
