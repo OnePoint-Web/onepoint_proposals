@@ -69,9 +69,13 @@ export default function Input({
                 <div className={`${styles['input-wrapper']}`}>
                     <textarea 
                     className={styles[error]}
+                        {...(value !== undefined
+                            ? { value }       // controlled input
+                            : { defaultValue: defaultValue || '' } // uncontrolled input
+                        )}
                         type={type} 
                         name={name} 
-                        disabled={disabled  }
+                        disabled={disabled }
                         id={name} 
                         placeholder={placeholder} 
                         {...rules}
@@ -94,11 +98,12 @@ export default function Input({
                     name={name}
                     error={error}
                     placeholder={placeholder}
-                    defaultValue={value}
                     errorMessage={errorMessage}
                     disabled={disabled  }
                     min={min}
                     rules={rules}
+                    value={value}
+                    defaultValue={defaultValue}
                     max={max}
                     onChange={onChange}
                 />
@@ -208,7 +213,7 @@ const SelectInput = ({name, values, placeholder, error, errorMessage, rules, onC
 }
 
 
-const NumberInput = ({name, error, defaultValue, errorMessage, rules, onChange, min, max, disabled}) => {
+const NumberInput = ({name, error, defaultValue, errorMessage, rules, onChange, min, max, disabled, value}) => {
   const inputRef = useRef(null)
   const rhfOnChange = rules?.onChange
 
@@ -260,7 +265,10 @@ const NumberInput = ({name, error, defaultValue, errorMessage, rules, onChange, 
         min={min}
         disabled={disabled}
         max={max}
-        defaultValue={min} // start at min if not set
+        {...(value !== undefined
+            ? { value }       // controlled input
+            : { defaultValue: min ?? 0 } // uncontrolled input
+        )}
         {...rules}
         onChange={(e) => {
             let val = Number(e.target.value)

@@ -4,15 +4,17 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 
-
 import styles from './RichTextEditor.module.scss'
 import MenuBar from './menu-bar/MenuBar.js'
 
+import { useEffect, useRef } from 'react'
 
-export default function Tiptap({onChange}){
+export default function Tiptap({ onChange, value }) {
+    const lastValueRef = useRef('')
+
     const editor = useEditor({
         extensions: [StarterKit],
-        content: '<p>Type here...</p>',
+        content: value || '',
         immediatelyRender: false,
         editorProps: {
             attributes: {
@@ -20,16 +22,28 @@ export default function Tiptap({onChange}){
             }
         },
         onUpdate({ editor }) {
-            if (onChange) {
-                onChange(editor.getHTML());
+            const html = editor.getHTML()
+
+            if (html !== lastValueRef.current) {
+                lastValueRef.current = html
+                onChange?.(html)
             }
-        },
+        }
     })
 
-    return(
+    useEffect(() => {
+        if (!editor) return
+
+        if (value === lastValueRef.current) return
+
+        lastValueRef.current = value || ''
+        editor.commands.setContent(value || '', false)
+    }, [value, editor])
+
+    return (
         <div className={styles['editor-container']}>
-            <MenuBar editor={editor}/>
-            <EditorContent editor={editor}/>
+            <MenuBar editor={editor} />
+            <EditorContent editor={editor} />
         </div>
-    ) 
+    )
 }

@@ -16,31 +16,37 @@ export default function MenuBar({editor}){
     return(
         <div className={styles['menubar-container']}>
             <button
+            type='button'
             onClick={() => editor.chain().focus().toggleBold().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             ><BoldIcon/></button>
 
             <button
+            type='button'
             onClick={() => editor.chain().focus().toggleItalic().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             ><ItalicIcon/></button>
 
             <button
+            type='button'
             onClick={() => editor.chain().focus().toggleUnderline().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             ><UnderlineIcon/></button>
 
             <button
+            type='button'
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             >LI</button>
 
             <button
+            type='button'
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             ><UnorderedList/></button>
 
              <button
+            type='button'
             onClick={() => editor.chain().focus().toggleOrderedList().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             ><OrderedList/></button>

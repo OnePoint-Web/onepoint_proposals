@@ -66,7 +66,7 @@ export default function Sidebar(){
                         List Packages
                     </Link>
 
-                    <Link href='/packages/add-package' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/packages/add-package' ? styles.active : ''}`}>
+                    <Link href='/packages/create-package' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/packages/add-package' ? styles.active : ''}`}>
                         Add New Package
                     </Link>
 

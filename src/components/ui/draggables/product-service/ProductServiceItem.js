@@ -84,6 +84,8 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         name='item_base_price'
                         type='number'
                         width='small'
+                        min={0}
+                        value={item.itemPrice || 0}
                         error={errors[`items.${index}.itemPrice`]}
                         errorMessage={errors[`items.${index}.itemPrice`]}
                         placeholder={`${typeProposal} price...`}
@@ -189,7 +191,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                             type='number'
                             width='small'
                             placeholder='0'
-                            defaultValue={currentItem.discountAmount ?? 0}
+                            value={currentItem.discountValue ?? 0}
                             min={0}
                             disabled={discountConf.disabled}
                             max={discountConf.max}
