@@ -1,0 +1,72 @@
+.package-card{
+    flex: 1 1 350px;
+    max-width: 350px;
+    min-width: 200px;
+    min-height: 200px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--field-stroke);
+    border-radius: 8px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 5px;
+    color: var(--text-strong);
+    transition: all 0.1s ease-in-out;
+
+    &:hover{
+        scale: 1.01;
+    }
+
+    .details{
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    h4{
+        font-size: var(--fs-lg);
+        font-weight: 600;
+    }
+
+    .price{
+        font-size: var(--fs-md);
+        font-weight: 500;
+    }
+
+    .description{
+        font-size: var(--fs-xs);
+        font-weight: 400;
+    }
+
+    .buttons{
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        gap: 16px;
+        justify-content: flex-end;
+        padding: 4px;
+        border-radius: 5px;
+
+        .card-btn{
+            padding: 5px;
+            border-radius: 5px;
+            border: none;
+            background-color: var(--field-fill);
+            color: var(--text-strong);
+            font-size: var(--fs-xs);
+            font-weight: 500;
+            font-family: var(--font-montserrat);
+            transition: all 0.1s ease-in-out;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+
+            &:hover{
+                background-color: rgb(216, 216, 216);
+            }
+        }
+    }
+}
