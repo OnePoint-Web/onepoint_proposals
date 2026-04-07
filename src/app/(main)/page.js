@@ -2,8 +2,6 @@ import {cookies} from 'next/headers'
 import {redirect} from 'next/navigation'
 import {jwtVerify} from 'jose'
 
-
-// Redirect path "/": Authenticates user login and decide where to redirect in client side
 export default async function Home() {
 
   const cookieStore = await cookies()

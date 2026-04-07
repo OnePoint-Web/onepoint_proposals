@@ -54,6 +54,7 @@ export default function PriceSection({dispatch, proposalState}){
                                     <Input
                                         label='SLA Package Price:'
                                         placeholder='Enter price...'   
+                                        value={proposalState.basePrice ?? 0}
                                         type='number' 
                                         onChange={(e) => {
                                         dispatch({
@@ -145,7 +146,7 @@ export default function PriceSection({dispatch, proposalState}){
                 onChange={(e) => {
                     dispatch({
                         type: "UPDATE_PROPOSAL_FIELD",
-                        payload: {discountType: e.target.value}
+                        payload: {discountType: e.target.value, discountValue: 0}
                     })
                 }}
                 />
@@ -155,7 +156,7 @@ export default function PriceSection({dispatch, proposalState}){
                 label='Discount Value' 
                 placeholder='0'
                 type='number'
-                defaultValue={proposalState.discountAmount ?? 0}
+                value={proposalState.discountValue ?? 0}
                 disabled={discountConf.disabled}
                 max={discountConf.max}
                 onChange={(e) => {

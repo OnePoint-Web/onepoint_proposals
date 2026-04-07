@@ -32,6 +32,23 @@ export function proposalReducer(state, action) {
       return newState
     }
 
+    case 'SELECT_PACKAGE': {
+      const pkg = action.payload
+      
+      const newState = {
+          ...state,
+          packageType: pkg.title,
+          proposalDescription: pkg.description,
+          proposedSolution: pkg.solution,
+          basePrice: pkg.price
+      }
+
+      return {
+          ...newState,
+          ...calculateProposalPricing(newState)
+      }
+  }
+
     case 'TOGGLE_TEAM_MEMBER': {
     const id = action.payload;
 

@@ -9,7 +9,7 @@ export default function Dashboard(){
 
     const {user, onLogout} = useAuth()
 
-    const {isAccessible} = useAuthAccess(1)
+    const {isAccessible} = useAuthAccess(2)
 
     return (
         <ChildLayout>

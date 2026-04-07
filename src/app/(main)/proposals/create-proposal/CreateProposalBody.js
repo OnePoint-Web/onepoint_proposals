@@ -1,258 +1,294 @@
-'use client'
-import styles from './page.module.scss'
-import Input from '@/components/ui/input/Input'
-import Checkbox from '@/components/ui/checkbox/Checkbox'
-import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
-import PackageDealsSection from './components/PackageDealsSection.js'
-import ProposalItemSection from './components/ProposalItemSection'
-import TimelineSection from './components/TimelineSection'
-import PriceSection from './components/PriceSection'
-import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
+    'use client'
+    import styles from './page.module.scss'
+    import Input from '@/components/ui/input/Input'
+    import Checkbox from '@/components/ui/checkbox/Checkbox'
+    import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
+    import PackageDealsSection from './components/PackageDealsSection.js'
+    import ProposalItemSection from './components/ProposalItemSection'
+    import TimelineSection from './components/TimelineSection'
+    import PriceSection from './components/PriceSection'
+    import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
 
-import {useEffect, useState} from 'react'
+    import {useEffect, useState} from 'react'
 
-export default function CreateProposalBody({dispatch, proposalState, errors}){
+    export default function CreateProposalBody({dispatch, proposalState, errors}){
 
-    const [members, setMembers] = useState([])
+        const [members, setMembers] = useState([])
+        const [packages, setPackages] = useState([])
+        const [packagesSelect, setPackagesSelect] = useState([])
 
-    useEffect(() => {
-        fetch('/api/members')
-        .then(res => res.json())
-        .then(data => {
-            const membersOptions = data.map(member => ({
-                id: member.memberId,
-                name: member.memberName,
-                role: member.memberRole,
-                memberImage: member.memberImage,
-                description: member.description
-            }))
-            setMembers(membersOptions)
-        })
-    }, [])
+        useEffect(() => {
+            fetch('/api/members')
+            .then(res => res.json())
+            .then(data => {
+                const membersOptions = data.map(member => ({
+                    id: member.memberId,
+                    name: member.memberName,
+                    role: member.memberRole,
+                    memberImage: member.memberImage,
+                    description: member.description
+                }))
+                setMembers(membersOptions)
+            })
+        }, [])
 
-    return(
-        <div className={styles['create-proposal-body']}>
+        useEffect(() => {
+            fetch('/api/packages')
+            .then(res => res.json())
+            .then(data => {
+                const  packagesOptions = data.map(item => ({
+                    id: item.packageId,
+                    title: item.package,
+                    description: item.description,
+                    solution: item.proposedSolution,
+                    price: item.basePrice
+                }))
+                console.log('Packages:' + packagesOptions)
+                setPackages(packagesOptions)
+            })
 
-        {proposalState.proposalType === 'SLA Proposal' && (
-            <h3>
-                Service Level Agreement Proposal
-            </h3>
-        )}
+            
+        }, [])
 
-        {proposalState.proposalType === 'Service Proposal' && (
-            <h3>
-                Service Proposal
-            </h3>
-        )}
+        const selectPackages = packages.map(item => (
+            {
+            id: item.id,
+            name: item.title
+            }
+        ))
 
-        {proposalState.proposalType === 'Product Proposal' && (
-            <h3>
-                Product Proposal
-            </h3>
-        )}
+        
+
+        return(
+            <div className={styles['create-proposal-body']}>
+
+            {proposalState.proposalType === 'SLA Proposal' && (
+                <h3>
+                    Service Level Agreement Proposal
+                </h3>
+            )}
+
+            {proposalState.proposalType === 'Service Proposal' && (
+                <h3>
+                    Service Proposal
+                </h3>
+            )}
+
+            {proposalState.proposalType === 'Product Proposal' && (
+                <h3>
+                    Product Proposal
+                </h3>
+            )}
 
 
-
-        <hr></hr>
-
-        <div className={styles['proposal-body-child']}>
-
-
-        {proposalState.proposalType === 'SLA Proposal' && (
-            <>
-            <div className={styles['child-container']}>
-                <p>Proposal Package:</p>
-                <Input
-                label='Select Package'
-                error={errors['proposalPackage']}
-                errorMessage={errors.proposalPackage}
-                onChange={(e) => {
-                dispatch({
-                    type: 'UPDATE_PROPOSAL_FIELD',
-                    payload: {packageType: e.target.value},
-                })
-            }} 
-                />
-            </div>
 
             <hr></hr>
-            </>
-        )}
-            
-
-            <div className={styles['child-container']}>
-                <p>Team (leave blank if not applicable)</p>
-
-                <div className={styles['team-selection-container']}> 
-                    {
-                        members.map(member => (
-                             <Checkbox key={member.id} 
-                             label={member.name}
-                             checked={proposalState.selectedTeamMembers.includes(member.id)}
-                             onChange={() =>
-                                dispatch({
-                                type: 'TOGGLE_TEAM_MEMBER',
-                                payload: member.id
-                                })
-                            }
-                             />
-                        ))
-                    }
-        
-                </div>
-                
-            </div>
-            
-        </div>
-
-        <hr></hr>
-
-        <p>Executive Summary</p>
-
-            <RichTextEditor
-                onChange={(html) => {
-                dispatch({
-                    type: 'UPDATE_PROPOSAL_FIELD',
-                    payload: {executiveSummary: html},
-                   
-                })
-            }}
-            />
 
             <div className={styles['proposal-body-child']}>
 
+
+            {proposalState.proposalType === 'SLA Proposal' && (
+                <>
+                <div className={styles['child-container']}>
+                    <p>Proposal Package:</p>
                     <Input
-                        label='Executive video URL:'
-                        width='medium'
-                        placeholder='Enter video url here..'
-                        error={errors.execVideoUrl}
-                        errorMessage={errors.execVideoUrl}
-                        onChange={(e) =>
+                        label='Select Package'
+                        type='select'
+                        values={selectPackages}
+                        error={errors['proposalPackage']}
+                        errorMessage={errors.proposalPackage}
+                        onChange={(e) => {
+                            const selectedId = Number(e.target.value)
+                            const selectedPackage = packages.find(p => p.id === selectedId)
+                            console.log("descripion" + selectedPackage.description)
                             dispatch({
-                                type: 'UPDATE_PROPOSAL_FIELD',
-                                payload: {execVideoUrl:  e.target.value},
+                                type: 'SELECT_PACKAGE',
+                                payload: selectedPackage
                             })
-                        }
+                        }} 
                     />
+                </div>
+
+                <hr></hr>
+                </>
+            )}
                 
-                    <VideoPlayer
-                        url={proposalState.execVideoUrl}
-                    />
+
+                <div className={styles['child-container']}>
+                    <p>Team (leave blank if not applicable)</p>
+
+                    <div className={styles['team-selection-container']}> 
+                        {
+                            members.map(member => (
+                                <Checkbox key={member.id} 
+                                label={member.name}
+                                checked={proposalState.selectedTeamMembers.includes(member.id)}
+                                onChange={() =>
+                                    dispatch({
+                                    type: 'TOGGLE_TEAM_MEMBER',
+                                    payload: member.id
+                                    })
+                                }
+                                />
+                            ))
+                        }
+            
+                    </div>
+                    
+                </div>
                 
             </div>
-            
-        <hr></hr>
-
-        <p>Goals and Objectives</p>
-
-            <RichTextEditor
-            onChange={(html) => {
-                dispatch({
-                    type: 'UPDATE_PROPOSAL_FIELD',
-                    payload: {gaolsAndObjectives:  html},
-                })
-            }}
-            />
-            
-        <hr></hr>
-
-        <p>Proposed Solution</p>
-            <RichTextEditor
-            onChange={(html) => {
-                dispatch({
-                    type: 'UPDATE_PROPOSAL_FIELD',
-                    payload: {proposedSolution:  html},
-                })
-            }}
-            />
-
-        <hr></hr>
-
-        
-        {proposalState.proposalType === 'SLA Proposal' ? (
-            <>
-            <p>Package Deals and Inclusions</p>
-
-            <PackageDealsSection
-                deals={proposalState.deals}
-                dispatch={dispatch}
-                errors={errors}
-            />
 
             <hr></hr>
-            </>
-        ) : (
-            <>
-            <p>Products</p>
 
-            <ProposalItemSection
-                items={proposalState.items}
-                dispatch={dispatch}
-                proposalType={proposalState.proposalType}
-                errors={errors}
-            />
+            <p>Executive Summary</p>
 
-            <hr></hr>
-            </>
-        )}
+                <RichTextEditor
+                    onChange={(html) => {
+                    dispatch({
+                        type: 'UPDATE_PROPOSAL_FIELD',
+                        payload: {executiveSummary: html},
+                    
+                    })
+                }}
+                />
 
-        {proposalState.proposalType === 'SLA Proposal' ? (
-            <p>Package Description</p>
-        ) :
-        
-        (
-            <p>Proposal Description</p>
-        )}
+                <div className={styles['proposal-body-child']}>
 
-        <Input
-            width='full'
-            type='textarea'
-            error={errors.proposalDescription}
-            errorMessage={errors.proposalDescription}
-            onChange={(e) => {
-                dispatch({
-                    type: 'UPDATE_PROPOSAL_FIELD',
-                    payload: {proposalDescription:  e.target.value},
-                })
-            }}
-        />
-        <hr></hr>
+                        <Input
+                            label='Executive video URL:'
+                            width='medium'
+                            placeholder='Enter video url here..'
+                            error={errors.execVideoUrl}
+                            errorMessage={errors.execVideoUrl}
+                            onChange={(e) =>
+                                dispatch({
+                                    type: 'UPDATE_PROPOSAL_FIELD',
+                                    payload: {execVideoUrl:  e.target.value},
+                                })
+                            }
+                        />
+                    
+                        <VideoPlayer
+                            url={proposalState.execVideoUrl}
+                        />
+                    
+                </div>
                 
+            <hr></hr>
 
-        <p>Timeline</p>
+            <p>Goals and Objectives</p>
+
+                <RichTextEditor
+                value={proposalState.proposedSolution}
+                onChange={(html) => {
+                    dispatch({
+                        type: 'UPDATE_PROPOSAL_FIELD',
+                        payload: {goalsAndObjectives:  html},
+                    })
+                }}
+                />
+                
+            <hr></hr>
+
+            <p>Proposed Solution</p>
+                <RichTextEditor
+                onChange={(html) => {
+                    dispatch({
+                        type: 'UPDATE_PROPOSAL_FIELD',
+                        payload: {proposedSolution:  html},
+                    })
+                }}
+                />
+
+            <hr></hr>
+
             
-            <TimelineSection
-                timelines={proposalState.timelines}
+            {proposalState.proposalType === 'SLA Proposal' ? (
+                <>
+                <p>Package Deals and Inclusions</p>
+
+                <PackageDealsSection
+                    deals={proposalState.deals}
+                    dispatch={dispatch}
+                    errors={errors}
+                />
+
+                <hr></hr>
+                </>
+            ) : (
+                <>
+                <p>Products</p>
+
+                <ProposalItemSection
+                    items={proposalState.items}
+                    dispatch={dispatch}
+                    proposalType={proposalState.proposalType}
+                    errors={errors}
+                />
+
+                <hr></hr>
+                </>
+            )}
+
+            {proposalState.proposalType === 'SLA Proposal' ? (
+                <p>Package Description</p>
+            ) :
+            
+            (
+                <p>Proposal Description</p>
+            )}
+
+            <Input
+                width='full'
+                type='textarea'
+                value={proposalState.proposalDescription}
+                error={errors.proposalDescription}
+                errorMessage={errors.proposalDescription}
+                onChange={(e) => {
+                    dispatch({
+                        type: 'UPDATE_PROPOSAL_FIELD',
+                        payload: {proposalDescription:  e.target.value},
+                    })
+                }}
+            />
+            <hr></hr>
+                    
+
+            <p>Timeline</p>
+                
+                <TimelineSection
+                    timelines={proposalState.timelines}
+                    dispatch={dispatch}
+                    errors={errors}
+                />
+
+            <hr></hr>
+
+        
+            <PriceSection
+                proposalState={proposalState}
                 dispatch={dispatch}
                 errors={errors}
             />
 
-        <hr></hr>
+            <hr></hr>
 
-       
-        <PriceSection
-            proposalState={proposalState}
-            dispatch={dispatch}
-            errors={errors}
-        />
+            <p>Payment Terms</p>
 
-        <hr></hr>
+            <Input
+                width='full'
+                type='textarea'
+                error={errors.paymentTerms}
+                errorMessage={errors.paymentTerms}
+                onChange={(e) => {
+                    dispatch({
+                        type: 'UPDATE_PROPOSAL_FIELD',
+                        payload: {paymentTerms: e.target.value}
+                    })
+                }}
+            />
 
-        <p>Payment Terms</p>
-
-        <Input
-            width='full'
-            type='textarea'
-            error={errors.paymentTerms}
-            errorMessage={errors.paymentTerms}
-            onChange={(e) => {
-                dispatch({
-                    type: 'UPDATE_PROPOSAL_FIELD',
-                    payload: {paymentTerms: e.target.value}
-                })
-            }}
-        />
-
-    </div>
-    )
-}
+        </div>
+        )
+    }

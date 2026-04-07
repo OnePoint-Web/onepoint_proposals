@@ -2,7 +2,7 @@ export const createDeal = () => ({
 
     id: crypto.randomUUID(),
     item: '',
-    item_type: '',
+    item_type: 'Paragraph',
     display_order: null,
     items: [createDealItem()]
             
