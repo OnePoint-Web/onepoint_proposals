@@ -56,7 +56,7 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
                     onChange={(e) => {
                         dispatch({
                             type: 'UPDATE_DEAL',
-                            payload: { dealId: id, data: {item_type: e.target.value} }
+                            payload: { dealId: id, data: {item_type: e.target.value, items: [{id: crypto.randomUUID(), order: 1}]} }
                         })
                         setItemType(e.target.value)
                     }}
@@ -65,7 +65,11 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
             </div>
 
             {itemType === 'Paragraph' ? (
-                <SingleItem/>
+                <SingleItem
+                    itemId={dealItems[0].id}
+                    dispatch={dispatch}
+                    dealId={id}
+                />
             ) :
             (   
                 <InclusionsItem
@@ -95,11 +99,19 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
     )
 }
 
-const SingleItem = () => {
+const SingleItem = ({itemId, dispatch, dealId}) => {
     return(
        <div className={styles['item-container']}>
             <label>Item Description:</label>
-            <textarea></textarea>
+            <textarea
+                onChange={(e) => {
+                    dispatch({
+                        type: 'UPDATE_ITEM',
+                          payload: { dealId: dealId, itemId: itemId, data: {entry: e.target.value }}
+
+                    })
+                }}
+            ></textarea>
         </div>
     )
 }
