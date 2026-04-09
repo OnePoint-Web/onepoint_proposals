@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server"
 import { createPackageSchema } from "@/schemas/package/createPackage.schema"
 import prisma from "@/lib/prisma"
-
+import {generateUniqueSlug} from '@/utils/slug.js'
 
 
 export async function POST(req){
@@ -9,9 +9,11 @@ export async function POST(req){
         const body = await req.json()
 
         const data = createPackageSchema.parse(body)
+        const slug = await generateUniqueSlug('package', data.package)
 
         const result = await prisma.package.create({
                 data: {
+                    slug,
                     package: data.package,
                     description: data.description,
                     proposedSolution: data.solution,
@@ -54,6 +56,7 @@ export async function GET(req){
             },
             select: {
                 packageId: true,
+                slug: true,
                 package: true,
                 description: true,
                 proposedSolution: true,
@@ -61,7 +64,16 @@ export async function GET(req){
                 isActive: true,
                 dateCreated: true,
                 dateUpdated: true,
-            }     
+                dealItems: {
+                    select: {
+                            dealItemId: true,
+                            dealItem: true,
+                            itemType: true,
+                            displayOrder: true,
+                            dealEntries: true
+                        }
+                    }
+            },
         })
 
         return NextResponse.json(packages)

@@ -41,9 +41,10 @@
                     title: item.package,
                     description: item.description,
                     solution: item.proposedSolution,
-                    price: item.basePrice
+                    price: item.basePrice,
+                    deals: item.dealItems
                 }))
-                console.log('Packages:' + packagesOptions)
+                console.log(packagesOptions[0].deals[0])
                 setPackages(packagesOptions)
             })
 
@@ -56,6 +57,9 @@
             name: item.title
             }
         ))
+
+        const packageOptions = [{id: 202099, name: 'Custom Package'}, ...selectPackages]
+        
 
         
 
@@ -94,13 +98,21 @@
                     <Input
                         label='Select Package'
                         type='select'
-                        values={selectPackages}
+                        values={packageOptions}
                         error={errors['proposalPackage']}
                         errorMessage={errors.proposalPackage}
                         onChange={(e) => {
                             const selectedId = Number(e.target.value)
+                            if (selectedId === 202099) {
+                                dispatch({
+                                type: 'SELECT_PACKAGE',
+                                payload: null
+                                })
+                                return
+                            }
+
                             const selectedPackage = packages.find(p => p.id === selectedId)
-                            console.log("descripion" + selectedPackage.description)
+                         
                             dispatch({
                                 type: 'SELECT_PACKAGE',
                                 payload: selectedPackage
@@ -180,7 +192,6 @@
             <p>Goals and Objectives</p>
 
                 <RichTextEditor
-                value={proposalState.proposedSolution}
                 onChange={(html) => {
                     dispatch({
                         type: 'UPDATE_PROPOSAL_FIELD',
@@ -193,6 +204,7 @@
 
             <p>Proposed Solution</p>
                 <RichTextEditor
+                value={proposalState.proposedSolution}
                 onChange={(html) => {
                     dispatch({
                         type: 'UPDATE_PROPOSAL_FIELD',

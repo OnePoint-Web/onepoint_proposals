@@ -67,6 +67,7 @@ model ClientProfile {
 // Proposals 
 model Proposal {
   proposalId Int @id @default(autoincrement())
+  slug String @unique
   clientId Int
   clientType String
   proposalTitle String @unique
@@ -141,7 +142,7 @@ model Timeline {
   dateCreated DateTime @default(now())
   dateUpdated DateTime? @updatedAt
 
-  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+  proposal Proposal @relation(fields: [proposalId], references: proposalId, onDelete: Cascade)
 
   timelineScopeItems TimelineScopeItem[]
 }
@@ -175,11 +176,12 @@ model SlaOffer {
 
   packageDealItem PackageDealItem[]
 
-  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+  proposal Proposal @relation(fields: [proposalId], references: proposalId, onDelete: Cascade)
 }
 
 model Package{
   packageId Int @id @default(autoincrement())
+  slug String @unique
   package String @unique
   description String
   proposedSolution String? @db.LongText
@@ -201,7 +203,7 @@ model DealItem {
 
   dealEntries DealEntry[]
 
-  package Package @relation(fields: [packageId], references: packageId)
+  package Package @relation(fields: [packageId], references: packageId, onDelete: Cascade)
 }
 
 model DealEntry{
@@ -211,7 +213,7 @@ model DealEntry{
   displayOrder Int
   dateCreated DateTime @default(now())
 
-  dealItem DealItem @relation(fields: [dealItemId], references: dealItemId)
+  dealItem DealItem @relation(fields: [dealItemId], references: dealItemId, onDelete: Cascade)
 }
 
 model PackageDealItem {
@@ -223,7 +225,7 @@ model PackageDealItem {
   displayOrder Int
   dateCreated DateTime @default(now())
 
-  slaOffer SlaOffer @relation(fields: [slaOfferId], references: slaOfferId)
+  slaOffer SlaOffer @relation(fields: [slaOfferId], references: slaOfferId, onDelete: Cascade)
   
   packageDealEntries PackageDealEntry[]
 }
@@ -235,7 +237,7 @@ model PackageDealEntry{
   displayOrder Int
   dateCreated DateTime @default(now())
 
-  packageDealItem PackageDealItem @relation(fields: [packageDealItemId], references: [packageDealItemId])
+  packageDealItem PackageDealItem @relation(fields: [packageDealItemId], references: [packageDealItemId], onDelete: Cascade)
 }
 
 // Service Product offers
@@ -259,7 +261,7 @@ model ServiceProductOffer {
   paymentTerms String
   dateCreated DateTime @default(now())
 
-  proposal Proposal @relation(fields: [proposalId], references: proposalId)
+  proposal Proposal @relation(fields: [proposalId], references: proposalId, onDelete: Cascade)
 
   offerEntries OfferEntry[]
 }
@@ -279,7 +281,7 @@ model OfferEntry {
   displayOrder Int
   dateCreated DateTime @default(now())
 
-  serviceProductOffer ServiceProductOffer @relation(fields: [serviceProductOfferId], references: serviceProductOfferId)
+  serviceProductOffer ServiceProductOffer @relation(fields: [serviceProductOfferId], references: serviceProductOfferId, onDelete: Cascade)
 }
 
 // Notifications

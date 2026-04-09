@@ -1,7 +1,7 @@
 import { dealsReducer } from './dealsReducer'
 import { timelineReducer } from './timelineReducer'
 import {itemsReducer} from './itemsReducer'
-import {createInitialProposal} from'./factories'
+import {createInitialProposal, createDeal} from'./factories'
 import {calculateProposalPricing} from '@/modules/pricing/calculateProposalPricing'
 
 export function proposalReducer(state, action) {
@@ -34,13 +34,38 @@ export function proposalReducer(state, action) {
 
     case 'SELECT_PACKAGE': {
       const pkg = action.payload
-      
+
+      if (!pkg) {
+        return {
+          ...state,
+          packageType: 'Custom Package',
+          proposalDescription: '',
+          proposedSolution: '',
+          basePrice: 0,
+          deals: [createDeal()]
+        }
+      }
+
+
+      const deals = pkg.deals.map(d => ({ 
+        id: d.dealItemId,
+        item: d.dealItem,
+        item_type: d.itemType,
+        display_order: d.displayOrder,
+          items: d.dealEntries.map(e => ({
+            id: e.itemEntryId,
+            entry: e.itemEntry,
+            order: e.displayOrder,
+          }))
+      }))
+
       const newState = {
           ...state,
           packageType: pkg.title,
           proposalDescription: pkg.description,
           proposedSolution: pkg.solution,
-          basePrice: pkg.price
+          basePrice: pkg.price,
+          deals
       }
 
       return {
