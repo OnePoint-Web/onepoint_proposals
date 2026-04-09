@@ -11,9 +11,9 @@ import { CSS } from '@dnd-kit/utilities';
 const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 
-export default function PackageDeal({dealItems, addListItem, id, dispatch}){
+export default function PackageDeal({dealItems, deal, id, dispatch}){
     
-    const [itemType, setItemType] = useState('Paragraph')
+    // const [itemType, setItemType] = useState('Paragraph')
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -31,11 +31,12 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
 
     return(
         <div className={styles['package-deal-container']} ref={setNodeRef} style={style} {...attributes}>
-
+           
             <div className={styles['deals-child']}>
                 <Input
                     label='Item:'
                     name='deal_item'
+                    value={deal.item || ''}
                     type="text"
                     onChange={(e) => {
                         dispatch({
@@ -49,6 +50,7 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
                 <Input
                     label='Deal Item type:'
                     type='select'
+                    value={deal.item_type}
                     values={[
                             {id: 'Paragraph', name: 'Paragraph'}, 
                             {id: 'List', name: 'List'}
@@ -58,16 +60,16 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
                             type: 'UPDATE_DEAL',
                             payload: { dealId: id, data: {item_type: e.target.value, items: [{id: crypto.randomUUID(), order: 1}]} }
                         })
-                        setItemType(e.target.value)
                     }}
                 />
                 
             </div>
 
-            {itemType === 'Paragraph' ? (
+            {deal.item_type === 'Paragraph' ? (
                 <SingleItem
                     itemId={dealItems[0].id}
                     dispatch={dispatch}
+                    value={dealItems[0].entry}
                     dealId={id}
                 />
             ) :
@@ -99,11 +101,12 @@ export default function PackageDeal({dealItems, addListItem, id, dispatch}){
     )
 }
 
-const SingleItem = ({itemId, dispatch, dealId}) => {
+const SingleItem = ({itemId, dispatch, dealId, value}) => {
     return(
        <div className={styles['item-container']}>
             <label>Item Description:</label>
             <textarea
+                value={value || ''}
                 onChange={(e) => {
                     dispatch({
                         type: 'UPDATE_ITEM',

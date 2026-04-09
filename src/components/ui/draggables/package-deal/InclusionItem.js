@@ -70,6 +70,8 @@ function SortableItem({ item, deleteItem, dispatch, dealId }) {
     <div ref={setNodeRef} style={style} className={styles['item-input']} {...attributes}>
       <Input 
         hideLabel
+        type='text'
+        value={item.entry || ''}
         width="full"  
         onChange={(e) =>
           dispatch({
