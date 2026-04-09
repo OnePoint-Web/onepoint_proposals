@@ -20,14 +20,14 @@
     }
 }
 
-.input-container{
+.form-input-container{
     width: 100%;
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
     padding-bottom: 5px;
 
-    .container-child{
+    .form-container-child{
         display: flex;
         flex: 1;
         min-width: fit-content;

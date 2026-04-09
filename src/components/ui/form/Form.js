@@ -19,8 +19,8 @@ export default function Form({children, header, description, onSubmit}){
 
 export function FormInputContainer({children, label}) {
     return(
-         <div className={`${styles['input-container']}`}>
-                <div className={styles['container-child']}>
+         <div className={`${styles['form-input-container']}`}>
+                <div className={styles['form-container-child']}>
                     <p>{label}:</p>
                 </div>
 

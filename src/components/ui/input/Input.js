@@ -141,6 +141,7 @@ export default function Input({
                     errorMessage={errorMessage}
                     placeholder={placeholder}
                     values={values}
+                    value={value || ''}
                     rules={rules}
                     onChange={onChange}
                 />
@@ -178,7 +179,7 @@ const PasswordInput = ({name, error, placeholder, errorMessage, showPassword, ru
 }
 
 
-const SelectInput = ({name, values, placeholder, error, errorMessage, rules, onChange}) => {
+const SelectInput = ({name, values, value, error, errorMessage, rules, onChange}) => {
     return (
     <div className={styles['input-wrapper']}>
         <select
@@ -226,14 +227,10 @@ const NumberInput = ({name, error, defaultValue, errorMessage, rules, onChange, 
 
     // Trigger parent onChange
     if (onChange) onChange(event)
-
-    // Update input DOM value
-    if (inputRef.current) inputRef.current.value = newValue
   }
 
   const getCurrentValue = () => {
-        const val = Number(inputRef.current?.value)
-        return isNaN(val) ? min : val
+          return Number(value ?? min ?? 0)
     }
 
     const handleIncrement = () => {
@@ -291,7 +288,7 @@ const NumberInput = ({name, error, defaultValue, errorMessage, rules, onChange, 
         <div className={styles['number-btn-container']} onClick={handleIncrement}>
           <ArrowDropUp className={styles['number-control-icon']} />
         </div>
-        <hr />
+        <hr className={styles['number-input-hr']}></hr>
         <div className={styles['number-btn-container']} onClick={handleDecrement}>
           <ArrowDropDown className={styles['number-control-icon']} />
         </div>
