@@ -42,6 +42,7 @@ export default function PackageDealSection({dealsState, dispatch}){
                         <PackageDeal 
                             key={item.id} 
                             id={item.id}
+                            deal={item}
                             dealItems={item.items}
                             addListItem={() => addListItem(item.id)}
                             dispatch={dispatch}

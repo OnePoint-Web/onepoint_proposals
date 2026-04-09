@@ -15,6 +15,7 @@ import {useReducer, useState} from 'react'
 export default function PackageCreationForm(){
 
     const [dealsState, dispatch] = useReducer(dealsReducer, createInitialDeal());
+    const [price, setPrice] = useState(0)
     const [isSuccess, setIsSuccess] = useState(false);
 
     const {
@@ -127,7 +128,8 @@ export default function PackageCreationForm(){
                     label='Price'
                     type='number'
                     width="medium"
-                    min={0}
+                    value={price ?? 0}
+                    onChange={(e) => setPrice(Number(e.target.value))}
                     hideLabel={true}
                     placeholder='Package price...'
                     error={errors.price ? 'error' : ''}

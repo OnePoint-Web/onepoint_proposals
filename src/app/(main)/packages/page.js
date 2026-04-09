@@ -17,6 +17,7 @@ export default function Packages(){
         .then(data => {
             const allPackages = data.map(packageItem => ({
                 id: packageItem.packageId,
+                slug: packageItem.slug,
                 title: packageItem.package,
                 description: packageItem.description,
                 solution: packageItem.proposedSolution,
@@ -33,7 +34,7 @@ export default function Packages(){
                 <div className={styles['packages-items']}>
                     {packages.map(pkg => (
                         <PackageCard
-                            id={pkg.id}
+                            slug={pkg.slug}
                             key={pkg.id}
                             title={pkg.title}
                             price={pkg.price}

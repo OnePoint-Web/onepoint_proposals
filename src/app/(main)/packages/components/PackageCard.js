@@ -1,7 +1,7 @@
 import styles from './PackageCard.module.scss'
 import Link from 'next/link';
 
-export default function PackageCard({title, price, description, id}){
+export default function PackageCard({title, price, description, slug}){
     return(
         <div className={styles['package-card']}>
             <div className={styles['details']}>
@@ -12,7 +12,7 @@ export default function PackageCard({title, price, description, id}){
 
             <div className={styles['buttons']}>
                 <div className={styles['card-btn']}>
-                    <Link href={`packages/${id}`}>
+                    <Link href={`packages/${slug}`}>
                         <p>View</p>
                     </Link>
                 </div>
