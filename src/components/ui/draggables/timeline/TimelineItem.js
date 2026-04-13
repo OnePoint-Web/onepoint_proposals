@@ -38,7 +38,7 @@ export default function TimelineItem({id, scopes, addScope, dispatch}){
                     onChange={(e) => {
                         dispatch({
                             type: 'UPDATE_TIMELINE',
-                            payload: { timelineId: id, data: {timeframe: e.target.value} }
+                            payload: { timelineId: id, data: {timeFrame: e.target.value} }
                             
                         })
                     }}
@@ -49,13 +49,13 @@ export default function TimelineItem({id, scopes, addScope, dispatch}){
                     name='assigned_to'
                     type='select'
                     values={[
-                            {id: 'Paragraph', name: 'Paragraph'}, 
-                            {id: 'List', name: 'List'}
+                            {id: 'OnePoint', name: 'OnePoint'}, 
+                            {id: 'External', name: 'External'}
                         ]}
                     onChange={(e) => {
                         dispatch({
                             type: 'UPDATE_TIMELINE',
-                            payload: { timelineId: id, data: {assigned_to: e.target.value} }
+                            payload: { timelineId: id, data: {assignedTo: e.target.value} }
                             
                         })
                     }}
@@ -68,7 +68,7 @@ export default function TimelineItem({id, scopes, addScope, dispatch}){
                     onChange={(e) => {
                         dispatch({
                             type: 'UPDATE_TIMELINE',
-                            payload: { timelineId: id, data: {progress: e.target.value} }
+                            payload: { timelineId: id, data: {progress: Number(e.target.value)} }
                             
                         })
                     }}

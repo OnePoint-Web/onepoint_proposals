@@ -75,7 +75,7 @@ function SortableItem({ scope, deleteScope, dispatch, timelineId }) {
         onChange={(e) =>
           dispatch({
             type: 'UPDATE_SCOPE',
-            payload: { timelineId, scopeId: scope.id, data: { entry: e.target.value } }
+            payload: { timelineId, scopeId: scope.id, data: { scope: e.target.value } }
           })
         }
         />
