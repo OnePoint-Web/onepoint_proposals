@@ -121,6 +121,7 @@ const totalDiscountAmount = totalEnteredGlobalDiscount + totalEnteredItemDiscoun
   baseAmount: roundToTwo(baseAmount),
   globalDiscountAmount: roundToTwo(globalDiscountAmount),
   afterGlobalDiscount: roundToTwo(afterGlobalDiscount),
+  taxableAmount: roundToTwo(afterGlobalDiscount),
   taxAmount: roundToTwo(taxAmount),
   finalPrice: roundToTwo(finalPrice),
 
