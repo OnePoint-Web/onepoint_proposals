@@ -26,6 +26,24 @@ async function main() {
   } else {
     console.log('Default user already exists')
   }
+
+    const statuses = [
+    { statusId: 0, status: 'draft' },
+    { statusId: 1, status: 'published' },
+    { statusId: 3, status: 'sent' },
+    { statusId: 4, status: 'viewed' },
+    { statusId: 5, status: 'approved' },
+    { statusId: 6, status: 'declined' },
+    { statusId: 7, status: 'deleted' },
+  ]
+
+  for (const s of statuses) {
+    await prisma.proposalStatus.upsert({
+      where: { statusId: s.statusId },
+      update: {},
+      create: s,
+    })
+  }
 }
 
 main()
