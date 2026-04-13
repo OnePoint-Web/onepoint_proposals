@@ -15,52 +15,53 @@ const safeNumber = z.preprocess((val) => {
   return isNaN(num) ? undefined : num
 }, z.number())
 
-const timelineScopeSchema = z.object({
-      id: z.string().uuid(),
-      description: z.string().optional(),
-      startDate: safeDate,
-      endDate: safeDate
-    }).refine(
-        (data) => {
-            if (!data.startDate || !data.endDate) return true
-            return data.endDate >= data.startDate
-        },
-        {
-            message: 'End date must be after start date',
-            path: ['endDate'],
-    }
-    )
+// const timelineScopeSchema = z.object({
+//       scope: z.string().optional(),
+//     })
 
-  const scopesSchema = z
-  .array(timelineScopeSchema)
-  .transform(scopes =>
-    scopes.filter(s =>
-      s.description?.trim() ||
-      s.startDate ||
-      s.endDate
-    )
-  )
+//   const scopesSchema = z
+//   .array(timelineScopeSchema)
+//   .transform(scopes =>
+//     scopes.filter(s =>
+//       s.scope?.trim()
+//     )
+//   )
+// const timelineSchema = z.object({
+//   timeFrame: z.string(),
+//   progress: safeNumber.optional(),
+//   assignedTo: z.string().min(1, 'Assign task'),
+//   timelineScopeItems: scopesSchema,
+// })
 const timelineSchema = z.object({
-  id: z.string().uuid(),
-  title: z.string(),
-  progress: safeNumber.optional(),
-  assigned_to: z.string().min(1, 'Assign task'),
-  scopes: scopesSchema,
+  timeFrame: z.string(),
+  progress: safeNumber,
+  assignedTo: z.string(),
+  timelineScopeItems: z.object({
+    create: z.array(
+      z.object({
+        scope: z.string()
+      })
+    )
+  })
 })
+
 
 const timelinesSchema = z
   .array(timelineSchema)
   .transform(timelines =>
-    timelines.filter(t => t.title.trim() !== '')
-  )
+  (timelines ?? []).filter(t => t.timeFrame.trim() !== '')
+)
 
 
 const baseProposalSchema = z.object({
-    id: z.string().uuid(),
-    clientId: z.string().min(1, 'Client is required'),
+    clientId: z.coerce.number({
+        invalid_type_error: "Select a client",
+      })
+      .refine(val => val > 0, {
+        message: "Select a client",
+    }),
     clientType: z.string().min(1),
     proposalTitle: z.string().min(1, 'Title is required'),
-    proposalPackage: z.string().min(1, 'Proposal package is required'),
     executiveSummary: z.string().optional(),
     goalsAndObjectives: z.string().optional(),
     execVideoUrl: z.union([
@@ -70,49 +71,62 @@ const baseProposalSchema = z.object({
 
     proposedSolution: z.string().optional(),
     proposalDescription: z.string().optional(),
-    discountType: z.enum(['Percent', 'Fixed']).optional(),
+
+    //basePrice for SLA Offer
+    subtotal: z.coerce.number().optional(),
+
+    discountType: z.enum(['Percent', 'Fixed', 'None']).optional(),
     discountValue: safeNumber.optional(),
     discountDescription: z.string().optional(),
     taxableAmount: safeNumber.optional(),
-    taxApplicable: z.enum(['', 'YES', 'NO']).optional(),
+    isMultipleChoice: z.boolean(),
+    taxApplicable: z.preprocess(
+      (val) => {
+        if (val === '' || val === undefined) return undefined
+        if (val === 'YES') return true
+        if (val === 'NO') return false
+        return val
+      },
+      z.boolean().optional()
+    ),
     taxRate: safeNumber.optional(),
     taxAmount: safeNumber.optional(),
     taxReason: z.string().optional(),
     finalPrice: safeNumber.optional(),
     paymentTerms: z.string().optional(),
     timelines: timelinesSchema.optional()
-}).refine((data) => {
-        if (!data.discountType) return true
-        if (data.discountType === 'Percent') {
-            return data.discountValue != null && data.discountValue <= 100
-        }
-        if (data.discountType === 'Fixed') {
-            return data.discountValue != null
-        }
-        return true
-    }, {
-        message: 'Invalid discount configuration',
-        path: ['discountValue'],
-  })
+    }).refine((data) => {
+            if (!data.discountType) return true
+            if (data.discountType === 'Percent') {
+                return data.discountValue != null && data.discountValue <= 100
+            }
+            if (data.discountType === 'Fixed') {
+                return data.discountValue != null
+            }
+            return true
+        }, {
+            message: 'Invalid discount configuration',
+            path: ['discountValue'],
+      }).passthrough()
 
 const slaProposalSchema = baseProposalSchema.extend({
   proposalType: z.literal('SLA Proposal'),
-  deals: dealsSchema,
+  basePrice: z.coerce.number().optional(),
+  slaPackage: z.string().min(1, 'Proposal package is required'),
+  deals: dealsSchema.optional(),
   items: z.array(z.any()).optional(),
 })
 
 // Product
 const productProposalSchema = baseProposalSchema.extend({
   proposalType: z.literal('Product Proposal'),
-  items: itemsSchema,
-  deals: z.array(z.any()).optional(),
+  offerEntries: itemsSchema.optional()
 })
 
 // Service
 const serviceProposalSchema = baseProposalSchema.extend({
   proposalType: z.literal('Service Proposal'),
-  items: itemsSchema,
-  deals: z.array(z.any()).optional(),
+  offerEntries: itemsSchema.optional()
 })
 
 export const proposalSchema = z.discriminatedUnion('proposalType', [

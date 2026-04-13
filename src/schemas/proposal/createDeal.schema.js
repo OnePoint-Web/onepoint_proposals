@@ -9,7 +9,7 @@ const safeNumber = z.preprocess((val) => {
 }, z.number())
 
 export const dealItemSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   entry: z.string(),
   order: safeNumber.optional()
 }).refine(
@@ -21,7 +21,7 @@ export const dealItemSchema = z.object({
 )
 
 export const dealSchema = z.object({
-  id: z.string().uuid(),
+  id: z.string(),
   item: z.string(),
   item_type: z.string().optional(),
   display_order: safeNumber.optional(),
