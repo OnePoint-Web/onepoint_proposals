@@ -40,23 +40,43 @@ export default function PackageCreationForm(){
         }))
     }));
 
+    const cleanDeals = (dealsState) => {
+    return dealsState
+        .map(deal => ({
+            ...deal,
+            item: deal.item?.trim(),
+            items: (deal.items || [])
+                .map(item => ({
+                    ...item,
+                    entry: item.entry?.trim()
+                }))
+                .filter(item => item.entry) // remove empty entries
+        }))
+        .filter(deal => 
+            deal.item && deal.items.length > 0 // remove empty deals
+        )
+    }
     const onSubmit = async (data) => {
         if (isSubmitting) return
 
         
-        const dealsPayload = prepareDealsForSubmit(dealsState).map(deal => ({
+        const cleanedDeals = cleanDeals(dealsState)
+
+        const dealsPayload = prepareDealsForSubmit(cleanedDeals).map(deal => ({
             dealItem: deal.item,
             itemType: deal.item_type,
             displayOrder: deal.display_order,
-            dealEntries: {
-                create: (deal.items || []).map(item => ({
-                    itemEntry: item.entry,
-                    displayOrder: item.order
-                }))
-            }
-            }))
+            dealEntries: deal.items.length > 0
+                ? {
+                    create: deal.items.map(item => ({
+                        itemEntry: item.entry,
+                        displayOrder: item.order
+                    }))
+                }   
+                : undefined // prevents empty create
+        }))
 
-            const payload = {
+        const payload = {
             ...data,
             deals: {
                 create: dealsPayload

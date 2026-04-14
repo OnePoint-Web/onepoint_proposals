@@ -6,11 +6,16 @@ import styles from './page.module.scss'
 import { useRouter } from 'next/navigation'
 import {useState} from 'react'
 import {Icons} from '@/components/icons/icons'
+import DOMPurify from 'dompurify'
 
 export default function PackagePage({packageData, slug}){
     const router = useRouter()
     const ErrorIcon = Icons.error
     const [toggleModal, setToggleModal] = useState(false)
+
+    const proposedSolution = useMemo(() => {
+        return DOMPurify.sanitize(packageData.proposedSolution ?? "");
+    }, [packageData.proposedSolution]);
 
       const handleDelete = async () => {
         const res = await fetch(`/api/packages/${slug}`, { method: 'DELETE' })
@@ -50,7 +55,7 @@ export default function PackagePage({packageData, slug}){
                   <hr></hr>
 
                   <p className={styles['header']}>Proposed Solution:</p>
-                  <div className={`${styles['proposal-solution-container']} ${styles['rich-text']}`} dangerouslySetInnerHTML={{__html: packageData.proposedSolution}}></div>   
+                  <div className={`${styles['proposal-solution-container']} ${styles['rich-text']}`} dangerouslySetInnerHTML={{__html: proposedSolution}}></div>   
                 
                   <p className={styles['header']}>Inclusions:</p>
 
