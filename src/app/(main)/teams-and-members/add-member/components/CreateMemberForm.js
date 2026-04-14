@@ -35,7 +35,7 @@ export default function CreateMemberForm(){
             })
 
             if (imageFile && imageFile.size > 2_000_000) {
-            alert("Image too large")
+            alert("Image is too large")
             return
             }
 
@@ -124,9 +124,9 @@ export default function CreateMemberForm(){
 
             <hr></hr>
             <h3>Upload Member Image</h3>
-            <p></p>
+            <p>Image file must not exceed 2MB (350 x 500 px)</p>
             
-            <ImageUploadAndPreview onFileSelect={setImageFile}/>
+            <ImageUploadAndPreview onFileSelect={setImageFile} imageSet={imageFile}/>
                 
         </fieldset >
 
