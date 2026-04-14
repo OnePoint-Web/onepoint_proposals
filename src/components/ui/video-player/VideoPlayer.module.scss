@@ -8,6 +8,11 @@
         border: 1px solid var(--field-stroke);
         border-radius: 4px;
 
+        &.full{
+            width: 100%;
+            max-width: 100%;
+        }
+
         p{
             margin: auto;
         }

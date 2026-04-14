@@ -2,7 +2,8 @@ import styles from './VideoPlayer.module.scss'
 import { parseVideoUrl } from '@/utils/video'
 
 export default function VideoPlayer({
-    url = ''
+    url = '',
+    size,
 }){
     const video = parseVideoUrl(url)
 
@@ -12,8 +13,8 @@ export default function VideoPlayer({
     //     return <p>Invalid or unsupported video URL</p>
     // }
 
-    return(
-            <div  className={styles['video-container']}>
+    return( 
+            <div  className={`${styles['video-container']} ${size === 'full' && styles['full']}`}>
 
                 {!url && ( <p>Video preview</p> )}
                 {video && (
