@@ -12,8 +12,6 @@ const DeleteIcon = Icons.delete
 const DragIcon = Icons.drag
 
 export default function PackageDeal({dealItems, deal, id, dispatch}){
-    
-    // const [itemType, setItemType] = useState('Paragraph')
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
