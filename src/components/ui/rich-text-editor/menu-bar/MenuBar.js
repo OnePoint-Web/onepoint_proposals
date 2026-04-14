@@ -37,7 +37,7 @@ export default function MenuBar({editor}){
             type='button'
             onClick={() => editor.chain().focus().toggleBulletList().run()}
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
-            >LI</button>
+            ><OrderedList/></button>
 
             <button
             type='button'
@@ -45,11 +45,6 @@ export default function MenuBar({editor}){
             className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
             ><UnorderedList/></button>
 
-             <button
-            type='button'
-            onClick={() => editor.chain().focus().toggleOrderedList().run()}
-            className={`${styles['editor-btns']} ${editor.isActive('bold') ? styles['is-active'] : ''}`}
-            ><OrderedList/></button>
         </div>
     )
 }
