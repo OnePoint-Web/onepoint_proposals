@@ -5,18 +5,24 @@ import Container from '@/components/layout/Container/Container'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout'
 import CreateProposalHead from './components/CreateProposalHead'
 import Button from '@/components/ui/button/Button.js'
-
+import {Icons} from '@/components/icons/icons'
 import CreateProposalBody from './CreateProposalBody'
+
+const ProposalIcon = Icons.proposals;
 
 import {proposalReducer} from './reducers/proposalReducer'
 import {createInitialProposal} from './reducers/factories'
-import {useReducer, useEffect} from 'react'
-
+import { useRouter } from 'next/navigation'
+import {useReducer, useEffect, useState} from 'react'
 import { proposalSchema } from '@/schemas/proposal/createProposal.schema'
 
 export default function CreateProposal(){
-
+    const router = useRouter()
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isSuccess, setIsSuccess] = useState(null) 
+    const [submitMessage, setSubmitMessage] = useState('')
     const [proposalState, dispatch] = useReducer(proposalReducer, null);
+    const [toggleModal, setToggleModal] = useState(false)
 
 
     useEffect(() => {
@@ -29,61 +35,263 @@ export default function CreateProposal(){
         });
     }, []);
 
-    useEffect(() => {
-        if (!proposalState || !proposalState.validationErrors) return
-
-        console.log('errr', proposalState.validationErrors)
-
-        const keys = Object.keys(proposalState.validationErrors)
-        if (keys.length === 0) return
-
-        const firstKey = keys[0]
-
-        const el = document.querySelector(`[name="${firstKey}"]`)
-        if (el) el.scrollIntoView({ behavior: 'smooth' })
-    }, [proposalState])
 
     if (!proposalState) return <p></p>
 
-
-    const validateProposal = (proposalState) => {
-        try {
-            // Zod applies all nested validations and transforms
-            const validatedData = proposalSchema.parse(proposalState)
-            return { success: true, data: validatedData }
-        } catch (err) {
-            if (err instanceof z.ZodError) {
-            // Flatten errors for easier mapping to UI
-            const fieldErrors = err.flatten()
-            return { success: false, errors: fieldErrors }
-            }
-            throw err
-        }
+   const mapZodErrors = (zodError) => {
+        const errors = {}
+        zodError.issues.forEach(err => {  // <-- use .issues, not .errors
+            const path = err.path.length ? err.path.join('.') : '_root'
+            errors[path] = err.message
+        })
+        return errors
     }
 
-   const mapZodErrors = (zodError) => {
-    const errors = {}
-    zodError.issues.forEach(err => {  // <-- use .issues, not .errors
-        const path = err.path.length ? err.path.join('.') : '_root'
-        errors[path] = err.message
-    })
-    return errors
-}
+    const prepareProposalItemsForSubmit = (type, itemState) => {
 
-   const handleSubmit = (e) => {
+        if(type === 'DEALS'){
+        return itemState.map((deal, dealIndex) => ({
+                ...deal,
+                display_order: dealIndex + 1,
+                items: deal.items.map((item, itemIndex) => ({
+                ...item,
+                order: itemIndex + 1
+                }))
+            }));
+        } else if(type === 'ITEMS') {
+            return itemState.map((item, itemIndex) => ({
+                ...item,
+                displayOrder: itemIndex + 1
+            }));
+        }
+        }
+
+    const cleanDeals = (dealsState) => {
+    return dealsState
+        .map(deal => ({
+            ...deal,
+            item: deal.item?.trim(),
+            items: (deal.items || [])
+                .map(item => ({
+                    ...item,
+                    entry: item.entry?.trim()
+                }))
+                .filter(item => item.entry) // remove empty entries
+        }))
+        .filter(deal => 
+            deal.item && deal.items.length > 0 // remove empty deals
+        )
+    }
+
+    const cleanItems = (itemsState) => {
+        return itemsState
+            .map(item => ({
+                ...item,
+                item: item.item?.trim(),
+                description: item.itemDescription?.trim() || '',
+                price: Number(item.itemPrice) ?? 0,
+                quantity: Number(item.quantity),
+                discountValue: Number(item.discountValue) ?? 0
+            })
+            )
+            .filter(item => item.item)
+    }
+
+    const cleanTimelines = (timelinesState) => {
+        return timelinesState
+            .map(timeline => ({
+                ...timeline,
+                timeFrame: timeline.timeFrame?.trim(),
+                progress: Number(timeline.progress),
+                assignedTo: timeline.assignedTo?.trim(),
+                timelineScopeItems: (timeline.timelineScopeItems?.length ?? 0) > 0
+                ? {
+                    create: timeline.timelineScopeItems.map(s => ({
+                    scope: s.scope
+                    })).filter(scope => scope.scope)
+                }
+                : undefined
+            })).filter(timeline => timeline.timeFrame)
+    }
+
+   const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const result = proposalSchema.safeParse(proposalState)
+        setIsSubmitting(true)
 
+        const cleanedState = {
+        ...proposalState,
+        timelines: cleanTimelines(proposalState.timelines || []),
+        deals: cleanDeals(proposalState.deals || []),
+        items: cleanItems(proposalState.items || [])
+        }
+
+
+         console.log(cleanedState)
+        const result = proposalSchema.safeParse(cleanedState)
+
+       
         if (!result.success) {
             const formattedErrors = mapZodErrors(result.error) // use issues now
-            console.log('formatted', formattedErrors)
+            console.log('Zod Errors', formattedErrors)
             dispatch({ type: 'SET_VALIDATION_ERRORS', payload: formattedErrors })
+            setIsSubmitting(false)
+            setIsSuccess(false)
+            setSubmitMessage('Please fill all necessary fields')
             return
         }
 
         dispatch({ type: 'CLEAR_VALIDATION_ERRORS' })
-        console.log('VALID DATA:', result.data)
+
+        let cleanProposalItemPayload;
+        let proposalSubData;
+
+            if(proposalState.proposalType === 'SLA Proposal'){
+            
+            const cleanedDeals = result.data.deals;
+
+            cleanProposalItemPayload = prepareProposalItemsForSubmit('DEALS', cleanedDeals).map(deal => ({
+                item: deal.item,
+                itemType: deal.item_type,
+                displayOrder: deal.display_order,
+                packageDealEntries: deal.items.length > 0
+                    ? {
+                        create: deal.items.map(item => ({
+                            itemEntry: item.entry,
+                            displayOrder: item.order
+                        }))
+                    }
+                    : {}
+            }))
+
+            proposalSubData = {
+                slaPackage: result.data.slaPackage,
+                basePrice: result.data.basePrice,
+                discountType: result.data.discountType,
+                discountValue: result.data.discountValue,
+                discountDescription: result.data.discountDescription,
+                taxableAmount: result.data.taxableAmount,
+                taxApplicable: result.data.taxApplicable,
+                taxRate: result.data.taxRate,
+                taxAmount: result.data.taxAmount,
+                taxReason: result.data.taxReason,
+                finalPrice: result.data.finalPrice,
+                paymentTerms: result.data.paymentTerms,
+                packageDealItem: {
+                    create: cleanProposalItemPayload
+                }
+            }
+
+            } else{
+                const cleanedItems = result.data.items
+
+                cleanProposalItemPayload = prepareProposalItemsForSubmit('ITEMS', cleanedItems).map(item => ({
+                    serviceProductItem: item.item,
+                    itemPrice: item.price,
+                    quantity: item.quantity,
+                    totalPrice: item.totalPrice,
+                    itemDiscountType: item.discountType,
+                    itemDiscountValue: item.discountValue,
+                    itemDiscountDescription: item.discountDescription,
+                    description: item.description,
+                    displayOrder: item.displayOrder, 
+
+                }))
+
+                proposalSubData = {
+                    type: result.data.proposalType,
+                    isMultipleChoice: result.data.isMultipleChoice,
+                    subTotal: result.data.subtotal,
+                    discountType: result.data.discountType,
+                    discountValue: result.data.discountValue,
+                    discountDescription: result.data.discountDescription,
+                    taxableAmount: result.data.taxableAmount,
+                    taxApplicable: result.data.taxApplicable,
+                    taxRate: result.data.taxRate,
+                    taxAmount: result.data.taxAmount,
+                    taxReason: result.data.taxReason,
+                    finalPrice: result.data.finalPrice,
+                    paymentTerms: result.data.paymentTerms,
+                    offerEntries: {
+                        create: cleanProposalItemPayload
+                    }
+                }
+            }
+
+            const baseData = {
+                slaPackage: result.data.slaPackage,
+                clientId: result.data.clientId,
+                clientType: result.data.clientType,
+                proposalTitle: result.data.proposalTitle,
+                proposalType: result.data.proposalType,
+                executiveSummary: result.data.executiveSummary,
+                goalsAndObjectives: result.data.goalsAndObjectives,
+                execVideoUrl: result.data.execVideoUrl,
+                proposedSolution: result.data.proposedSolution,
+                proposalDescription: result.data.proposalDescription,
+                isMultipleChoice: result.data.isMultipleChoice,
+            }
+            const payload = proposalState.proposalType === 'SLA Proposal' ? 
+            {
+                ...baseData,
+                timelines: result.data.timelines,
+                slaOffers: proposalSubData,
+                selectedMembers: result.data.selectedMembers
+                
+                
+            } :
+            {
+                ...baseData,
+                timelines: result.data.timelines,
+                serviceProductOffers: proposalSubData,
+                selectedMembers: result.data.selectedMembers
+                
+            }
+
+          try{
+            const res = await fetch("/api/proposals", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+            })
+
+            const result = await res.json()
+            console.log(result)
+            
+            if (!res.ok) {
+                if (result.field) {
+                setError(result.field, {
+                    type: "server",
+                    message: result.message,
+                })
+                setIsSubmitting(false)
+                setIsSuccess(false)
+                setSubmitMessage('Server Error')
+                return
+                }
+                    console.error(result)
+                    setIsSubmitting(false)
+                    setIsSuccess(false)
+                    setSubmitMessage('Error creating proposal')
+                    return
+            }
+            
+            console.log("Success:", result)
+            setIsSubmitting(false)
+            setIsSuccess(true)
+            setToggleModal(true)
+
+            setTimeout(() => {
+            router.push('/proposals')
+            }, 2000)
+
+        }catch(err){
+            console.error(err)
+            setIsSubmitting(false)
+            setIsSuccess(false)
+            setSubmitMessage('Error creating proposal')
+        }
+
     }
     
      return(
@@ -91,9 +299,9 @@ export default function CreateProposal(){
         <ChildLayout>
             
             <CreateProposalHead 
-            dispatch={dispatch}
-            errors={proposalState.validationErrors}
-            proposalState={proposalState}
+                dispatch={dispatch}
+                errors={proposalState.validationErrors}
+                proposalState={proposalState}
             />
 
             <Container>
@@ -103,23 +311,40 @@ export default function CreateProposal(){
             </Container>
 
             <Container fit='medium'>
-
+                 { isSuccess && <p className={styles.success}>Proposal created successfully</p>}
+                 { isSuccess === false && <p className={styles.error}>{submitMessage}</p>}
                 <div className={styles['proposal-submit-container']}>
                     <Button
-                    label='Publish'
-                    color='red'
-                    size ='md'
+                        label={isSubmitting ? 'Creating proposal...' : 'Publish'}
+                        color='red' 
+                        size ='md'
+                        disabled={isSubmitting}
+                        onClick={handleSubmit}
                     />
 
                     <Button
                         label='Save Draft'
                         color='dark'
                         size ='md'
-                        onClick={handleSubmit}
                     />
                 </div>
 
             </Container>
+
+          {toggleModal && (
+                <div 
+                  className={`${styles['success-modal-bg']}`} 
+                >  
+
+                  <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
+                    <ProposalIcon className={styles.icon}/>
+                    <p className={styles.head}>Proposal Successfully Created!</p>
+                    <p className={styles.message}>Redirecting to proposals page...</p>
+
+                  </div>              
+              
+                </div>  
+              )}
 
 
         </ChildLayout>

@@ -23,7 +23,7 @@ export const timelineReducer = (timelines, action) => {
     case 'ADD_SCOPE':
       return timelines.map(t =>
         t.id === action.payload.timelineId
-          ? { ...t, scopes: recalcOrder([...t.scopes, createTimelineScope()], "order") }
+          ? { ...t, timelineScopeItems: recalcOrder([...t.timelineScopeItems, createTimelineScope()], "order") }
           : t
       )
 
@@ -32,7 +32,7 @@ export const timelineReducer = (timelines, action) => {
         t.id === action.payload.timelineId
           ? {
               ...t,
-              scopes: t.scopes.map(scope =>
+              timelineScopeItems: t.timelineScopeItems.map(scope =>
                 scope.id === action.payload.scopeId
                   ? { ...scope, ...action.payload.data }
                   : scope
@@ -46,12 +46,12 @@ export const timelineReducer = (timelines, action) => {
       return timelines.map(t => {
         if (t.id !== timelineId) return t
 
-        const oldIndex = t.scopes.findIndex(s => s.id === activeId)
-        const newIndex = t.scopes.findIndex(s => s.id === overId)
+        const oldIndex = t.timelineScopeItems.findIndex(s => s.id === activeId)
+        const newIndex = t.timelineScopeItems.findIndex(s => s.id === overId)
         if (oldIndex === -1 || newIndex === -1) return t
 
-        const reorderedScopes = arrayMove(t.scopes, oldIndex, newIndex)
-        return { ...t, scopes: recalcOrder(reorderedScopes, "order") }
+        const reorderedScopes = arrayMove(t.timelineScopeItems, oldIndex, newIndex)
+        return { ...t, timelineScopeItems: recalcOrder(reorderedScopes, "order") }
       })
     }
 
@@ -63,7 +63,7 @@ export const timelineReducer = (timelines, action) => {
     case 'DELETE_SCOPE':
       return timelines.map(t =>
         t.id === action.payload.timelineId
-          ? { ...t, scopes: recalcOrder(t.scopes.filter(s => s.id !== action.payload.scopeId), "order") }
+          ? { ...t, timelineScopeItems: recalcOrder(t.timelineScopeItems.filter(s => s.id !== action.payload.scopeId), "order") }
           : t
       )
 

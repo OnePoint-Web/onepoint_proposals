@@ -15,8 +15,7 @@
 
         const [members, setMembers] = useState([])
         const [packages, setPackages] = useState([])
-        const [packagesSelect, setPackagesSelect] = useState([])
-
+        console.log(proposalState.teamMembers)
         useEffect(() => {
             fetch('/api/members')
             .then(res => res.json())
@@ -58,9 +57,7 @@
             }
         ))
 
-        const packageOptions = [{id: 202099, name: 'Custom Package'}, ...selectPackages]
-        
-
+        const packageOptions = [{id: "Custom Package", name: 'Custom Package'}, ...selectPackages]
         
 
         return(
@@ -103,7 +100,7 @@
                         errorMessage={errors.proposalPackage}
                         onChange={(e) => {
                             const selectedId = Number(e.target.value)
-                            if (selectedId === 202099) {
+                            if (selectedId === "Custom Package") {
                                 dispatch({
                                 type: 'SELECT_PACKAGE',
                                 payload: null
@@ -134,12 +131,14 @@
                             members.map(member => (
                                 <Checkbox key={member.id} 
                                 label={member.name}
-                                checked={proposalState.selectedTeamMembers.includes(member.id)}
-                                onChange={() =>
+                                checked={proposalState.selectedMembers.some(m => m.memberId === member.id)}
+                                onChange={() =>{
+                                    console.log(proposalState.selectedMembers)
                                     dispatch({
                                     type: 'TOGGLE_TEAM_MEMBER',
                                     payload: member.id
-                                    })
+                                    })}
+                                    
                                 }
                                 />
                             ))

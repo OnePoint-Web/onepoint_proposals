@@ -40,20 +40,20 @@ export function proposalReducer(state, action) {
           ...state,
           packageType: 'Custom Package',
           proposalDescription: '',
+          slaPackage: 'Custom Package',
           proposedSolution: '',
           basePrice: 0,
           deals: [createDeal()]
         }
       }
 
-
       const deals = pkg.deals.map(d => ({ 
-        id: d.dealItemId,
+        id: d.dealItemId.toString(),
         item: d.dealItem,
         item_type: d.itemType,
         display_order: d.displayOrder,
           items: d.dealEntries.map(e => ({
-            id: e.itemEntryId,
+            id: e.itemEntryId.toString(),
             entry: e.itemEntry,
             order: e.displayOrder,
           }))
@@ -62,6 +62,7 @@ export function proposalReducer(state, action) {
       const newState = {
           ...state,
           packageType: pkg.title,
+          slaPackage: pkg.title,
           proposalDescription: pkg.description,
           proposedSolution: pkg.solution,
           basePrice: pkg.price,
@@ -77,13 +78,13 @@ export function proposalReducer(state, action) {
     case 'TOGGLE_TEAM_MEMBER': {
     const id = action.payload;
 
-    const exists = state.selectedTeamMembers.includes(id);
+    const exists = state.selectedMembers.some(member => member.memberId === id);
 
     return {
       ...state,
-      selectedTeamMembers: exists
-        ? state.selectedTeamMembers.filter(memberId => memberId !== id)
-        : [...state.selectedTeamMembers, id]
+      selectedMembers: exists
+        ? state.selectedMembers.filter(member => member.memberId !== id)
+        : [...state.selectedMembers, {memberId: id}]
     };
   }
 

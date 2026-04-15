@@ -3,7 +3,7 @@ export const createDeal = () => ({
     id: crypto.randomUUID(),
     item: '',
     item_type: 'Paragraph',
-    display_order: null,
+    display_order: 0,
     items: [createDealItem()]
             
 })
@@ -11,36 +11,34 @@ export const createDeal = () => ({
 export const createDealItem = () => ({
     id: crypto.randomUUID(),
     entry: '',
-    order: null
+    order: 0
 })
 
 export const createTimeline = () => (
     {
         id: crypto.randomUUID(),
-        timeframe: '',
-        progress: '',
-        assigned_to: '',
-        scopes: [createTimelineScope()]
+        timeFrame: '',
+        progress: 0,
+        assignedTo: 'OnePoint',
+        timelineScopeItems: [createTimelineScope()]
     }
 )
 
 export const createTimelineScope = () => ({
   id: crypto.randomUUID(),
-  description: '',
-  startDate: '',
-  endDate: ''
+  scope: '',
 })
 
 export const createItem = () => ({
     id: crypto.randomUUID(),
     item: '',
-    itemPrice: '',
+    itemPrice: 0,
     quantity: 1,
-    totalPrice: null,
-    discountType: '',
-    discountValue: null,
+    totalPrice: 0,
+    discountType: 'None',
+    discountValue: 0,
     discountDescription: '',
-    discountedTotal: null,
+    discountedTotal: 0,
     itemDescription: '',
     displayOrder: null
 })
@@ -49,31 +47,39 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
  
   const base = {
     id: crypto.randomUUID(),
-    clientId: '',
+    clientId: null,
     clientType,
     proposalTitle: '',
     proposalType,
-    proposalPackage: '',
     executiveSummary: '',
     goalsAndObjectives: '',
     execVideoUrl: '',
     proposedSolution: '',
     proposalDescription: '',
-    discountType: '',
-    discountValue: null,
+    timelines: [createTimeline()],
+    selectedMembers: [],
+
+    //if SLA Offer
+    //slaPackage
+    //basePrice
+    discountType: 'None',
+    discountValue: 0,
     discountDescription: '',
     taxableAmount: '',
     taxApplicable: true,
     taxRate: 10,
-    taxAmount: null,
+    taxAmount: 0,
     taxReason: '',
-    finalPrice: null,
+    finalPrice: 0,
     paymentTerms: '',
-    selectedTeamMembers: [],
-    timelines: [createTimeline()],
-
+    taxableAmount: 0,
+    
+    
+    // for service product proposal
+    subtotal: null, 
+    isMultipleChoice: false,
     // These fields are for UI only. Will not be passed to database
-    subtotal: null, //proposal subtotla/base price (depending if SLA or service/product proposal)
+    //proposal subtotla/base price (depending if SLA or service/product proposal)
     totalItemDiscount: null, //total APPLIED discount, not total discount amount
     baseAmount: null, //base amount of SLA proposal/ base total price of items in service/product proposal
     globalDiscountAmount: null, //applied global discount amount 
@@ -87,7 +93,7 @@ export const createInitialProposal = ({ proposalType, clientType }) => {
   if (proposalType === 'SLA Proposal') {
     return {
       ...base,
-      proposalPackage: '',
+      slaPackage: 'Custom Package',
       basePrice: 0,
       deals: [createDeal()],
     };
