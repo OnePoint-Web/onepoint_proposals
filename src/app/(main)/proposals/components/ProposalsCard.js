@@ -1,7 +1,9 @@
 "use client"
 import styles from './ProposalsCard.module.scss'
 import Button from '@/components/ui/button/Button.js'
+import {useRouter} from 'next/navigation'
 import {Icons} from '@/components/icons/icons.js'
+import { slugify } from 'zod'
 
 
 
@@ -12,6 +14,7 @@ export default function ProposalsCard(
         dateCreated,
         statusUpdateDate,
         type,
+        slug,
         clientId,
         client,
         clientEmail,
@@ -19,6 +22,7 @@ export default function ProposalsCard(
     }
 ){
 
+    const router = useRouter();
     const classStatus = status.toLowerCase();
 
     return(
@@ -36,7 +40,7 @@ export default function ProposalsCard(
                     <p>Created: <span>{dateCreated}</span></p>
 
                     {
-                        statusUpdateDate && (<p>Approved: <span>{statusUpdateDate}</span></p>)
+                        status === 5 && (<p>Approved: <span>{statusUpdateDate}</span></p>)
                         
                     }
                     
@@ -59,6 +63,7 @@ export default function ProposalsCard(
 
             <Button
                 label='View Proposal'
+                onClick={() => router.push(`/proposals/${slug}`)}
                 color='dark'
                 fit='full'
                 size='xxs'

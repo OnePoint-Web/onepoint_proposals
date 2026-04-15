@@ -1,11 +1,48 @@
+'use client'
 import styles from './page.module.scss'
 import ProposalsCard from './components/ProposalsCard.js'
 import ProposalSearch from './components/ProposalSearch.js'
 import Container from '@/components/layout/Container/Container.js'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout.js'
-
+import {useState, useEffect} from 'react'
 
 export default function CreateProposal({display}){
+    const [proposals, setProposals] = useState([])
+
+    const formatDate = (date) => {
+  if (!date) return null;
+
+  const d = new Date(date);
+
+  return d.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+}
+
+    useEffect(() => {
+        fetch('/api/proposals')
+        .then(res => res.json())
+        .then(data => {
+            const allProposals = data.map(proposal => ({
+                proposalId: proposal.proposalId,
+                slug: proposal.slug,
+                clientId: proposal.clientId,
+                proposalTitle: proposal.proposalTitle,
+                proposalStatus: proposal.proposalStatus.status,
+                proposalType: proposal.proposalType,
+                dateCreated: formatDate(proposal.dateCreated),
+                statusUpdated: formatDate(proposal.statusUpdated),
+                clientName: proposal.clientProfile.user.firstName + ' ' + proposal.clientProfile.user.lastName,
+                clientEmail: proposal.clientProfile.user.userEmail
+            }))
+            console.log(allProposals)
+            setProposals(allProposals)
+            
+        })
+    }, [])
+
     return(
 
         <ChildLayout>
@@ -14,63 +51,19 @@ export default function CreateProposal({display}){
             <Container>
                 
                 <div className={styles['card-container']}>
-
-                    <ProposalsCard
-                        title='FNCAquatics - Partnership Program'
-                        type='SLA Package'
-                        dateCreated='11/02/2026'
-                        statusUpdateDate='12/04/2026'
-                        client='Francis Norman'
-                        clientEmail='fnc1pt@gmail.com'
-                        status='Approved'
-                    />
-                    <ProposalsCard
-                        title="FNCAquatics – Supply Agreement"
-                        type="SLA Package"
-                        dateCreated="01/28/2026"
-                        statusUpdateDate="02/01/2026"
-                        client="Mark Villanueva"
-                        clientEmail="mark.v@example.com"
-                        status="Declined"
-                    />
-                    <ProposalsCard
-                        title="FNCAquatics – Retail Partnership"
-                        type="SLA Package"
-                        dateCreated="02/02/2026"
-                        
-                        client="Angela Reyes"
-                        clientEmail="angela.r@example.com"
-                        status="Published"
-                    />
-                    <ProposalsCard
-                        title="FNCAquatics – Maintenance Services"
-                        type="SLA Package"
-                        dateCreated="02/05/2026"
-                        statusUpdateDate="02/06/2026"
-                        client="Joshua Lim"
-                        clientEmail="joshua.lim@example.com"
-                        status="Pending"
-                    />
-
-                    <ProposalsCard
-                        title="FNCAquatics – Aquarium Setup Proposal"
-                        type="Custom Proposal"
-                        dateCreated="02/07/2026"
-                        statusUpdateDate="02/07/2026"
-                        client="Internal"
-                        clientEmail="—"
-                        status="Draft"
-                    />
-
-                    <ProposalsCard
-                        title="FNCAquatics – Long-Term Service Contract"
-                        type="SLA Package"
-                        dateCreated="02/08/2026"
-                        statusUpdateDate="02/09/2026"
-                        client="Paolo Santos"
-                        clientEmail="paolo.s@example.com"
-                        status="Viewed"
-                    />
+                    {proposals.map(p => (
+                        <ProposalsCard
+                            key={p.proposalId}
+                            title={p.proposalTitle}
+                            slug={p.slug}
+                            type={p.proposalType}
+                            dateCreated={p.dateCreated}
+                            statusUpdateDate={p.statusUpdated}
+                            client={p.clientName}
+                            clientEmail={p.clientEmail}
+                            status={p.proposalStatus}
+                        />
+                    ))}
         
                 </div>
             </Container>
