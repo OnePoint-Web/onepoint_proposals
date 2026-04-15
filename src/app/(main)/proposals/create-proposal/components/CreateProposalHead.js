@@ -11,7 +11,7 @@ export default function CreateProposalHead({proposalState, dispatch, errors}){
             .then(res => res.json())
             .then(data => {
                 const clientOptions = data.map(user => ({
-                    id: user.userId,
+                    id: user.clientProfiles[0].clientId,
                     name: user.firstName + ' ' + user.lastName,
                 }))
             setOptions(clientOptions)
@@ -52,7 +52,7 @@ export default function CreateProposalHead({proposalState, dispatch, errors}){
                         onSelect={(value) => {
                             dispatch({
                                 type: 'UPDATE_PROPOSAL_FIELD',
-                                payload: {clientId: value},
+                                payload: {clientId: Number(value)},
                             })
                         }}
                     />
