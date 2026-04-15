@@ -107,8 +107,8 @@ export async function GET(req){
                 accountStatus: true,
                 dateCreated: true,
                 clientProfiles: true,
-                    
             }     
+            
         })
 
         return NextResponse.json(client)
