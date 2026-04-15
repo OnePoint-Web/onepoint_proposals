@@ -15,23 +15,7 @@ const safeNumber = z.preprocess((val) => {
   return isNaN(num) ? undefined : num
 }, z.number())
 
-// const timelineScopeSchema = z.object({
-//       scope: z.string().optional(),
-//     })
 
-//   const scopesSchema = z
-//   .array(timelineScopeSchema)
-//   .transform(scopes =>
-//     scopes.filter(s =>
-//       s.scope?.trim()
-//     )
-//   )
-// const timelineSchema = z.object({
-//   timeFrame: z.string(),
-//   progress: safeNumber.optional(),
-//   assignedTo: z.string().min(1, 'Assign task'),
-//   timelineScopeItems: scopesSchema,
-// })
 const timelineSchema = z.object({
   timeFrame: z.string(),
   progress: safeNumber,
@@ -51,7 +35,6 @@ const timelinesSchema = z
   .transform(timelines =>
   (timelines ?? []).filter(t => t.timeFrame.trim() !== '')
 )
-
 
 const baseProposalSchema = z.object({
     clientId: z.coerce.number({
@@ -80,21 +63,13 @@ const baseProposalSchema = z.object({
     discountDescription: z.string().optional(),
     taxableAmount: safeNumber.optional(),
     isMultipleChoice: z.boolean(),
-    taxApplicable: z.preprocess(
-      (val) => {
-        if (val === '' || val === undefined) return undefined
-        if (val === 'YES') return true
-        if (val === 'NO') return false
-        return val
-      },
-      z.boolean().optional()
-    ),
+    taxApplicable: z.boolean().optional(),
     taxRate: safeNumber.optional(),
     taxAmount: safeNumber.optional(),
     taxReason: z.string().optional(),
     finalPrice: safeNumber.optional(),
     paymentTerms: z.string().optional(),
-    timelines: timelinesSchema.optional()
+    timelines: timelinesSchema.optional(),
     }).refine((data) => {
             if (!data.discountType) return true
             if (data.discountType === 'Percent') {
