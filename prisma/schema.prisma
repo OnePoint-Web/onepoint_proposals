@@ -128,7 +128,7 @@ model TeamMember{
   memberImage String
   description String
   isActive Boolean @default(true)
- deleted Boolean @default(false) //updated: add
+  deleted Boolean @default(false) //updated: add
   dateCreated DateTime @default(now())
   dateUpdated DateTime? @updatedAt
 

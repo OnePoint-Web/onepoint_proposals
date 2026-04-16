@@ -1,8 +1,11 @@
+'use client'
 import styles from './MemberCard.module.scss'
 
-export default function MemberCard({name, image, role, description}){
+export default function MemberCard({name, image, role, description, onClick}){
+    
+
     return(
-        <div className={styles['member-card']}>
+        <div className={styles['member-card']} onClick={onClick}>
             <img src={image}/>
 
             <div className={styles['card-details']}>
