@@ -1,0 +1,14 @@
+.member-container{
+    display: flex;
+    width: 100%;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-inline: 10px;
+    max-width: 1000px;
+    min-width: 280px;
+    gap: 30px;     
+}
