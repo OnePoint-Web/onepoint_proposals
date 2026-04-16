@@ -94,6 +94,9 @@
         min-height: 300px;
         background-color: var(--field-fill);
         color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         overflow: hidden;
 
         .budget-section-head{
@@ -101,6 +104,18 @@
             padding: 10px;
             width: 100%;
             border-bottom: 1px solid var(--field-stroke);
+
+            span{
+                font-weight: 500;
+                
+            }
+        }
+
+        .budget-section-foot{
+            font-size: var(--fs-xs);
+            padding: 10px;
+            width: 100%;
+            border-top: 1px solid var(--field-stroke);
 
             span{
                 font-weight: 500;
@@ -149,6 +164,24 @@
                         font-size: var(--fs-xs);
                     }
                 }
+        }
+    }
+
+
+    .approval-details{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        hr{
+            margin: 5px;
+        }
+        p{
+            font-size: var(--fs-xs);
+            color: var(--text-strong)
+        }
+        .head{
+            font-weight: 600;
         }
     }
 

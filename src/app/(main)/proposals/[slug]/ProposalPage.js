@@ -4,7 +4,10 @@ import ChildLayout from "@/components/layout/ChildLayout/ChildLayout";
 import Container from "@/components/layout/Container/Container.js"
 import MemberCard from '@/components/ui/member-card/MemberCard.js'
 import DOMPurify from 'dompurify'
- import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
+import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
+import ProposalPageHead from './components/ProposalPageHead'
+import ProposalPageFooter from './components/ProposalPageFooter'
+
 import {useMemo} from 'react'
 
 export default function ProposalPage({proposalData, slug}){
@@ -24,6 +27,11 @@ export default function ProposalPage({proposalData, slug}){
 
     return(
         <ChildLayout>
+
+            <ProposalPageHead
+                proposalData={proposalData}
+            />
+            
             <Container>
                 <div className={styles['proposal-container']}>
                     <h2>
@@ -181,10 +189,31 @@ export default function ProposalPage({proposalData, slug}){
                                         )
                                     })}
                                 </div>
+
+                                <p className={styles['budget-section-foot']}><span>{proposalData.description}</span></p>
                         </div>
+
+                        <hr></hr>
+
+                        <h2>
+                           Approval
+                        </h2>
+
+                        <div className={styles['approval-details']}>
+                            <p className={styles['head']}>{proposalData.proposalTitle}</p>
+                            <hr></hr>
+                            <p className={styles['head']}>Client Details</p>
+                            <p>Company: {proposalData.clientProfile.companyAddress}</p>
+                            <p>Client: {`${proposalData.clientProfile.user.firstName} ${proposalData.clientProfile.user.lastName}`}</p>
+                            <p>Email: {proposalData.clientProfile.user.userEmail}</p>
+                            <p>Website: {proposalData.clientProfile.website}</p>
+                        </div>
+                        
                     
                 </div>
             </Container>
+
+            <ProposalPageFooter/>
         </ChildLayout>
     )
 }

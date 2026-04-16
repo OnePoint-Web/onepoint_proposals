@@ -1,0 +1,78 @@
+.proposal-head-section{
+    align-items: end;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--text-strong);
+
+    &.center{
+        align-items: center;
+    }
+
+    h1{
+        color: var(--text-strong);
+        font-size: var(--fs-xl);
+        padding: 0;
+        font-weight: 600;
+    }
+
+    p{
+        font-size: var(--fs-xs);
+    }
+    .statuses{
+        font-weight: 500;
+        padding: 5px;
+        
+        .published{
+            color: rgb(71, 71, 171);
+        }
+
+        .sent{
+            color: rgb(51, 51, 232);
+        }
+
+        .viewed{
+            color: rgb(159, 176, 8);
+        }
+
+        .approved{
+            color: rgb(49, 196, 100);
+        }
+
+        .declined{
+            color: rgb(217, 70, 2);
+        }
+    }
+
+    .top-btn-box{
+        width: fit-content;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        margin-left: auto;
+    }
+
+    hr{
+        height: 100%;
+    }
+
+    .details-container{
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        gap: 5px;
+    }
+
+   
+    
+}
+
+ .note-message{
+        border: 1px solid rgb(237, 201, 133);
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: rgb(251, 251, 233);
+        color: rgb(216, 143, 6);
+        font-size: 12px;
+}
