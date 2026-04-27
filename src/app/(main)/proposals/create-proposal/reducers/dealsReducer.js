@@ -13,39 +13,39 @@ export const dealsReducer = (deals, action) => {
 
     case 'ADD_DEAL': {
       const updated = [...deals, createDeal()]
-       return recalcOrder(updated, "display_order")
+       return recalcOrder(updated, "displayOrder")
     }
         
 
     case 'REORDER_DEALS': {
-      const oldIndex = deals.findIndex(d => d.id === action.payload.activeId)
-      const newIndex = deals.findIndex(d => d.id === action.payload.overId)
+      const oldIndex = deals.findIndex(d => d.packageDealItemId === action.payload.activeId)
+      const newIndex = deals.findIndex(d => d.packageDealItemId === action.payload.overId)
       if (oldIndex === -1 || newIndex === -1) return deals
       const reordered = arrayMove(deals, oldIndex, newIndex)
-      return recalcOrder(reordered, "display_order")
+      return recalcOrder(reordered, "displayOrder")
     }
 
     case 'UPDATE_DEAL':
       return deals.map(deal =>
-        deal.id === action.payload.dealId
+        deal.packageDealItemId === action.payload.dealId
           ? { ...deal, ...action.payload.data }
           : deal
       )
 
     case 'ADD_ITEM':
       return deals.map(deal =>
-        deal.id === action.payload.dealId
-          ? { ...deal, items: recalcOrder([...deal.items, createDealItem()], "order") }
+        deal.packageDealItemId === action.payload.dealId
+          ? { ...deal, packageDealEntries: recalcOrder([...deal.packageDealEntries, createDealItem()], "displayOrder") }
           : deal
       )
 
     case 'UPDATE_ITEM':
       return deals.map(deal =>
-        deal.id === action.payload.dealId
+        deal.packageDealItemId === action.payload.dealId
           ? {
               ...deal,
-              items: deal.items.map(item =>
-                item.id === action.payload.itemId
+              packageDealEntries: deal.packageDealEntries.map(item =>
+                item.itemEntryId === action.payload.itemId
                   ? { ...item, ...action.payload.data }
                   : item
               )
@@ -56,26 +56,26 @@ export const dealsReducer = (deals, action) => {
     case 'REORDER_ITEMS': {
       const { dealId, activeId, overId } = action.payload
       return deals.map(deal => {
-        if (deal.id !== dealId) return deal
+        if (deal.packageDealItemId !== dealId) return deal
 
-        const oldIndex = deal.items.findIndex(i => i.id === activeId)
-        const newIndex = deal.items.findIndex(i => i.id === overId)
+        const oldIndex = deal.packageDealEntries.findIndex(i => i.itemEntryId === activeId)
+        const newIndex = deal.packageDealEntries.findIndex(i => i.itemEntryId === overId)
         if (oldIndex === -1 || newIndex === -1) return deal
 
         const reorderedItems = arrayMove(deal.items, oldIndex, newIndex)
-        return { ...deal, items: recalcOrder(reorderedItems, "order") }
+        return { ...deal, packageDealEntries: recalcOrder(reorderedItems, "displayOrder") }
       })
     }
 
     case 'DELETE_DEAL': {
-      const filtered = deals.filter(d => d.id !== action.payload.dealId)
-      return recalcOrder(filtered, "display_order")
+      const filtered = deals.filter(d => d.packageDealItemId !== action.payload.dealId)
+      return recalcOrder(filtered, "displayOrder")
     }
 
     case 'DELETE_ITEM':
     return deals.map(deal =>
-      deal.id === action.payload.dealId
-        ? { ...deal, items: recalcOrder(deal.items.filter(i => i.id !== action.payload.itemId), "order") }
+      deal.packageDealItemId === action.payload.dealId
+        ? { ...deal, packageDealEntries: recalcOrder(deal.packageDealEntries.filter(i => i.itemEntryId !== action.payload.itemId), "order") }
         : deal
     )
 

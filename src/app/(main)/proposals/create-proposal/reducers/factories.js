@@ -1,22 +1,31 @@
 export const createDeal = () => ({
 
-    id: crypto.randomUUID(),
+    packageDealItemId: crypto.randomUUID(),
     item: '',
-    item_type: 'Paragraph',
-    display_order: 0,
-    items: [createDealItem()]
+    itemType: 'Paragraph',
+    displayOrder: 0,
+    packageDealEntries: [createDealItem()]
+    // id: crypto.randomUUID(),
+    // item: '',
+    // item_type: 'Paragraph',
+    // display_order: 0,
+    // items: [createDealItem()]
             
 })
 
 export const createDealItem = () => ({
-    id: crypto.randomUUID(),
-    entry: '',
-    order: 0
+    itemEntryId: crypto.randomUUID(),
+    itemEntry: '',
+    displayOrder: 0
+
+    // id: crypto.randomUUID(),
+    // entry: '',
+    // order: 0
 })
 
 export const createTimeline = () => (
     {
-        id: crypto.randomUUID(),
+        timelineId: crypto.randomUUID(),
         timeFrame: '',
         progress: 0,
         assignedTo: 'OnePoint',
@@ -25,7 +34,7 @@ export const createTimeline = () => (
 )
 
 export const createTimelineScope = () => ({
-  id: crypto.randomUUID(),
+  scopeItemId: crypto.randomUUID(),
   scope: '',
 })
 

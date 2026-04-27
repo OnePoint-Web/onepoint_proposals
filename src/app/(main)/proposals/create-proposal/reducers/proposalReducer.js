@@ -48,14 +48,14 @@ export function proposalReducer(state, action) {
       }
 
       const deals = pkg.deals.map(d => ({ 
-        id: d.dealItemId.toString(),
+        packageDealItemId: d.dealItemId.toString(),
         item: d.dealItem,
-        item_type: d.itemType,
-        display_order: d.displayOrder,
-          items: d.dealEntries.map(e => ({
-            id: e.itemEntryId.toString(),
-            entry: e.itemEntry,
-            order: e.displayOrder,
+        itemType: d.itemType,
+        displayOrder: d.displayOrder,
+          packageDealEntries: d.dealEntries.map(e => ({
+            itemEntryId: e.itemEntryId.toString(),
+            itemEntry: e.itemEntry,
+            displayOrder: e.displayOrder,
           }))
       }))
 

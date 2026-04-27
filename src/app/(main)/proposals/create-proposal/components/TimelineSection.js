@@ -20,11 +20,11 @@ export default function TimelineSection({timelines, dispatch, errors}){
 
                     {timelines.map(item => (
                         <TimelineItem 
-                           key={item.id} 
-                            id={item.id}
+                           key={item.timelineId} 
+                            id={item.timelineId}
                             errors={errors}
                             scopes={item.timelineScopeItems}
-                            addScope={() => addScope(item.id)}
+                            addScope={() => addScope(item.timelineId)}
                             dispatch={dispatch}
                         />
                     ))}

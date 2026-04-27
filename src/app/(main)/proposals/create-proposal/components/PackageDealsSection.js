@@ -33,14 +33,14 @@ export default function PackageDealsSection({deals, dispatch}){
         <div className={styles['child-container']}>
                         
             <DndContext onDragEnd={handleDragEnd}>
-                <SortableContext items={deals.map(i => i.id)}>
+                <SortableContext items={deals.map(i => i.packageDealItemId)}>
                     {deals.map(item => (
                         <PackageDeal 
-                            key={item.id} 
-                            id={item.id}
+                            key={item.packageDealItemId} 
+                            id={item.packageDealItemId}
                             deal={item}
-                            dealItems={item.items}
-                            addListItem={() => addListItem(item.id)}
+                            dealItems={item.packageDealEntries}
+                            addListItem={() => addListItem(item.packageDealItemId)}
                             dispatch={dispatch}
                         />
                     ))}

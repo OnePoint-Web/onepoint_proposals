@@ -15,25 +15,25 @@ export const timelineReducer = (timelines, action) => {
 
     case 'UPDATE_TIMELINE':
       return timelines.map(t =>
-        t.id === action.payload.timelineId
+        t.timelineId === action.payload.timelineId
           ? { ...t, ...action.payload.data }
           : t
       )
 
     case 'ADD_SCOPE':
       return timelines.map(t =>
-        t.id === action.payload.timelineId
+        t.timelineId === action.payload.timelineId
           ? { ...t, timelineScopeItems: recalcOrder([...t.timelineScopeItems, createTimelineScope()], "order") }
           : t
       )
 
     case 'UPDATE_SCOPE':
       return timelines.map(t =>
-        t.id === action.payload.timelineId
+        t.timelineId === action.payload.timelineId
           ? {
               ...t,
               timelineScopeItems: t.timelineScopeItems.map(scope =>
-                scope.id === action.payload.scopeId
+                scope.scopeItemId === action.payload.scopeId
                   ? { ...scope, ...action.payload.data }
                   : scope
               )
@@ -44,10 +44,10 @@ export const timelineReducer = (timelines, action) => {
     case 'REORDER_SCOPE': {
       const { timelineId, activeId, overId } = action.payload
       return timelines.map(t => {
-        if (t.id !== timelineId) return t
+        if (t.timelineId !== timelineId) return t
 
-        const oldIndex = t.timelineScopeItems.findIndex(s => s.id === activeId)
-        const newIndex = t.timelineScopeItems.findIndex(s => s.id === overId)
+        const oldIndex = t.timelineScopeItems.findIndex(s => s.scopeItemId === activeId)
+        const newIndex = t.timelineScopeItems.findIndex(s => s.scopeItemId === overId)
         if (oldIndex === -1 || newIndex === -1) return t
 
         const reorderedScopes = arrayMove(t.timelineScopeItems, oldIndex, newIndex)
@@ -56,14 +56,14 @@ export const timelineReducer = (timelines, action) => {
     }
 
     case 'DELETE_TIMELINE': {
-      const filtered = timelines.filter(t => t.id !== action.payload.timelineId)
+      const filtered = timelines.filter(t => t.timelineId !== action.payload.timelineId)
       return recalcOrder(filtered, "display_order")
     }
 
     case 'DELETE_SCOPE':
       return timelines.map(t =>
-        t.id === action.payload.timelineId
-          ? { ...t, timelineScopeItems: recalcOrder(t.timelineScopeItems.filter(s => s.id !== action.payload.scopeId), "order") }
+        t.timelineId === action.payload.timelineId
+          ? { ...t, timelineScopeItems: recalcOrder(t.timelineScopeItems.filter(s => s.scopeItemId !== action.payload.scopeId), "order") }
           : t
       )
 

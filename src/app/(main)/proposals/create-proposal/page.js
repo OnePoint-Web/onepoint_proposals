@@ -48,39 +48,70 @@ export default function CreateProposal(){
     }
 
     const prepareProposalItemsForSubmit = (type, itemState) => {
-
-        if(type === 'DEALS'){
+         if(type === 'DEALS'){
         return itemState.map((deal, dealIndex) => ({
                 ...deal,
-                display_order: dealIndex + 1,
-                items: deal.items.map((item, itemIndex) => ({
-                ...item,
-                order: itemIndex + 1
-                }))
-            }));
-        } else if(type === 'ITEMS') {
-            return itemState.map((item, itemIndex) => ({
-                ...item,
-                displayOrder: itemIndex + 1
-            }));
-        }
+                displayOrder: dealIndex + 1,
+                packageDealEntries: deal.packageDealEntries.map((item, itemIndex) => ({
+                    ...item,
+                    displayOrder: itemIndex + 1
+                    })) 
+                }));
+            } else if(type === 'ITEMS') {
+                return itemState.map((item, itemIndex) => ({
+                    ...item,
+                    displayOrder: itemIndex + 1
+                }));
+            }
+
+        // if(type === 'DEALS'){
+        // return itemState.map((deal, dealIndex) => ({
+        //         ...deal,
+        //         display_order: dealIndex + 1,
+        //         items: deal.items.map((item, itemIndex) => ({
+        //         ...item,
+        //         order: itemIndex + 1
+        //         }))
+        //     }));
+        // } else if(type === 'ITEMS') {
+        //     return itemState.map((item, itemIndex) => ({
+        //         ...item,
+        //         displayOrder: itemIndex + 1
+        //     }));
+        // }
         }
 
     const cleanDeals = (dealsState) => {
-    return dealsState
+
+         return dealsState
         .map(deal => ({
             ...deal,
             item: deal.item?.trim(),
-            items: (deal.items || [])
+            packageDealEntries: (deal.packageDealEntries || [])
                 .map(item => ({
                     ...item,
-                    entry: item.entry?.trim()
+                    itemEntry: item.itemEntry?.trim()
                 }))
-                .filter(item => item.entry) // remove empty entries
+                .filter(item => item.itemEntry) // remove empty entries
         }))
         .filter(deal => 
-            deal.item && deal.items.length > 0 // remove empty deals
+            deal.item && deal.packageDealEntries.length > 0 // remove empty deals
         )
+
+    // return dealsState
+    //     .map(deal => ({
+    //         ...deal,
+    //         item: deal.item?.trim(),
+    //         items: (deal.items || [])
+    //             .map(item => ({
+    //                 ...item,
+    //                 entry: item.entry?.trim()
+    //             }))
+    //             .filter(item => item.entry) // remove empty entries
+    //     }))
+    //     .filter(deal => 
+    //         deal.item && deal.items.length > 0 // remove empty deals
+    //     )
     }
 
     const cleanItems = (itemsState) => {
@@ -152,13 +183,13 @@ export default function CreateProposal(){
 
             cleanProposalItemPayload = prepareProposalItemsForSubmit('DEALS', cleanedDeals).map(deal => ({
                 item: deal.item,
-                itemType: deal.item_type,
-                displayOrder: deal.display_order,
-                packageDealEntries: deal.items.length > 0
+                itemType: deal.itemType,
+                displayOrder: deal.displayOrder,
+                packageDealEntries: deal.packageDealEntries.length > 0
                     ? {
-                        create: deal.items.map(item => ({
-                            itemEntry: item.entry,
-                            displayOrder: item.order
+                        create: deal.packageDealEntries.map(item => ({
+                            itemEntry: item.itemEntry,
+                            displayOrder: item.displayOrder
                         }))
                     }
                     : {}
