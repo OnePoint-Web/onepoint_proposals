@@ -9,9 +9,9 @@ const safeNumber = z.preprocess((val) => {
 }, z.number())
 
 export const dealItemSchema = z.object({
-  id: z.string(),
-  entry: z.string(),
-  order: safeNumber.optional()
+  itemEntryId: z.string(),
+  itemEntry: z.string(),
+  displayOrder: safeNumber.optional()
 }).refine(
   data => data.entry?.trim() !== '' || data.order != null,
   {
@@ -21,15 +21,15 @@ export const dealItemSchema = z.object({
 )
 
 export const dealSchema = z.object({
-  id: z.string(),
+  packageDealItemId: z.string(),
   item: z.string(),
-  item_type: z.string().optional(),
-  display_order: safeNumber.optional(),
-  items: z.array(dealItemSchema).transform(items =>
-    items.filter(item => item.entry?.trim() || item.order != null)
+  itemType: z.string().optional(),
+  displayOrder: safeNumber.optional(),
+  packageDealEntries: z.array(dealItemSchema).transform(items =>
+    items.filter(item => item.itemEntry?.trim() || item.displayOrder != null)
   )
 }).refine(
-  data => data.item?.trim() !== '' || (data.items?.length > 0),
+  data => data.item?.trim() !== '' || (data.packageDealEntries?.length > 0),
   {
     message: 'Empty deal row',
     path: ['item'],
@@ -37,5 +37,5 @@ export const dealSchema = z.object({
 )
 
 export const dealsSchema = z.array(dealSchema).transform(deals =>
-  deals.filter(deal => deal.item?.trim() || (deal.items?.length > 0))
+  deals.filter(deal => deal.item?.trim() || (deal.packageDealEntries?.length > 0))
 )
