@@ -48,7 +48,7 @@ export default function PackageDeal({dealItems, deal, id, dispatch}){
                 <Input
                     label='Deal Item type:'
                     type='select'
-                    value={deal.item_type}
+                    value={deal.itemType}
                     values={[
                             {id: 'Paragraph', name: 'Paragraph'}, 
                             {id: 'List', name: 'List'}
@@ -56,7 +56,7 @@ export default function PackageDeal({dealItems, deal, id, dispatch}){
                     onChange={(e) => {
                         dispatch({
                             type: 'UPDATE_DEAL',
-                            payload: { dealId: id, data: {item_type: e.target.value, items: [{id: crypto.randomUUID(), order: 1}]} }
+                            payload: { dealId: id, data: {itemType: e.target.value, packageDealEntries: [{itemEntryId: crypto.randomUUID(), displayOrder: 1}]} }
                         })
                     }}
                 />
@@ -65,9 +65,9 @@ export default function PackageDeal({dealItems, deal, id, dispatch}){
 
             {deal.item_type === 'Paragraph' ? (
                 <SingleItem
-                    itemId={dealItems[0].id}
+                    itemId={dealItems[0].itemEntryId}
                     dispatch={dispatch}
-                    value={dealItems[0].entry}
+                    value={dealItems[0].itemEntry}
                     dealId={id}
                 />
             ) :
@@ -108,7 +108,7 @@ const SingleItem = ({itemId, dispatch, dealId, value}) => {
                 onChange={(e) => {
                     dispatch({
                         type: 'UPDATE_ITEM',
-                          payload: { dealId: dealId, itemId: itemId, data: {entry: e.target.value }}
+                          payload: { dealId: dealId, itemId: itemId, data: {itemEntry: e.target.value }}
 
                     })
                 }}

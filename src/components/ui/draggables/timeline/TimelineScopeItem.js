@@ -39,15 +39,15 @@ export default function TimelineScopeItem({ scopes, timelineId, dispatch }) {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <SortableContext items={scopes.map(i => i.id)}>
+      <SortableContext items={scopes.map(i => i.scopeItemId)}>
         <div className={styles['item-container']}>
           <label>Scope:</label>
 
           {scopes.map(item => (
             <SortableItem 
-              key={item.id} 
+              key={item.scopeItemId} 
               scope={item} 
-              deleteScope={() => deleteScope(item.id)}
+              deleteScope={() => deleteScope(item.scopeItemId)}
               dispatch={dispatch}
               timelineId={timelineId}/>
           ))}
@@ -63,7 +63,7 @@ export default function TimelineScopeItem({ scopes, timelineId, dispatch }) {
 
 // Each list item
 function SortableItem({ scope, deleteScope, dispatch, timelineId }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: scope.id })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: scope.scopeItemId })
   const style = { transform: CSS.Transform.toString(transform), transition }
 
   return (
@@ -75,7 +75,7 @@ function SortableItem({ scope, deleteScope, dispatch, timelineId }) {
         onChange={(e) =>
           dispatch({
             type: 'UPDATE_SCOPE',
-            payload: { timelineId, scopeId: scope.id, data: { scope: e.target.value } }
+            payload: { timelineId, scopeId: scope.scopeItemId, data: { scope: e.target.value } }
           })
         }
         />

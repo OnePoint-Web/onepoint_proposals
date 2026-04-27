@@ -39,15 +39,15 @@ export default function InclusionsItem({ listItems, dealId, dispatch }) {
 
   return (
     <DndContext onDragEnd={handleDragEnd}>
-      <SortableContext items={listItems.map(i => i.id)}>
+      <SortableContext items={listItems.map(i => i.itemEntryId)}> 
         <div className={styles['item-container']}>
           <label>Item Inclusions/Scope:</label>
 
           {listItems.map(item => (
             <SortableItem 
-              key={item.id} 
+              key={item.itemEntryId} 
               item={item} 
-              deleteItem={() => deleteItem(item.id)}
+              deleteItem={() => deleteItem(item.itemEntryId)}
               dispatch={dispatch}
               dealId={dealId}/>
           ))}
@@ -63,7 +63,7 @@ export default function InclusionsItem({ listItems, dealId, dispatch }) {
 
 // Each list item
 function SortableItem({ item, deleteItem, dispatch, dealId }) {
-  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.id })
+  const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: item.itemEntryId }) // to change to item.itemEntryId
   const style = { transform: CSS.Transform.toString(transform), transition }
 
   return (
@@ -71,12 +71,12 @@ function SortableItem({ item, deleteItem, dispatch, dealId }) {
       <Input 
         hideLabel
         type='text'
-        value={item.entry || ''}
+        value={item.itemEntry || ''} // to change to item.itemEntry
         width="full"  
         onChange={(e) =>
           dispatch({
             type: 'UPDATE_ITEM',
-            payload: { dealId, itemId: item.id, data: { entry: e.target.value } }
+            payload: { dealId, itemId: item.itemEntryId, data: { itemEntry: e.target.value } } // to change to itemEntry: e.target.value and item.itemEntryId
           })
         }
         />
