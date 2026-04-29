@@ -1,8 +1,8 @@
-import styles from '../components.module.scss'
+import styles from './components.module.scss'
 import TimelineItem from '@/components/ui/draggables/timeline/TimelineItem'
 import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemButton.js'
 
-export default function TimelineSection({timelines, dispatch, errors}){
+export default function EditTimelineSection({timelines, dispatch, errors}){
 
     const addTimeline = () => {
         dispatch({ type: 'ADD_TIMELINE' })
@@ -20,11 +20,11 @@ export default function TimelineSection({timelines, dispatch, errors}){
 
                     {timelines.map(item => (
                         <TimelineItem 
-                           key={item.id} 
-                            id={item.id}
+                           key={item.timelineId} 
+                            id={item.timelineId}
                             errors={errors}
                             scopes={item.timelineScopeItems}
-                            addScope={() => addScope(item.id)}
+                            addScope={() => addScope(item.timelineId)}
                             dispatch={dispatch}
                         />
                     ))}
