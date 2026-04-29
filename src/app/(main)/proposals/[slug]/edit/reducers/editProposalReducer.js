@@ -1,5 +1,6 @@
 import {calculateProposalPricing} from '@/modules/pricing/calculateProposalPricing'
 import { dealsReducer } from './editDealsReducer'
+import {timelinesReducer} from  './editTimelineReducer'
 
 export const createDeal = () => ({
     packageDealItemId: crypto.randomUUID(),
@@ -31,6 +32,7 @@ export const createTimeline = () => (
 export const createTimelineScope = () => ({
   scopeItemId: crypto.randomUUID(),
   scope: '',
+  order: 0,
 })
 
 export const createItem = () => ({
@@ -52,8 +54,57 @@ export function editProposalReducer(state, action){
     switch(action.type) {
 
         case 'INITIALIZE': {
-             return action.payload;
+             const payloadState = action.payload;
+
+             const pricing = calculateProposalPricing({
+                proposalType: payloadState.proposalType,
+                items: payloadState.offer.offerEntries,
+                discountType: payloadState.offer.discountType,
+                discountValue: payloadState.offer.discountValue,
+                taxApplicable: payloadState.offer.taxApplicable,
+                taxRate: payloadState.offer.taxRate,
+                basePrice: payloadState.offer.basePrice,
+             })
+
+             const initialState = {
+                ...payloadState,
+                offer: {
+                    ...payloadState.offer,
+                    ...pricing
+                }
+             }
+
+             return initialState
         }
+
+        case 'SET_CLIENT_TYPE': {
+            
+            const payload = action.payload
+            const isTaxable = payload === 'Taxable'
+
+            const pricing = calculateProposalPricing({
+                proposalType: state.proposalType,
+                items: state.offer.offerEntries,
+                discountType: state.offer.discountType,
+                discountValue: state.offer.discountValue,
+                taxApplicable: state.offer.taxApplicable,
+                taxRate: isTaxable ? 10 : 0,
+                basePrice: state.offer.basePrice,
+             })
+
+             const newState = {
+                ...state,
+                clientType: {...payload},
+                offer: {
+                    ...state.offer,
+                    ...pricing
+                }
+             }
+
+             return newState
+            }
+
+            
 
         case 'SELECT_PACKAGE': {
 
@@ -131,6 +182,16 @@ export function editProposalReducer(state, action){
             return newState;
         }
 
+        case 'UPDATE_PROPOSAL_FIELD': {
+
+            const newState = {
+                ...state,
+                ...action.payload
+            }
+
+            return newState
+        }
+
         case 'UPDATE_PRICING_FIELD': {
         const payload = action.payload;
 
@@ -174,6 +235,25 @@ export function editProposalReducer(state, action){
             }
         }
 
+        case 'TOGGLE_TEAM_MEMBER': {
+            const id = action.payload.memberId;
+
+            const exists = state.selectedMembers.some(member => member.memberId === id);
+
+            return {
+            ...state,
+            selectedMembers: exists
+                ? state.selectedMembers.filter(member => member.memberId !== id)
+                : [...state.selectedMembers, {memberId: id, teamMember: {
+                    memberName: action.payload.memberName,
+                    memberImage: action.payload.memberImage,    
+                    memberRole: action.payload.memberRole,
+                    description: action.payload.description
+                }}]
+            };
+        }
+
+
         default:{
             const isItemProposal =
               state.proposalType === 'Product Proposal' ||
@@ -197,7 +277,7 @@ export function editProposalReducer(state, action){
                 ...(isItemProposal && { offerEntries: updatedItems }),
                
                 },
-                // timelines: timelineReducer(state.timelines, action),
+                timelines: timelinesReducer(state.timelines, action),
               }
         
               const needsPricingUpdate =
