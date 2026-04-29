@@ -62,7 +62,7 @@ export const dealsReducer = (deals, action) => {
         const newIndex = deal.packageDealEntries.findIndex(i => i.itemEntryId === overId)
         if (oldIndex === -1 || newIndex === -1) return deal
 
-        const reorderedItems = arrayMove(deal.items, oldIndex, newIndex)
+        const reorderedItems = arrayMove(deal.packageDealEntries, oldIndex, newIndex)
         return { ...deal, packageDealEntries: recalcOrder(reorderedItems, "displayOrder") }
       })
     }
