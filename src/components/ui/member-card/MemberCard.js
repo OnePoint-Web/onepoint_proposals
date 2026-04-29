@@ -1,12 +1,25 @@
 'use client'
 import styles from './MemberCard.module.scss'
+import {Icons} from '@/components/icons/icons'
 
-export default function MemberCard({name, image, role, description, onClick}){
+const DeleteIcon = Icons.delete
+
+export default function MemberCard({name, image, role, description, onClick, onDelete}){
     
 
     return(
         <div className={styles['member-card']} onClick={onClick}>
             <img src={image}/>
+
+            {onDelete && (
+                <div className={styles['buttons-container']}>
+
+                    <div className={styles['delete-btn']} onClick={onDelete}>
+                        <DeleteIcon className={styles['icon']}/>
+                    </div>
+
+                </div>
+            )}
 
             <div className={styles['card-details']}>
                 <p className={styles.name}>{name}</p>

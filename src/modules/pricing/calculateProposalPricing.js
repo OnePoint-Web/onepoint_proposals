@@ -10,7 +10,6 @@ export function calculateProposalPricing({
   taxApplicable,
   taxRate,
   basePrice,
-
 }) {
 
   console.log(basePrice, proposalType)
