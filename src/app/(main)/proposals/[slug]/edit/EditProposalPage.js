@@ -1,19 +1,24 @@
 'use client'
 import styles from './page.module.scss'
-import ChildLayout from "@/components/layout/ChildLayout/ChildLayout"
 import Container from "@/components/layout/Container/Container"
 import Input from '@/components/ui/input/Input.js'
 import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
 import VideoPlayer from '@/components/ui/video-player/VideoPlayer.js'
 import EditDealsSection from './components/EditDealsSection'
+import EditTimelineSection from './components/EditTimelinesSection'
+import EditTeamSection from './components/EditTeamSection'
+import BudgetSection from './components/BudgetSection'
+
 
 import {editProposalReducer} from './reducers/editProposalReducer'
 import {useState, useEffect, useReducer} from 'react'
+
 
 export default function EditProposalPage({proposalData}){
 
     const [packages, setPackages] = useState([])
     const [proposalState, dispatch] = useReducer(editProposalReducer, null)
+    const [clientDetails, setClientDetails] = useState({})
 
     useEffect(() => {
         fetch('/api/packages')
@@ -65,6 +70,7 @@ export default function EditProposalPage({proposalData}){
                 timelineScopeItems: t.timelineScopeItems.map(s => ({
                     scopeItemId: s.scopeItemId,
                     scope: s.scope,
+                    order: s.order,
                     _status: 'existing'
                 })),
                 _status: 'existing'
@@ -133,12 +139,23 @@ export default function EditProposalPage({proposalData}){
             }
         }
 
+        const clientState = {
+            clientName: proposalData.clientProfile.user.firstName + ' ' + proposalData.clientProfile.user.lastName,
+            email: proposalData.clientProfile.user.userEmail,
+            companyName: proposalData.clientProfile.companyName,
+            companyAddress: proposalData.clientProfile.companyAddress,
+            companyEmail: proposalData.clientProfile.companyEmail,
+            companyWebsite: proposalData.clientProfile.website,
+        }
+
+        setClientDetails(clientState)
+
          dispatch({ type: 'INITIALIZE', payload: initialState });
     }, [proposalData])
 
 
     useEffect(() => {
-        console.log('PROPOSALSTATE', proposalState)
+        console.log('PROPOSALSTATE', proposalData)
     }, [proposalState])
 
 
@@ -157,8 +174,38 @@ export default function EditProposalPage({proposalData}){
                     <Input 
                         label='Edit proposal title:'
                         width='full'
+                        placeholder='Enter new proposal title here...'
                     />
+
+                   
                 </div>
+
+                 <hr></hr>
+
+               
+                <div className={styles['title-section']}>
+
+                    <p className={styles['title-head']}> Client Details:</p>
+                    <div className={styles['client-details']}>
+                        <div className={styles['details-container']}>
+                            <p>{proposalData.proposalType}</p>
+                            <p>{clientDetails.clientName}</p>
+                            <p>{clientDetails.email}</p>
+                        </div>
+
+                            <hr></hr>
+                        
+                        <div className={styles['details-container']}>
+                            <p>Company Email: {clientDetails.companyEmail}</p>
+                            <p>{clientDetails.companyName}</p>
+                            <p>Website: {clientDetails.companyWebsite}</p>
+                            <p>Address: {clientDetails.companyAddress}</p>
+                        </div>
+                        
+                    </div>
+
+                </div>
+                
 
             </Container>
 
@@ -196,10 +243,7 @@ export default function EditProposalPage({proposalData}){
                                 width='full'
                             />
                         </div>
-
-                        
                     </div>
-                    
 
                     <hr></hr>
 
@@ -209,8 +253,7 @@ export default function EditProposalPage({proposalData}){
                         onChange={(html) => {
                         dispatch({
                                 type: 'UPDATE_PROPOSAL_FIELD',
-                                payload: {executiveSummary: html},
-                            
+                                payload: {goalsAndObjectives: html},
                             })
                         }}
                     />
@@ -219,13 +262,11 @@ export default function EditProposalPage({proposalData}){
 
                     <p>Proposed Solution</p>
                     <RichTextEditor
-                    
                         value={proposalState.proposedSolution}
                         onChange={(html) => {
                         dispatch({
                                 type: 'UPDATE_PROPOSAL_FIELD',
-                                payload: {executiveSummary: html},
-                            
+                                payload: {proposedSolution: html},
                             })
                         }}
                     />
@@ -233,43 +274,76 @@ export default function EditProposalPage({proposalData}){
                     <hr></hr>
                     <p>Description</p>
                     <Input
-                    value={proposalState.proposalDescription}
-                    onChange={() => {}}
-                    label='Description:'
-                    width='full'
-                    type='textarea'
-                    hideLabel='true'
-                    />
-
-                     <p>Payment Terms</p>
-                    <Input
-                    value={proposalState.offer.paymentTerms}
-                    onChange={() => {}}
-                    label='Payment Terms:'
-                    hideLabel='true'
-                    width='full'
-                    type='textarea'
+                        value={proposalState.proposalDescription}
+                        onChange={(e) => {
+                            console.log('type')
+                            dispatch({
+                                type: 'UPDATE_PROPOSAL_FIELD',
+                                payload: {proposalDescription: e.target.value }
+                            })
+                        }}
+                        label='Description:'
+                        width='full'
+                        type='textarea'
+                        hideLabel='true'
                     />
 
                      <hr></hr>
                     <p>Proposal Inclusions</p>
-                        <EditDealsSection deals={proposalState.offer.packageDealItem} dispatch={dispatch}/>
+                        {proposalData.proposalType === 'SLA Proposal' ? (
+                            <EditDealsSection deals={proposalState.offer.packageDealItem} dispatch={dispatch}/>
+                        )
+                        : (
+                            ''
+                        )}
+                        
+                    
                     <hr></hr>
 
                     <p>Timeline</p>
 
+
+                        <EditTimelineSection
+                            timelines={proposalState.timelines}
+                            dispatch={dispatch}
+                        />
                      
                     
                      <hr></hr>
 
-                    
-
                     <p>Team</p>
-                    
+                        
+                        <EditTeamSection
+                            dispatch={dispatch}
+                            membersState={proposalState.selectedMembers}
+                        />
 
                     <hr></hr>
 
                     <p>Budget</p>
+
+                        <BudgetSection
+                            proposalState={proposalState}
+                            dispatch={dispatch}
+                        />
+
+                        <hr></hr>
+
+                    <p>Payment Terms</p>
+                    <Input
+                        value={proposalState.offer.paymentTerms}
+                        onChange={(e) => {
+                            dispatch({
+                                type: 'UPDATE_PRICING_FIELD',
+                                payload: {paymentTerms: e.target.value }
+                            })
+                        }}
+                        label='Payment Terms:'
+                        hideLabel='true'
+                        width='full'
+                        type='textarea'
+                    />
+
                 </div>
 
             </Container>
