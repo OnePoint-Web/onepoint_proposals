@@ -63,22 +63,6 @@ export default function CreateProposal(){
                     displayOrder: itemIndex + 1
                 }));
             }
-
-        // if(type === 'DEALS'){
-        // return itemState.map((deal, dealIndex) => ({
-        //         ...deal,
-        //         display_order: dealIndex + 1,
-        //         items: deal.items.map((item, itemIndex) => ({
-        //         ...item,
-        //         order: itemIndex + 1
-        //         }))
-        //     }));
-        // } else if(type === 'ITEMS') {
-        //     return itemState.map((item, itemIndex) => ({
-        //         ...item,
-        //         displayOrder: itemIndex + 1
-        //     }));
-        // }
         }
 
     const cleanDeals = (dealsState) => {
@@ -97,32 +81,17 @@ export default function CreateProposal(){
         .filter(deal => 
             deal.item && deal.packageDealEntries.length > 0 // remove empty deals
         )
-
-    // return dealsState
-    //     .map(deal => ({
-    //         ...deal,
-    //         item: deal.item?.trim(),
-    //         items: (deal.items || [])
-    //             .map(item => ({
-    //                 ...item,
-    //                 entry: item.entry?.trim()
-    //             }))
-    //             .filter(item => item.entry) // remove empty entries
-    //     }))
-    //     .filter(deal => 
-    //         deal.item && deal.items.length > 0 // remove empty deals
-    //     )
     }
 
     const cleanItems = (itemsState) => {
         return itemsState
             .map(item => ({
                 ...item,
-                item: item.item?.trim(),
+                item: item.serviceProductItem?.trim(),
                 description: item.itemDescription?.trim() || '',
-                price: Number(item.itemPrice) ?? 0,
+                itemPrice: Number(item.itemPrice) ?? 0,
                 quantity: Number(item.quantity),
-                discountValue: Number(item.discountValue) ?? 0
+                itemDiscountValue: Number(item.itemDiscountValue) ?? 0
             })
             )
             .filter(item => item.item)
@@ -218,12 +187,12 @@ export default function CreateProposal(){
 
                 cleanProposalItemPayload = prepareProposalItemsForSubmit('ITEMS', cleanedItems).map(item => ({
                     serviceProductItem: item.item,
-                    itemPrice: item.price,
+                    itemPrice: item.itemPrice,
                     quantity: item.quantity,
                     totalPrice: item.totalPrice,
-                    itemDiscountType: item.discountType,
-                    itemDiscountValue: item.discountValue,
-                    itemDiscountDescription: item.discountDescription,
+                    itemDiscountType: item.itemDiscountType,
+                    itemDiscountValue: item.itemDiscountValue,
+                    itemDiscountDescription: item.itemDiscountDescription,
                     description: item.description,
                     displayOrder: item.displayOrder, 
 

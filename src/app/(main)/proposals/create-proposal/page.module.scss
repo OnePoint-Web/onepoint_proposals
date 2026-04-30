@@ -45,14 +45,12 @@
         &.pricing{
             width: 100%;
             max-width: 400px;
-            min-width: 200px;
+            min-width: fit-content;
         }
 
         table{  
             width: 100%;
-            border-collapse: collapse;
-
-           
+            border-collapse: collapse;     
 
             td{
                 width: fit-content;
@@ -61,6 +59,7 @@
 
                 .cell-content{
                     width: 100%;
+                    min-width: fit-content;
                     display: flex;
                     flex-direction: row;
                     justify-content: space-between;

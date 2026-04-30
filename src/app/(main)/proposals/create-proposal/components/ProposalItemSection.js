@@ -28,11 +28,11 @@ export default function ProposalItemSection({items, dispatch, proposalType, erro
         <div className={styles['child-container']}>
                         
             <DndContext onDragEnd={handleDragEnd}>
-                <SortableContext items={items.map(i => i.id)}>
+                <SortableContext items={items.map(i => i.offerEntryId)}>
                     {items.map((item, index) => (
                         <ProductServiceItem 
-                            key={item.id} 
-                            id={item.id}
+                            key={item.offerEntryId} 
+                            id={item.offerEntryId}
                             dispatch={dispatch}
                             items={items}
                             errors={errors}
