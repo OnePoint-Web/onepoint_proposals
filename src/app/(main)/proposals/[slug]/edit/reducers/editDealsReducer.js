@@ -1,5 +1,5 @@
 import {arrayMove} from '@dnd-kit/sortable';
-import {createDeal, createDealEntry} from './editProposalReducer.js'
+import {createDeal, createDealEntry} from './factories.js'
 
 const recalcOrder = (list, field) =>
   list.map((item, index) => ({

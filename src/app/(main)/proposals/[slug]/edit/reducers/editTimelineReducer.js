@@ -1,5 +1,5 @@
 import { arrayMove } from '@dnd-kit/sortable'
-import {createTimeline, createTimelineScope} from './editProposalReducer'
+import {createTimeline, createTimelineScope} from './factories'
 
 const recalcOrder = (list, field) =>
   list.map((item, index) => ({
