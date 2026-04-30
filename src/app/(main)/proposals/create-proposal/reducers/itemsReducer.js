@@ -14,8 +14,8 @@ return Math.round((num + Number.EPSILON) * 100) / 100;
 const calculateTotals = (item) => {
   const price = Number(item.itemPrice) || 0
   const qty = Number(item.quantity) || 0
-  const discountType = (item.discountType || '').trim().toLowerCase()
-  const discountValue = Number(item.discountValue) || 0
+  const discountType = (item.itemDiscountType || '').trim().toLowerCase()
+  const discountValue = Number(item.itemDiscountValue) || 0
 
   let subtotal = price * qty
   let discountedTotal = subtotal
@@ -39,8 +39,8 @@ export function itemsReducer(items = [], action) {
       return [...items, createItem()];
 
     case 'REORDER_PRODUCT_ITEM': {
-        const oldIndex = items.findIndex(d => d.id === action.payload.activeId)
-        const newIndex = items.findIndex(d => d.id === action.payload.overId)
+        const oldIndex = items.findIndex(d => d.offerEntryId === action.payload.activeId)
+        const newIndex = items.findIndex(d => d.offerEntryId === action.payload.overId)
         if (oldIndex === -1 || newIndex === -1) return items
         const reordered = arrayMove(items, oldIndex, newIndex)
         return recalcOrder(reordered, "displayOrder")
@@ -48,15 +48,15 @@ export function itemsReducer(items = [], action) {
 
     case 'UPDATE_PRODUCT_ITEM':
       return items.map(item => {
-        if (item.id !== action.payload.itemId) return item
+        if (item.offerEntryId !== action.payload.itemId) return item
 
         let updatedItem = { ...item, ...action.payload.data }
 
         // business rules for discounts
-        const type = (updatedItem.discountType || '').toLowerCase()
-        if (type === 'none') updatedItem.discountValue = 0
-        if (type === 'percentage') updatedItem.discountValue = Math.min(updatedItem.discountValue || 0, 100)
-        if (type === 'fixed') updatedItem.discountValue = Math.max(updatedItem.discountValue || 0, 0)
+        const type = (updatedItem.itemDiscountType || '').toLowerCase()
+        if (type === 'none') updatedItem.itemDiscountValue = 0
+        if (type === 'percentage') updatedItem.itemDiscountValue = Math.min(updatedItem.itemDiscountValue || 0, 100)
+        if (type === 'fixed') updatedItem.itemDiscountValue = Math.max(updatedItem.itemDiscountValue || 0, 0)
 
         // calculate totals
         const totals = calculateTotals(updatedItem)
@@ -65,7 +65,7 @@ export function itemsReducer(items = [], action) {
     })
 
     case 'DELETE_PRODUCT_ITEM': {
-      const filtered = items.filter(d => d.id !== action.payload.itemId)
+      const filtered = items.filter(d => d.offerEntryId !== action.payload.itemId)
       return recalcOrder(filtered, "displayOrder")
     }
 

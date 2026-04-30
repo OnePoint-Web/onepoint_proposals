@@ -5,11 +5,7 @@ export const createDeal = () => ({
     itemType: 'Paragraph',
     displayOrder: 0,
     packageDealEntries: [createDealItem()]
-    // id: crypto.randomUUID(),
-    // item: '',
-    // item_type: 'Paragraph',
-    // display_order: 0,
-    // items: [createDealItem()]
+   
             
 })
 
@@ -17,10 +13,6 @@ export const createDealItem = () => ({
     itemEntryId: crypto.randomUUID(),
     itemEntry: '',
     displayOrder: 0
-
-    // id: crypto.randomUUID(),
-    // entry: '',
-    // order: 0
 })
 
 export const createTimeline = () => (
@@ -39,14 +31,14 @@ export const createTimelineScope = () => ({
 })
 
 export const createItem = () => ({
-    id: crypto.randomUUID(),
-    item: '',
+    offerEntryId: crypto.randomUUID(),
+    serviceProductItem: '',
     itemPrice: 0,
     quantity: 1,
     totalPrice: 0,
-    discountType: 'None',
-    discountValue: 0,
-    discountDescription: '',
+    itemDiscountType: 'None',
+    itemDiscountValue: 0,
+    itemDiscountDescription: '',
     discountedTotal: 0,
     itemDescription: '',
     displayOrder: null
