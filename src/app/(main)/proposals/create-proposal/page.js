@@ -7,6 +7,7 @@ import CreateProposalHead from './components/CreateProposalHead'
 import Button from '@/components/ui/button/Button.js'
 import {Icons} from '@/components/icons/icons'
 import CreateProposalBody from './CreateProposalBody'
+import {buildProposalPayload, cleanDeals, cleanItems, cleanTimelines} from '@/utils/proposals/Transformers.js'
 
 const ProposalIcon = Icons.proposals;
 
@@ -47,73 +48,6 @@ export default function CreateProposal(){
         return errors
     }
 
-    const prepareProposalItemsForSubmit = (type, itemState) => {
-         if(type === 'DEALS'){
-        return itemState.map((deal, dealIndex) => ({
-                ...deal,
-                displayOrder: dealIndex + 1,
-                packageDealEntries: deal.packageDealEntries.map((item, itemIndex) => ({
-                    ...item,
-                    displayOrder: itemIndex + 1
-                    })) 
-                }));
-            } else if(type === 'ITEMS') {
-                return itemState.map((item, itemIndex) => ({
-                    ...item,
-                    displayOrder: itemIndex + 1
-                }));
-            }
-        }
-
-    const cleanDeals = (dealsState) => {
-
-         return dealsState
-        .map(deal => ({
-            ...deal,
-            item: deal.item?.trim(),
-            packageDealEntries: (deal.packageDealEntries || [])
-                .map(item => ({
-                    ...item,
-                    itemEntry: item.itemEntry?.trim()
-                }))
-                .filter(item => item.itemEntry) // remove empty entries
-        }))
-        .filter(deal => 
-            deal.item && deal.packageDealEntries.length > 0 // remove empty deals
-        )
-    }
-
-    const cleanItems = (itemsState) => {
-        return itemsState
-            .map(item => ({
-                ...item,
-                item: item.serviceProductItem?.trim(),
-                description: item.itemDescription?.trim() || '',
-                itemPrice: Number(item.itemPrice) ?? 0,
-                quantity: Number(item.quantity),
-                itemDiscountValue: Number(item.itemDiscountValue) ?? 0
-            })
-            )
-            .filter(item => item.item)
-    }
-
-    const cleanTimelines = (timelinesState) => {
-        return timelinesState
-            .map(timeline => ({
-                ...timeline,
-                timeFrame: timeline.timeFrame?.trim(),
-                progress: Number(timeline.progress),
-                assignedTo: timeline.assignedTo?.trim(),
-                timelineScopeItems: (timeline.timelineScopeItems?.length ?? 0) > 0
-                ? {
-                    create: timeline.timelineScopeItems.map(s => ({
-                    scope: s.scope
-                    })).filter(scope => scope.scope)
-                }
-                : undefined
-            })).filter(timeline => timeline.timeFrame)
-    }
-
    const handleSubmit = async (e) => {
         e.preventDefault()
 
@@ -126,13 +60,11 @@ export default function CreateProposal(){
         items: cleanItems(proposalState.items || [])
         }
 
-
-         console.log(cleanedState)
-        const result = proposalSchema.safeParse(cleanedState)
-
+        const parsedResult = proposalSchema.safeParse(cleanedState)
+        console.log(parsedResult)
        
-        if (!result.success) {
-            const formattedErrors = mapZodErrors(result.error) // use issues now
+        if (!parsedResult.success) {
+            const formattedErrors = mapZodErrors(parsedResult.error) // use issues now
             console.log('Zod Errors', formattedErrors)
             dispatch({ type: 'SET_VALIDATION_ERRORS', payload: formattedErrors })
             setIsSubmitting(false)
@@ -143,111 +75,8 @@ export default function CreateProposal(){
 
         dispatch({ type: 'CLEAR_VALIDATION_ERRORS' })
 
-        let cleanProposalItemPayload;
-        let proposalSubData;
-
-            if(proposalState.proposalType === 'SLA Proposal'){
-            
-            const cleanedDeals = result.data.deals;
-
-            cleanProposalItemPayload = prepareProposalItemsForSubmit('DEALS', cleanedDeals).map(deal => ({
-                item: deal.item,
-                itemType: deal.itemType,
-                displayOrder: deal.displayOrder,
-                packageDealEntries: deal.packageDealEntries.length > 0
-                    ? {
-                        create: deal.packageDealEntries.map(item => ({
-                            itemEntry: item.itemEntry,
-                            displayOrder: item.displayOrder
-                        }))
-                    }
-                    : {}
-            }))
-
-            proposalSubData = {
-                slaPackage: result.data.slaPackage,
-                basePrice: result.data.basePrice,
-                discountType: result.data.discountType,
-                discountValue: result.data.discountValue,
-                discountDescription: result.data.discountDescription,
-                taxableAmount: result.data.taxableAmount,
-                taxApplicable: result.data.taxApplicable,
-                taxRate: result.data.taxRate,
-                taxAmount: result.data.taxAmount,
-                taxReason: result.data.taxReason,
-                finalPrice: result.data.finalPrice,
-                paymentTerms: result.data.paymentTerms,
-                packageDealItem: {
-                    create: cleanProposalItemPayload
-                }
-            }
-
-            } else{
-                const cleanedItems = result.data.items
-
-                cleanProposalItemPayload = prepareProposalItemsForSubmit('ITEMS', cleanedItems).map(item => ({
-                    serviceProductItem: item.item,
-                    itemPrice: item.itemPrice,
-                    quantity: item.quantity,
-                    totalPrice: item.totalPrice,
-                    itemDiscountType: item.itemDiscountType,
-                    itemDiscountValue: item.itemDiscountValue,
-                    itemDiscountDescription: item.itemDiscountDescription,
-                    description: item.description,
-                    displayOrder: item.displayOrder, 
-
-                }))
-
-                proposalSubData = {
-                    type: result.data.proposalType,
-                    isMultipleChoice: result.data.isMultipleChoice,
-                    subTotal: result.data.subtotal,
-                    discountType: result.data.discountType,
-                    discountValue: result.data.discountValue,
-                    discountDescription: result.data.discountDescription,
-                    taxableAmount: result.data.taxableAmount,
-                    taxApplicable: result.data.taxApplicable,
-                    taxRate: result.data.taxRate,
-                    taxAmount: result.data.taxAmount,
-                    taxReason: result.data.taxReason,
-                    finalPrice: result.data.finalPrice,
-                    paymentTerms: result.data.paymentTerms,
-                    offerEntries: {
-                        create: cleanProposalItemPayload
-                    }
-                }
-            }
-
-            const baseData = {
-                slaPackage: result.data.slaPackage,
-                clientId: result.data.clientId,
-                clientType: result.data.clientType,
-                proposalTitle: result.data.proposalTitle,
-                proposalType: result.data.proposalType,
-                executiveSummary: result.data.executiveSummary,
-                goalsAndObjectives: result.data.goalsAndObjectives,
-                execVideoUrl: result.data.execVideoUrl,
-                proposedSolution: result.data.proposedSolution,
-                proposalDescription: result.data.proposalDescription,
-                isMultipleChoice: result.data.isMultipleChoice,
-            }
-            const payload = proposalState.proposalType === 'SLA Proposal' ? 
-            {
-                ...baseData,
-                timelines: result.data.timelines,
-                slaOffers: proposalSubData,
-                selectedMembers: result.data.selectedMembers
-                
-                
-            } :
-            {
-                ...baseData,
-                timelines: result.data.timelines,
-                serviceProductOffers: proposalSubData,
-                selectedMembers: result.data.selectedMembers
-                
-            }
-
+        const payload = buildProposalPayload(proposalState, parsedResult)
+       
           try{
             const res = await fetch("/api/proposals", {
             method: "POST",
