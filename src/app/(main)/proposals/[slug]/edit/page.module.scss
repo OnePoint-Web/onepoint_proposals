@@ -21,6 +21,38 @@
     }
 }
 
+.title-section{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    .title-head{
+        font-size: var(--fs-xs);
+        color: var(--text-light);
+        font-weight: 600;
+    }
+}
+
+
+.client-details{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+
+   .details-container{
+        width: fit-content;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        p{
+            font-size: var(--fs-xs);
+            color: var(--text-light)
+        }
+   }
+}
+
 .edit-proposal-body{
     width: 100%;
     display: flex;

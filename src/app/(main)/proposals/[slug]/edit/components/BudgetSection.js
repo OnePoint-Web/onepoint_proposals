@@ -49,7 +49,7 @@ export default function PriceSection({dispatch, proposalState}){
                             <>
                                 <tr>
                                     <td><div className={styles['cell-content']}><p className={styles['pricing-text']}>Subtotal:</p></div></td>
-                                    <td><p className={styles['pricing-values']}>{`$ ${proposalState.offer.subtotal || 0}`}</p></td>    
+                                    <td><p className={styles['pricing-values']}>{`$ ${proposalState.offer.subTotal || 0}`}</p></td>    
                                 </tr>
 
                                 <tr>
@@ -60,24 +60,23 @@ export default function PriceSection({dispatch, proposalState}){
                                             </p> 
                                             
                                             <p className={styles['pricing-text']}>-</p></div></td>
-                                    <td><p className={styles['pricing-values']}>{`$ ${proposalState.totalEnteredItemDiscount || 0}`}</p></td>    
+                                    <td><p className={styles['pricing-values']}>{`$ ${proposalState.offer.totalEnteredItemDiscount || 0}`}</p></td>    
                                 </tr>
 
                             </>
                             )
                             :
-
                             (
                             <tr>
                                 <td>
                                     <Input
                                         label='SLA Package Price:'
                                         placeholder='Enter price...'   
-                                        value={proposalState.offer.basePrice ?? 0}
+                                        value={proposalState.offer.basePrice || 0}
                                         type='number' 
                                         onChange={(e) => {
                                         dispatch({
-                                            type: "UPDATE_PROPOSAL_FIELD",
+                                            type: "UPDATE_PRICING_FIELD",
                                             payload: {basePrice: Number(e.target.value)}
                                         })
                                     }}
@@ -133,7 +132,6 @@ export default function PriceSection({dispatch, proposalState}){
                                             <p className={styles['pricing-text']}>-</p></div></td>
                                     <td><p className={styles['pricing-values']}>{`$ ${proposalState.offer.afterGlobalDiscount || 0}`}</p></td>    
                                 </tr>
-
 
                             <tr>
                                 <td><div className={styles['cell-content']}><p className={styles['pricing-text']}>+ (%10) GST:</p><p className={styles['pricing-text']}>+</p></div></td>

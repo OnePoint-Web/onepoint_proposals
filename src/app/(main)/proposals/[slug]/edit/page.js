@@ -94,6 +94,7 @@ export default async function EditProposal({params}){
         discountValue: offer.discountValue?.toNumber(),
         taxRate:  offer.taxRate?.toNumber(),
         offerEntries: offer.offerEntries.map(e => ({
+            ...e,
             itemPrice: e.itemPrice?.toNumber(),
             totalPrice: e.totalPrice?.toNumber(),
             itemDiscountValue: e.itemDiscountValue?.toNumber(),
