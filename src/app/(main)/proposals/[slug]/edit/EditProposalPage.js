@@ -2,9 +2,11 @@
 import styles from './page.module.scss'
 import Container from "@/components/layout/Container/Container"
 import Input from '@/components/ui/input/Input.js'
+import Button from '@/components/ui/button/Button.js'
 import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
 import VideoPlayer from '@/components/ui/video-player/VideoPlayer.js'
 import EditDealsSection from './components/EditDealsSection'
+import EditItemsSecion from './components/EditItemsSection'
 import EditTimelineSection from './components/EditTimelinesSection'
 import EditTeamSection from './components/EditTeamSection'
 import BudgetSection from './components/BudgetSection'
@@ -43,6 +45,7 @@ export default function EditProposalPage({proposalData}){
         const serviceProduct = proposalData.serviceProductOffers?.[0]
 
         const initialState = {
+            proposalId: proposalData.proposalId,
             proposalTitle: proposalData.proposalTitle,
             executiveSummary: proposalData.executiveSummary,
             goalsAndObjectives: proposalData.goalsAndObjectives,
@@ -60,7 +63,7 @@ export default function EditProposalPage({proposalData}){
                     memberName: m.teamMember.memberName,
                     memberRole: m.teamMember.memberRole
                 },
-                _status: 'existing'
+                // _status: 'existing'
             })),
 
             timelines: proposalData.timelines.map(t => ({
@@ -71,9 +74,9 @@ export default function EditProposalPage({proposalData}){
                     scopeItemId: s.scopeItemId,
                     scope: s.scope,
                     order: s.order,
-                    _status: 'existing'
+                    // _status: 'existing'
                 })),
-                _status: 'existing'
+                // _status: 'existing'
             })),
 
             offer: isSla && sla ? {
@@ -101,9 +104,9 @@ export default function EditProposalPage({proposalData}){
                         itemEntryId: e.itemEntryId,
                         itemEntry: e.itemEntry,
                         displayOrder: e.displayOrder,
-                        _status: 'existing'
+                        // _status: 'existing'
                     })),
-                    _status: 'existing'
+                    // _status: 'existing'
 
                 }))
             } : {
@@ -157,6 +160,105 @@ export default function EditProposalPage({proposalData}){
     useEffect(() => {
         console.log('PROPOSALSTATE', proposalData)
     }, [proposalState])
+
+
+    const buildProposalPayload = (proposalState) => {
+
+
+        const payload = {
+            ...proposalState,
+            selectedMembers: (proposalState.selectedMembers ?? []).map(m => (
+                {memberId: m.memberId}
+            )),
+            timelines: (proposalState.timelines ?? []).map(t => ({
+                timeFrame: t.timeFrame,
+                progress: t.progress,
+                timelineScopeItems: { create: (t.timelineScopeItems ?? []).map(s => ({
+                    scope: s.scope,
+                }))},
+            })),
+            ...(proposalState.proposalType === 'SLA Proposal' && [{
+                slaOffers: {
+                    slaPackage: proposalState.offer.slaPackage,
+                    basePrice: proposalState.offer.basePrice,
+                    discountType: proposalState.offer.discountType,
+                    discountValue: proposalState.offer.discountValue,
+                    discountDescription: proposalState.offer.discountDescription,
+                    taxableAmount: proposalState.offer.taxableAmount,
+                    taxApplicable: proposalState.offer.taxApplicable,
+                    taxRate: proposalState.offer.taxRate,
+                    taxAmount: proposalState.offer.taxAmount,
+                    taxReason: proposalState.offer.taxReason,
+                    finalPrice: proposalState.offer.finalPrice,
+                    paymentTerms: proposalState.offer.paymentTerms,
+                        packageDealItem: (proposalState.offer.packageDealItem ?? []).map(d => ({
+                            item: d.item,
+                            itemType: d.itemType,
+                            isCustom: false,
+                            displayOrder: d.displayOrder, 
+                            packageDealEntries: (d.packageDealEntries ?? []).map(p => ({
+                                itemEntry: p.itemEntry,
+                            }))
+                        }))
+                    }
+                }]),
+
+            ...(proposalState.proposalType !== 'SLA Proposal' && [{
+                serviceProductOffer:{
+                type: proposalState.offer.type,
+                isMultipleChoice: proposalState.offer.isMultipleChoice,
+                subTotal: proposalState.offer.subTotal,
+                discountType: proposalState.offer.discountType,
+                discountValue: proposalState.offer.discountValue,
+                discountDescription: proposalState.offer.discountDescription,
+                taxableAmount: proposalState.offer.taxableAmount,
+                taxApplicable: proposalState.offer.taxApplicable,
+                taxRate: proposalState.offer.taxRate,
+                taxAmount: proposalState.offer.taxAmount,
+                taxReason: proposalState.offer.taxReason,
+                finalPrice: proposalState.offer.finalPrice,
+                paymentTerms: proposalState.offer.paymentTerms,
+
+                    offerEntries: proposalState.offer.offerEntries.map(e => ({
+                        serviceProductItem: e.serviceProductItem,
+                        itemPrice: e.itemPrice,
+                        quantity: e.quantity,
+                        totalPrice: e.totalPrice,
+                        itemDiscountType: e.itemDiscountType,
+                        itemDiscountValue: e.itemDiscountValue,
+                        itemDiscountDescription: e.itemDiscountDescription,
+                        description: e.description,
+                        displayOrder: e.displayOrder,
+                    })),
+                }
+            }])
+        }
+
+        return payload
+    }
+
+    const handleUpdateSubmit = async (e) => {
+            e.preventDefault()
+
+            console.log('Clicking submit', proposalState)
+
+            const payload = buildProposalPayload(proposalState)
+
+            try{
+                const res = await fetch(`/api/proposals/[${proposalData.slug}]/edit`, {
+                    method: 'PATCH',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                })
+
+                const result = await res.json()
+                console.log(result)
+
+
+            }catch(err){
+                console.log("Error submitting",err)
+            }
+    }
 
 
     if(!proposalState){return <p>Fetching Proposal Data</p>}
@@ -294,7 +396,7 @@ export default function EditProposalPage({proposalData}){
                             <EditDealsSection deals={proposalState.offer.packageDealItem} dispatch={dispatch}/>
                         )
                         : (
-                            ''
+                            <EditItemsSecion items={proposalState.offer.offerEntries} dispatch={dispatch} proposalType={proposalState.proposalType}/>
                         )}
                         
                     
@@ -346,6 +448,14 @@ export default function EditProposalPage({proposalData}){
 
                 </div>
 
+            </Container>
+
+            <Container fit={'fullwidth'}>
+                <Button
+                    label='Save Changes'
+                    onClick={(e)=> handleUpdateSubmit(e)}
+                    color='dark'
+                />
             </Container>
         </>
     )
