@@ -54,7 +54,15 @@ import { prisma } from "@/lib/prisma";
             },
             clientProfile: {
                 include: {
-                    user: true
+                    user: {
+                        select: {
+                            userId: true,
+                            firstName: true,
+                            lastName: true,
+                            userEmail: true,
+                            username: true
+                        }
+                    }
                 }
             }
         }
@@ -85,6 +93,7 @@ import { prisma } from "@/lib/prisma";
         discountValue: offer.discountValue?.toNumber(),
         taxRate:  offer.taxRate?.toNumber(),
         offerEntries: offer.offerEntries.map(e => ({
+            ...e,
             itemPrice: e.itemPrice?.toNumber(),
             totalPrice: e.totalPrice?.toNumber(),
             itemDiscountValue: e.itemDiscountValue?.toNumber(),

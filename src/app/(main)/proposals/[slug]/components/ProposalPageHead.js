@@ -2,7 +2,16 @@ import styles from './ProposalPageHead.module.scss'
 import Container from '@/components/layout/Container/Container'
 import Button from '@/components/ui/button/Button'
 import EmailsInputBar from './EmailsInputBar'
+import {useRouter} from 'next/navigation'
+
 export default function ProposalPageHead({proposalData}){
+
+    const router = useRouter()
+
+    const handleNavigate = (route) => {
+        router.push(route)
+    }
+
     return(
         <Container fit='fullwidth'>
             <div className={styles['proposal-head-section']}>
@@ -26,6 +35,7 @@ export default function ProposalPageHead({proposalData}){
                     <Button
                         label='Edit'
                         color='dark'
+                        onClick={() => router.push(`/proposals/${proposalData.slug}/edit`)}
                     />
                  </div>
                  )}
@@ -36,7 +46,10 @@ export default function ProposalPageHead({proposalData}){
             <div className={styles['proposal-head-section']}>
                 <div className={styles['details-container']}>
                     <p>{proposalData.proposalType }</p>
-                    <p>{proposalData.slaOffers[0].slaPackage}</p>
+
+                    { proposalData.proposalType === 'SLA Proposal' ? (
+                        <p>{proposalData.slaOffers[0].slaPackage}</p>
+                        ): (<p>--</p>)}
                 </div>
                  <hr></hr>
                 <div className={styles['details-container']}>
@@ -46,7 +59,6 @@ export default function ProposalPageHead({proposalData}){
                  <hr></hr>
                 <div className={styles['details-container']}>
                     <p>Date Created: {proposalData.dateCreated }</p>
-                    {/* <p>Created by: {proposalData.slaOffers[0].slaPackage}</p> */}
                 </div>
             </div>
 

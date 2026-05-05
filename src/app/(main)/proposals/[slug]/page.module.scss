@@ -289,3 +289,30 @@
         
     }
 }
+
+
+    
+.product-service-table{
+    width: 100%;
+    border: none;
+
+    .data-row{
+        
+        th{
+            font-weight: 400;
+           
+            &.center{
+                 text-align: center;
+            }
+        }
+    }
+    
+    .description{
+        width: 30%;
+    }
+
+    .item{
+        width: 15%;
+    }
+}
+
