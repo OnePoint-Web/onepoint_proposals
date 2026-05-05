@@ -3,7 +3,7 @@ import { parseVideoUrl } from '@/utils/video'
 
 export default function VideoPlayer({
     url = '',
-    size,
+    size, //full or undefined
 }){
     const video = parseVideoUrl(url)
 

@@ -186,6 +186,7 @@ const SelectInput = ({name, values, value, error, errorMessage, rules, onChange}
         className={styles[error]}
         name={name}
         id={name}
+        value={value}
         onChange={onChange}
         {...rules}
         >

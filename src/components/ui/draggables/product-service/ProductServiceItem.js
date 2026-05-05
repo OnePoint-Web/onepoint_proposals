@@ -16,10 +16,10 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
     return Math.round((num + Number.EPSILON) * 100) / 100;
     }
 
-    const currentItem = items.find(i => i.id === id) || {}
+    const currentItem = items.find(i => i.offerEntryId === id) || {}
 
     const getDiscountConfig = () => {
-        switch (currentItem.discountType) {
+        switch (currentItem.itemDiscountType) {
             case 'None':
                 return { disabled: true, max: 0 }
             case 'Percentage':
@@ -42,8 +42,6 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
         transition,
     };
 
-     const item = items.find(i => i.id === id) || {}
-
     const handleDeleteItem = (itemId) => {
         dispatch({
             type: 'DELETE_PRODUCT_ITEM',
@@ -65,15 +63,16 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         label={`${typeProposal}:`}
                         name='proposal_item'
                         type="text"
-                        error={errors[`items.${index}.item`]}
-                        errorMessage={errors[`items.${index}.item`]}
+                        value={currentItem.serviceProductItem}
+                        error={errors?.[`items.${index}.item`]}
+                        errorMessage={errors?.[`items.${index}.item`]}
                         placeholder={`${typeProposal} name...`}
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
                                 payload: { 
                                     itemId: id, 
-                                    data: {item: e.target.value} 
+                                    data: {serviceProductItem: e.target.value} 
                                 }
                             })
                         }}
@@ -84,10 +83,10 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         name='item_base_price'
                         type='number'
                         width='small'
-                        min={0}
-                        value={item.itemPrice || 0}
-                        error={errors[`items.${index}.itemPrice`]}
-                        errorMessage={errors[`items.${index}.itemPrice`]}
+                        min={0} 
+                        value={currentItem.itemPrice || 0}
+                        error={errors?.[`items.${index}.itemPrice`]}
+                        errorMessage={errors?.[`items.${index}.itemPrice`]}
                         placeholder={`${typeProposal} price...`}
                         onChange={(e) => {
                             dispatch({
@@ -106,6 +105,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         width='xsmall'
                         name='quantity'
                         min='1'
+                        value={currentItem.quantity || 0}
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PRODUCT_ITEM',
@@ -123,7 +123,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         name='total_price'
                         type='text'
                         width='small'
-                        value={item.totalPrice || 0}
+                        value={currentItem.totalPrice || 0}
                         disabled={true}
                     />
 
@@ -133,7 +133,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         type='text'
                         width='small'
                         disabled={true}
-                        value={item.discountedTotal || 0}
+                        value={currentItem.discountedTotal || 0}
                     />
 
                     
@@ -167,6 +167,7 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                                 {id: 'Fixed', name: 'Fixed Amount'},
                                 {id: 'Percentage', name: '(%) Percentage'}
                             ]}
+                            value={currentItem.itemDiscountType}
                             width='small'
                             onChange={(e) => {
                             const value = e.target.value
@@ -176,8 +177,8 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                                 payload: { 
                                     itemId: id, 
                                     data: { 
-                                        discountType: value,
-                                        discountValue: value === 'None' ? 0 : item.discountValue
+                                        itemDiscountType: value,
+                                        itemDiscountValue: value === 'None' ? 0 : currentItem.itemDiscountValue
                                     } 
                                 }
                             })
@@ -186,35 +187,36 @@ export default function ProductServiceItem({id, items, dispatch, proposalType, i
                         />
 
                         <Input
-                            key={currentItem.discountType + id}
+                            key={currentItem.itemDiscountType + id}
                             label='Discount amount:'
                             type='number'
                             width='small'
                             placeholder='0'
-                            value={currentItem.discountValue ?? 0}
+                            value={currentItem.itemDiscountValue ?? 0}
                             min={0}
                             disabled={discountConf.disabled}
                             max={discountConf.max}
                             onChange={(e) => {
                                 dispatch({
                                     type: 'UPDATE_PRODUCT_ITEM',
-                                    payload: { itemId: id, data: {discountValue: Number(e.target.value)}}
+                                    payload: { itemId: id, data: {itemDiscountValue: Number(e.target.value)}}
                                     
                                 })
                             }}
                         />
 
                         <Input
-                            key={currentItem.discountType + '3' + id}
+                            key={currentItem.itemDiscountType + '3' + id}
                             label='Discount reason:'
                             type='text'
                             width='full'
+                            value={currentItem.itemDiscountDescription}
                             placeholder='Voucher, promo, sale...'
                             disabled={discountConf.disabled}
                             onChange={(e) => {
                                 dispatch({
                                     type: 'UPDATE_PRODUCT_ITEM',
-                                    payload: { itemId: id, data: {discountDescription: e.target.value} }
+                                    payload: { itemId: id, data: {itemDiscountDescription: e.target.value} }
                                     
                                 })
                             }}
