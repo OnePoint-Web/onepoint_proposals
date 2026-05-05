@@ -27,10 +27,10 @@ export function editProposalReducer(state, action){
                 offer: {
                     ...payloadState.offer,
                     ...pricing,
-                    offerEntries: payloadState.offer.offerEntries.map(e => ({
+                    offerEntries: (payloadState.offer.offerEntries ?? []).map(e => ({
                         ...e,
                         ...calculateTotals(e)
-                    })) 
+                    }))
                 }
              }
 
