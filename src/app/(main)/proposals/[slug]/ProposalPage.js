@@ -25,6 +25,8 @@ export default function ProposalPage({proposalData, slug}){
         return DOMPurify.sanitize(proposalData.proposedSolution ?? "");
     }, [proposalData.proposedSolution]);
 
+    console.log(proposalData)
+
     return(
         <ChildLayout>
 
@@ -166,32 +168,123 @@ export default function ProposalPage({proposalData, slug}){
                         <h2>
                            Proposed Budget
                         </h2>
+                        {proposalData.proposalType === 'SLA Proposal' && 
+                            ( 
+                                <>
+                                    <div className={styles['price-section']}>
+                                        <p className={styles['budget-section-head']}><span>{proposalData.slaOffers[0].slaPackage}</span> (Inclusions may be the following items below)</p>
+                                        <div className={styles['inclusions-container']}>
+                                            {proposalData.slaOffers[0].packageDealItem.map((item, index) => {
+                                                return item.itemType === 'Paragraph' ? (
+                                                    <div key={item.packageDealItemId} className={`${styles['deal-container']} ${styles['paragraph']}`}>
+                                                    <p className={styles['item-header']}>{item.item}</p>
+                                                    <p>{item.packageDealEntries[0].itemEntry}</p>
+                                                    </div>
+                                                ) : (
+                                                    <div key={item.packageDealItemId} className={`${styles['deal-container']}`}>
+                                                    <p className={styles['item-header']}>{item.item}</p>
+                                                    <ul>
+                                                        {item.packageDealEntries.map(entries => (
+                                                        <li key={entries.itemEntryId}>{entries.itemEntry}</li>
+                                                        ))}
+                                                    </ul>
+                                                    </div>
+                                                )
+                                            })}
+                                        </div>
 
-                        <div className={styles['price-section']}>
+                                        <p className={styles['budget-section-foot']}><span>{proposalData.description}</span></p>
+                                    </div>
+                                </>
+                            )}
                             
-                            <p className={styles['budget-section-head']}><span>{proposalData.slaOffers[0].slaPackage}</span> (Inclusions may be the following items below)</p>
-                                <div className={styles['inclusions-container']}>
-                                    {proposalData.slaOffers[0].packageDealItem.map((item, index) => {
-                                        return item.itemType === 'Paragraph' ? (
-                                            <div key={item.packageDealItemId} className={`${styles['deal-container']} ${styles['paragraph']}`}>
-                                            <p className={styles['item-header']}>{item.item}</p>
-                                            <p>{item.packageDealEntries[0].itemEntry}</p>
-                                            </div>
-                                        ) : (
-                                            <div key={item.packageDealItemId} className={`${styles['deal-container']}`}>
-                                            <p className={styles['item-header']}>{item.item}</p>
-                                            <ul>
-                                                {item.packageDealEntries.map(entries => (
-                                                <li key={entries.itemEntryId}>{entries.itemEntry}</li>
-                                                ))}
-                                            </ul>
-                                            </div>
-                                        )
-                                    })}
-                                </div>
+                            {proposalData.proposalType !== 'SLA Proposal' && (
+                                <>
+                                <table className={styles['product-service-table']}>
+                                    <tbody>
+                                    <tr>
+                                        <th className={styles['item']}>
+                                            <p>Item</p>
+                                        </th>
+                                        <th className={styles['description']}>
+                                            <p>Description</p>
+                                        </th>
 
-                                <p className={styles['budget-section-foot']}><span>{proposalData.description}</span></p>
-                        </div>
+                                        <th >
+                                            <p>Item Price</p>
+                                        </th>
+
+                                        <th>
+                                            <p>Qty</p>
+                                        </th>
+
+                                        <th>
+                                            <p>Subtotal</p>
+                                        </th>
+
+                                        <th>
+                                            <p>Item Discount</p>
+                                        </th>
+
+                                        <th>    
+                                            <p>Total</p>
+                                        </th>
+                                    </tr>
+
+                                    {
+                                        proposalData.serviceProductOffers[0].offerEntries.map(entry => (
+                                            <tr key={entry.offerEntryId} className={styles['data-row']}>
+                                                <th>
+                                                    <p>{entry.serviceProductItem}</p>
+                                                </th>
+
+                                                <th>
+                                                    <p>{entry.description}</p>
+                                                </th>
+
+                                                <th className={styles['center']}>
+                                                    <p>{`$ ${entry.itemPrice}`}</p>
+                                                </th>
+
+                                                <th className={styles['center']}>
+                                                    <p>{entry.quantity}</p>
+                                                </th>
+
+                                                <th className={styles['center']}>
+                                                    <p>{entry.totalPrice}</p>
+                                                </th>
+
+                                                <th className={styles['center']}>
+                                                    {entry.itemDiscountType === 'Fixed' && (
+                                                        <p>{`$ ${entry.itemDiscountValue}`}</p>
+                                                    )}
+                                                    {entry.itemDiscountType === 'Percentage' && (
+                                                        <p>{`% ${entry.itemDiscountValue}`}</p>
+                                                    )}
+                                                    <p>{entry.itemDiscountDescription}</p>
+                                                </th>
+
+                                                <th className={styles['center']}>
+
+                                                    {entry.itemDiscountType === 'Fixed' && (
+                                                        <p>{`$ ${entry.totalPrice - entry.itemDiscountValue}`}</p>
+                                                    )}
+                                                    {entry.itemDiscountType === 'Percentage' && (
+                                                        <p>{`$ ${entry.totalPrice - ((entry.itemDiscountValue/100)*entry.totalPrice)}`}</p>
+                                                    )}
+                                                    {entry.itemDiscountType === 'None' && (
+                                                        <p>{`$ ${entry.totalPrice}`}</p>
+                                                    )}
+                                                    
+                                                </th>
+                                            </tr>
+                                        ))
+                                    }
+                                    </tbody>
+                                </table>
+                                </>
+                            )}
+                                
 
                         <hr></hr>
 
