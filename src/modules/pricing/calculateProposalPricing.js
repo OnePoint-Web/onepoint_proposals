@@ -31,15 +31,15 @@ export function calculateProposalPricing({
     totalItemDiscount = items.reduce((sum, item) => {
       const itemTotal = item.itemPrice * item.quantity
 
-      if (!item.discountValue) return sum
+      if (!item.itemDiscountValue) return sum
 
-      if (item.discountType === 'Percentage') {
-        const discount = itemTotal * (item.discountValue / 100)
+      if (item.itemDiscountType === 'Percentage') {
+        const discount = itemTotal * (item.itemDiscountValue / 100)
         return sum + Math.min(itemTotal, discount)
       }
 
-      if (item.discountType === 'Fixed') {
-        return sum + Math.min(itemTotal, item.discountValue)
+      if (item.itemDiscountType === 'Fixed') {
+        return sum + Math.min(itemTotal, item.itemDiscountValue)
       }
 
       return sum
@@ -49,15 +49,15 @@ export function calculateProposalPricing({
   }
 
   const totalEnteredItemDiscount = items.reduce((sum, item) => {
-    if (!item.discountValue) return sum
+    if (!item.itemDiscountValue) return sum
 
-    if (item.discountType === 'Percentage') {
+    if (item.itemDiscountType === 'Percentage') {
       const itemTotal = item.itemPrice * item.quantity
-      return sum + (itemTotal * (item.discountValue / 100))
+      return sum + (itemTotal * (item.itemDiscountValue / 100))
     }
 
-    if (item.discountType === 'Fixed') {
-      return sum + item.discountValue
+    if (item.itemDiscountType === 'Fixed') {
+      return sum + item.itemDiscountValue
     }
 
     return sum
