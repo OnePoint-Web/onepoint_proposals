@@ -9,7 +9,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 const DeleteIcon = Icons.delete
 
-export default function TimelineItem({id, scopes, addScope, dispatch}){
+export default function TimelineItem({timeline, id, scopes, dispatch}){
 
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id });
 
@@ -34,6 +34,7 @@ export default function TimelineItem({id, scopes, addScope, dispatch}){
                     label='Timeframe:'
                     name='timeframe'
                     type="text"
+                    value={timeline.timeFrame}
                     placeholder='Month date, time...'
                     onChange={(e) => {
                         dispatch({
@@ -48,6 +49,7 @@ export default function TimelineItem({id, scopes, addScope, dispatch}){
                     label='Assigned to:'
                     name='assigned_to'
                     type='select'
+                    value={timeline.assignedTo}
                     values={[
                             {id: 'OnePoint', name: 'OnePoint'}, 
                             {id: 'External', name: 'External'}
@@ -65,6 +67,7 @@ export default function TimelineItem({id, scopes, addScope, dispatch}){
                     label='Project Progress (%):'
                     name="project_progress"
                     type='number'
+                    value={timeline.progress}
                     onChange={(e) => {
                         dispatch({
                             type: 'UPDATE_TIMELINE',

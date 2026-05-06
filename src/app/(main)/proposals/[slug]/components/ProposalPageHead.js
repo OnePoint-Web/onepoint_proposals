@@ -8,8 +8,29 @@ export default function ProposalPageHead({proposalData}){
 
     const router = useRouter()
 
-    const handleNavigate = (route) => {
-        router.push(route)
+    const toggleDeleteProposal = async () => {
+        try{
+            const res = await fetch(`/api/proposals/${proposalData.slug}`, {
+                method: 'DELETE',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    proposalId: proposalData.proposalId
+                })
+            })
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.message || "Request failed");
+            } 
+
+            router.push(`/proposals/`)
+            
+        }catch(err){
+            console.error("Delete failed:", err.message);
+        }
     }
 
     return(
@@ -30,6 +51,7 @@ export default function ProposalPageHead({proposalData}){
                     <Button
                         label='Delete'
                         color='red'
+                        onClick={toggleDeleteProposal}
                     />
 
                     <Button

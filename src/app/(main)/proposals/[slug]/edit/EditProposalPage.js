@@ -10,6 +10,7 @@ import EditItemsSecion from './components/EditItemsSection'
 import EditTimelineSection from './components/EditTimelinesSection'
 import EditTeamSection from './components/EditTeamSection'
 import BudgetSection from './components/BudgetSection'
+import {useRouter} from 'next/navigation'
 
 
 import {editProposalReducer} from './reducers/editProposalReducer'
@@ -21,6 +22,7 @@ export default function EditProposalPage({proposalData}){
     const [packages, setPackages] = useState([])
     const [proposalState, dispatch] = useReducer(editProposalReducer, null)
     const [clientDetails, setClientDetails] = useState({})
+    const router = useRouter()
 
     useEffect(() => {
         fetch('/api/packages')
@@ -252,8 +254,9 @@ export default function EditProposalPage({proposalData}){
                 })
 
                 const result = await res.json()
-                console.log(result)
+                console.log(result.slug)
 
+                router.push(`/proposals/${result.slug}`)
 
             }catch(err){
                 console.log("Error submitting",err)
@@ -277,6 +280,12 @@ export default function EditProposalPage({proposalData}){
                         label='Edit proposal title:'
                         width='full'
                         placeholder='Enter new proposal title here...'
+                        onChange={(e) => {
+                            dispatch({
+                                type: 'UPDATE_PROPOSAL_TITLE',
+                                payload: e.target.value
+                            })}
+                        }
                     />
 
                    
