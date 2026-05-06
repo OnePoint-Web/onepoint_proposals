@@ -23,6 +23,7 @@ export default function EditTimelineSection({timelines, dispatch, errors}){
                            key={item.timelineId} 
                             id={item.timelineId}
                             errors={errors}
+                            timeline={item}
                             scopes={item.timelineScopeItems}
                             addScope={() => addScope(item.timelineId)}
                             dispatch={dispatch}
