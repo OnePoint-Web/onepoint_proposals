@@ -128,3 +128,129 @@ export async function GET(req) {
     )
   }
 }
+
+
+
+export async function GET(req){
+  try{
+  const {searchParams} = new URL(req.url)
+
+  const page = parseInt(searchParams.get("page") || "1");
+  const limit = parseInt(searchParams.get("limit") || "10");
+
+  const search = searchParams.get("search") || "";
+  const status = searchParams.get("status");
+  const type = searchParams.get("type") || ""
+  const clientId = searchParams.get("clientId");
+
+  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const sortOrder = searchParams.get("sortOrder") || "desc";
+
+  const safePage = Math.max(page, 1);
+  const safeLimit = Math.max(limit, 1);
+
+  const searchTerms = search
+      .trim()
+      .split(" ")
+      .filter(Boolean);
+
+
+  const where = {
+      ...(status && { status }),
+      ...(type && { type }),
+      ...(clientId && { clientId }),
+
+      ...(searchTerms.length > 0 && {
+        AND: searchTerms.map((term) => ({
+          OR: [
+            {
+              proposalTitle: {
+                contains: term,
+                mode: "insensitive",
+              },
+            },
+
+            {
+              clientProfile: {
+                companyName: {
+                  contains: term,
+                  mode: "insensitive",
+                },
+              },
+            },
+
+            {
+              clientProfile: {
+                user: {
+                  firstName: {
+                    contains: term,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+
+            {
+              clientProfile: {
+                user: {
+                  lastName: {
+                    contains: term,
+                    mode: "insensitive",
+                  },
+                },
+              },
+            },
+          ],
+        })),
+      }),
+    };
+
+    const [proposals, total] = await Promise.all([
+      prisma.proposal.findMany({
+        where,
+
+        include: {
+          clientProfile: {
+            include: {
+              user: true,
+            },
+          },
+        },
+
+        skip: (safePage - 1) * safeLimit,
+        take: safeLimit,
+
+        orderBy: {
+          [sortBy]: sortOrder,
+        },
+      }),
+
+      prisma.proposal.count({
+        where,
+      }),
+    ]);
+
+    // Response
+    return Response.json({
+      data: proposals,
+
+      meta: {
+        total,
+        page: safePage,
+        limit: safeLimit,
+        totalPages: Math.ceil(total / safeLimit),
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    return Response.json(
+      {
+        error: "Failed to fetch proposals",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
