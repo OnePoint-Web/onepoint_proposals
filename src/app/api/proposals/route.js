@@ -125,36 +125,33 @@ export async function GET(req){
               },
             },
 
-            // {
-            //   clientProfile: {
-            //     companyName: {
-            //       contains: term,
-            //       mode: "insensitive",
-            //     },
-            //   },
-            // },
+            {
+              clientProfile: {
+                companyName: {
+                  contains: term,
+                },
+              },
+            },
 
-            // {
-            //   clientProfile: {
-            //     user: {
-            //       firstName: {
-            //         contains: term,
-            //         mode: "insensitive",
-            //       },
-            //     },
-            //   },
-            // },
+            {
+              clientProfile: {
+                user: {
+                  firstName: {
+                    contains: term,
+                  },
+                },
+              },
+            },
 
-            // {
-            //   clientProfile: {
-            //     user: {
-            //       lastName: {
-            //         contains: term,
-            //         mode: "insensitive",
-            //       },
-            //     },
-            //   },
-            // },
+            {
+              clientProfile: {
+                user: {
+                  lastName: {
+                    contains: term,
+                  },
+                },
+              },
+            },
           ],
         })),
       }),
