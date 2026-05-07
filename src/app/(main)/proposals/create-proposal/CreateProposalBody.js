@@ -43,7 +43,6 @@
                     price: item.basePrice,
                     deals: item.dealItems
                 }))
-                console.log(packagesOptions[0].deals[0])
                 setPackages(packagesOptions)
             })
 
@@ -95,6 +94,7 @@
                     <Input
                         label='Select Package'
                         type='select'
+                        value={proposalState.proposalPackage}
                         values={packageOptions}
                         error={errors['proposalPackage']}
                         errorMessage={errors.proposalPackage}

@@ -465,7 +465,24 @@ export default function EditProposalPage({proposalData}){
                     onClick={(e)=> handleUpdateSubmit(e)}
                     color='dark'
                 />
+
+                {/* {toggleModal && (
+                <div 
+                  className={`${styles['success-modal-bg']}`} 
+                >  
+
+                  <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
+                    <ProposalIcon className={styles.icon}/>
+                    <p className={styles.head}>Proposal Successfully Created!</p>
+                    <p className={styles.message}>Redirecting to proposals page...</p>
+
+                  </div>              
+              
+                </div>  
+              )} */}
             </Container>
+
+            
         </>
     )
 }

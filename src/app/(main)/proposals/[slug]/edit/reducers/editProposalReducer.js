@@ -54,7 +54,7 @@ export function editProposalReducer(state, action){
 
              const newState = {
                 ...state,
-                clientType: {...payload},
+                clientType: payload,
                 offer: {
                     ...state.offer,
                     ...pricing

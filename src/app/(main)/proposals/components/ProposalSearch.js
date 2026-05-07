@@ -9,7 +9,7 @@ export default function ProposalSearch(){
     const ProposalsIcon = Icons.proposals
     
     return (
-      <Container fit="fit">
+      <Container fit="fullwidth">
             <div className={styles['search-section']}>
                 <Input
                     label='Search Proposals:'
@@ -29,24 +29,22 @@ export default function ProposalSearch(){
 
             <div className={styles['search-section']}>
                 <Input
-                    label='Search Proposals:'
+                    label='Proposal Type:'
                     name='proposal'
                     placeholder='Proposal title, company name, client'
                 />
 
                 <Input
                     type='select'
-                    label='Select Filter'
+                    label='Proposal Status'
+                    value={''}
+                    onChange={()=>{}}
                     name='proposal'
                     placeholder='Proposal Type'
                     values={['Where', 'who', 'when']}
                 />
 
-                <Input
-                    label='Search Proposals:'
-                    name='proposal'
-                    placeholder='Proposal title, company name, client'
-                />
+               
             </div>
             
         </Container>//

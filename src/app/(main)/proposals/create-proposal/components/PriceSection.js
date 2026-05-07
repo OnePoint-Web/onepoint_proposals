@@ -138,6 +138,7 @@ export default function PriceSection({dispatch, proposalState}){
                 <Input
                 label='Discount Type' 
                 type='select'
+                value={proposalState.discountType}
                 values={[
                     {id: 'None', name: 'No Discount'},
                     {id: 'Fixed', name: 'Fixed Amount'},

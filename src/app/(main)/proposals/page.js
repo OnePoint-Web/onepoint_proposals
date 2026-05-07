@@ -6,20 +6,20 @@ import Container from '@/components/layout/Container/Container.js'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout.js'
 import {useState, useEffect} from 'react'
 
-export default function CreateProposal({display}){
+export default function CreateProposal(){
     const [proposals, setProposals] = useState([])
 
     const formatDate = (date) => {
-  if (!date) return null;
+    if (!date) return null;
 
-  const d = new Date(date);
+    const d = new Date(date);
 
-  return d.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-}
+    return d.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
+    }
 
     useEffect(() => {
         fetch('/api/proposals')

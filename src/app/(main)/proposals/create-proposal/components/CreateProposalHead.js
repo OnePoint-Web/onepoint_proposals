@@ -60,6 +60,7 @@ export default function CreateProposalHead({proposalState, dispatch, errors}){
                      <Input
                         label='Client Type:'
                         type='select'
+                        value={proposalState.clientType}
                         values={[
                             {id: 'Taxable', name: 'Taxable (+10% GST)'},
                             {id: 'Non-Taxable', name: 'Non-taxable'},
@@ -75,6 +76,7 @@ export default function CreateProposalHead({proposalState, dispatch, errors}){
                      <Input
                         label='Select Proposal Type:'
                         type='select'
+                        value={proposalState.proposalType}
                         values={[
                             {id: 'SLA Proposal', name: 'SLA Proposal'},
                             {id: 'Service Proposal', name: 'Service Proposal'},

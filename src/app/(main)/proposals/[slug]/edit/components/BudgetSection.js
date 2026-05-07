@@ -31,6 +31,7 @@ export default function PriceSection({dispatch, proposalState}){
                                     <Input
                                         label='Client Type:'
                                         type='select'
+                                        value={proposalState.clientType}
                                         values={[
                                             {id: 'Taxable', name: 'Taxable (+10% GST)'},
                                             {id: 'Non-Taxable', name: 'Non-taxable'},
@@ -155,6 +156,7 @@ export default function PriceSection({dispatch, proposalState}){
                 <Input
                 label='Discount Type' 
                 type='select'
+                value={proposalState.offer.discountType}
                 values={[
                     {id: 'None', name: 'No Discount'},
                     {id: 'Fixed', name: 'Fixed Amount'},
