@@ -87,63 +87,19 @@ export async function POST(req){
     }
 
 
-export async function GET(req) {
-  try {
-    const proposals = await prisma.proposal.findMany({
-      where: {
-        statusId: {
-          not: 7,
-        },
-      },
-      select: {
-        proposalId: true,
-        slug: true,
-        clientId: true,
-        proposalTitle: true,
-        proposalType: true,
-        proposalStatus: true,
-        dateCreated: true,
-        statusUpdated: true,
-
-        clientProfile: {
-          select: {
-            clientId: true,
-            user: {
-              select: {
-                firstName: true,
-                lastName: true,
-                userEmail: true,
-              },
-            },
-          },
-        },
-      },
-    })
-
-    return NextResponse.json(proposals)
-  } catch (err) {
-    return NextResponse.json(
-      { error: "Failed to fetch proposal" },
-      { status: 500 }
-    )
-  }
-}
-
-
-
 export async function GET(req){
   try{
   const {searchParams} = new URL(req.url)
 
   const page = parseInt(searchParams.get("page") || "1");
-  const limit = parseInt(searchParams.get("limit") || "10");
+  const limit = parseInt(searchParams.get("limit") || "12");
 
   const search = searchParams.get("search") || "";
   const status = searchParams.get("status");
   const type = searchParams.get("type") || ""
   const clientId = searchParams.get("clientId");
 
-  const sortBy = searchParams.get("sortBy") || "createdAt";
+  const sortBy = searchParams.get("sortBy") || "dateCreated";
   const sortOrder = searchParams.get("sortOrder") || "desc";
 
   const safePage = Math.max(page, 1);
@@ -156,8 +112,8 @@ export async function GET(req){
 
 
   const where = {
-      ...(status && { status }),
-      ...(type && { type }),
+      ...(status && { proposalStatus:{status: status} }),
+      ...(type && { proposalType: type }),
       ...(clientId && { clientId }),
 
       ...(searchTerms.length > 0 && {
@@ -166,40 +122,39 @@ export async function GET(req){
             {
               proposalTitle: {
                 contains: term,
-                mode: "insensitive",
               },
             },
 
-            {
-              clientProfile: {
-                companyName: {
-                  contains: term,
-                  mode: "insensitive",
-                },
-              },
-            },
+            // {
+            //   clientProfile: {
+            //     companyName: {
+            //       contains: term,
+            //       mode: "insensitive",
+            //     },
+            //   },
+            // },
 
-            {
-              clientProfile: {
-                user: {
-                  firstName: {
-                    contains: term,
-                    mode: "insensitive",
-                  },
-                },
-              },
-            },
+            // {
+            //   clientProfile: {
+            //     user: {
+            //       firstName: {
+            //         contains: term,
+            //         mode: "insensitive",
+            //       },
+            //     },
+            //   },
+            // },
 
-            {
-              clientProfile: {
-                user: {
-                  lastName: {
-                    contains: term,
-                    mode: "insensitive",
-                  },
-                },
-              },
-            },
+            // {
+            //   clientProfile: {
+            //     user: {
+            //       lastName: {
+            //         contains: term,
+            //         mode: "insensitive",
+            //       },
+            //     },
+            //   },
+            // },
           ],
         })),
       }),
@@ -209,10 +164,26 @@ export async function GET(req){
       prisma.proposal.findMany({
         where,
 
-        include: {
+        select: {
+          proposalId: true,
+          slug: true,
+          clientId: true,
+          proposalTitle: true,
+          proposalType: true,
+          proposalStatus: true,
+          dateCreated: true,
+          statusUpdated: true,
+
           clientProfile: {
-            include: {
-              user: true,
+            select: {
+              clientId: true,
+              user: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  userEmail: true,
+                },
+              },
             },
           },
         },
@@ -233,7 +204,6 @@ export async function GET(req){
     // Response
     return Response.json({
       data: proposals,
-
       meta: {
         total,
         page: safePage,
