@@ -10,18 +10,21 @@ import EditItemsSecion from './components/EditItemsSection'
 import EditTimelineSection from './components/EditTimelinesSection'
 import EditTeamSection from './components/EditTeamSection'
 import BudgetSection from './components/BudgetSection'
+import SuccessModal from '@/components/ui/success-modal/SuccessModal'
 import {useRouter} from 'next/navigation'
+import { Icons } from '@/components/icons/icons'
 
 
 import {editProposalReducer} from './reducers/editProposalReducer'
 import {useState, useEffect, useReducer} from 'react'
 
-
+const ProposalIcon = Icons.proposals
 export default function EditProposalPage({proposalData}){
 
     const [packages, setPackages] = useState([])
     const [proposalState, dispatch] = useReducer(editProposalReducer, null)
     const [clientDetails, setClientDetails] = useState({})
+    const [toggleModal, setToggleModal] = useState(false)
     const router = useRouter()
 
     useEffect(() => {
@@ -256,7 +259,12 @@ export default function EditProposalPage({proposalData}){
                 const result = await res.json()
                 console.log(result.slug)
 
-                router.push(`/proposals/${result.slug}`)
+                setToggleModal(true)
+
+                setTimeout(() => {
+                    router.push(`/proposals/${result.slug}`)
+                }, 1000)
+                
 
             }catch(err){
                 console.log("Error submitting",err)
@@ -466,20 +474,13 @@ export default function EditProposalPage({proposalData}){
                     color='dark'
                 />
 
-                {/* {toggleModal && (
-                <div 
-                  className={`${styles['success-modal-bg']}`} 
-                >  
-
-                  <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
-                    <ProposalIcon className={styles.icon}/>
-                    <p className={styles.head}>Proposal Successfully Created!</p>
-                    <p className={styles.message}>Redirecting to proposals page...</p>
-
-                  </div>              
-              
-                </div>  
-              )} */}
+                {toggleModal && (
+                    <SuccessModal
+                        message='Changes saved'
+                        icon={ProposalIcon}
+                        actionMessage={'Redirecting to proposal...'}
+                    />
+                )}
             </Container>
 
             

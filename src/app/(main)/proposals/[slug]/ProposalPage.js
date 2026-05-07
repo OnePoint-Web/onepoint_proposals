@@ -6,7 +6,6 @@ import MemberCard from '@/components/ui/member-card/MemberCard.js'
 import DOMPurify from 'dompurify'
 import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
 import ProposalPageHead from './components/ProposalPageHead'
-import ProposalPageFooter from './components/ProposalPageFooter' 
 import {useMemo} from 'react'
 
 export default function ProposalPage({proposalData, slug}){
@@ -304,8 +303,6 @@ export default function ProposalPage({proposalData, slug}){
                     
                 </div>
             </Container>
-
-            <ProposalPageFooter/>
         </ChildLayout>
     )
 }
