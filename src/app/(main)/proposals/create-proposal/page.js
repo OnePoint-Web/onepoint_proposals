@@ -5,6 +5,7 @@ import Container from '@/components/layout/Container/Container'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout'
 import CreateProposalHead from './components/CreateProposalHead'
 import Button from '@/components/ui/button/Button.js'
+import SuccessModal from '@/components/ui/success-modal/SuccessModal'
 import {Icons} from '@/components/icons/icons'
 import CreateProposalBody from './CreateProposalBody'
 import {buildProposalPayload, cleanDeals, cleanItems, cleanTimelines} from '@/utils/proposals/Transformers.js'
@@ -161,18 +162,25 @@ export default function CreateProposal(){
             </Container>
 
           {toggleModal && (
-                <div 
-                  className={`${styles['success-modal-bg']}`} 
-                >  
+                // <div 
+                //   className={`${styles['success-modal-bg']}`} 
+                // >  
 
-                  <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
-                    <ProposalIcon className={styles.icon}/>
-                    <p className={styles.head}>Proposal Successfully Created!</p>
-                    <p className={styles.message}>Redirecting to proposals page...</p>
+                //   <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
+                //     <ProposalIcon className={styles.icon}/>
+                //     <p className={styles.head}>Proposal Successfully Created!</p>
+                //     <p className={styles.message}>Redirecting to proposals page...</p>
 
-                  </div>              
+                //   </div>              
               
-                </div>  
+                // </div>  
+
+                <SuccessModal
+                    onClick={(e) => e.stopPropagation()}
+                    icon={ProposalIcon}
+                    message='Proposal Successfully Created!'
+                    actionMessage='Redirecting to proposals page...'
+                />
               )}
 
 
