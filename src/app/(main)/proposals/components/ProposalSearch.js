@@ -43,6 +43,7 @@ export default function ProposalSearch({query, setQuery}){
                     placeholder='Proposal title, company name, client'
                     value={query.type}
                     values={[
+                        {id: '', name: 'All'},
                         {id: 'SLA Proposal', name: 'SLA Proposal'},
                         {id: 'Service Proposal', name: 'Service Proposal'},
                         {id: 'Product Proposal', name: 'Product Proposal'}

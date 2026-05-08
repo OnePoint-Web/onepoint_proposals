@@ -9,15 +9,23 @@ import { buildQueryString } from '@/modules/buildQueryString'
 import {useState, useEffect} from 'react'
 
 export default function CreateProposal(){
+
     const [proposals, setProposals] = useState([])
+    const [metaData, setMetaData] = useState({
+        totalResults: 0,
+        currentPage: 1,
+        totalPages:0,
+        limit: 12,
+    })
+
     const [query, setQuery] = useState({
         search: "",
         page: 1,
-        limit: 10,
+        limit: 12,
         status: "",
         type: "",
         sortBy: "dateCreated",
-        sortOrder: "desc",
+        sortOrder: 'desc'
     });
 
     const formatDate = (date) => {
@@ -37,8 +45,8 @@ export default function CreateProposal(){
         const handler = setTimeout(() => {
             fetch(`/api/proposals?${buildQueryString(query)}`)
             .then(res => res.json())
-            .then(data => {
-                const allProposals = data.data.map(proposal => ({
+            .then(result => {
+                const allProposals = result.data.map(proposal => ({
                     proposalId: proposal.proposalId,
                     slug: proposal.slug,
                     clientId: proposal.clientId,
@@ -50,7 +58,14 @@ export default function CreateProposal(){
                     clientName: proposal.clientProfile.user.firstName + ' ' + proposal.clientProfile.user.lastName,
                     clientEmail: proposal.clientProfile.user.userEmail
                 }))
-                console.log(allProposals)
+
+                const meta = result.meta
+                setMetaData({
+                    totalResults: meta.total,
+                    currentPage: meta.page,
+                    totalPages: meta.totalPages,
+                    limit: meta.limit
+                })
                 setProposals(allProposals)  
                 
             })
@@ -62,8 +77,16 @@ export default function CreateProposal(){
         query.status,
         query.type,
         query.sortBy,
-        query.sortOrder,]
+        query.sortOrder]
     )
+
+    const start =
+    (metaData.currentPage - 1) * metaData.limit + 1;
+
+    const end = Math.min(
+    metaData.currentPage * metaData.limit,
+    metaData.totalResults
+    );
 
     return(
 
@@ -75,18 +98,30 @@ export default function CreateProposal(){
     
             <Container>
                 <div className={styles['results-header']}>
-                    <select
-                        type='select'
-                        onChange={(e)=>(setQuery(prev => ({
-                            ...prev,
-                            sortOrder: e.target.value,
-                        })))}
-                    >
 
-                        <option value='desc'>Newest to oldest</option>
-                        <option value='asc'>Oldest to Newest</option>
+                    <p className={styles['results-count']}>Showing Results: {`${start} - ${end}`} of {metaData.totalResults}</p>
+
+                    <select
+                    value={`${query.sortBy}-${query.sortOrder}`}
+                    onChange={(e) => {
+                        const [sortBy, sortOrder] = e.target.value.split('-')
+
+                        setQuery(prev => ({
+                        ...prev,
+                        sortBy,
+                        sortOrder
+                        }))
+                    }}
+                    >
+                        <option value="dateCreated-desc">Newest</option>
+                        <option value="dateCreated-asc">Oldest</option>
+                        <option value="proposalTitle-asc">A-Z</option>
+                        <option value="proposalTitle-desc">Z-A</option>
                     </select>
                 </div>
+
+                <hr></hr>
+
                 <div className={styles['card-container']}>
                     {proposals.map(p => (
                         <ProposalsCard
@@ -102,6 +137,30 @@ export default function CreateProposal(){
                         />
                     ))}
         
+                </div>
+
+
+                <div className={styles['pagination-container']}>
+
+                    <div className={styles['pagination']}>
+                     {Array.from(
+                        {length: metaData.totalPages},
+                        (_, i) => (
+                            <div
+                                key={i}
+                                className={`${styles['pagination-button']} ${metaData.currentPage === (i + 1) && styles['active']}`}
+                                onClick={()=>{
+                                    setQuery(prev => ({
+                                        ...prev,
+                                        page: i + 1,
+                                    }))
+                                }}
+                            >
+                                <p>{i+1}</p>
+                            </div>
+                        )
+                     )}
+                    </div>
                 </div>
             </Container>
 
