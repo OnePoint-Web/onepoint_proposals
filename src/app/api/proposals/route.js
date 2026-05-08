@@ -195,29 +195,29 @@ export async function GET(req){
 
       prisma.proposal.count({
         where,
-      }),
-    ]);
+          }),
+        ]);
 
-    // Response
-    return Response.json({
-      data: proposals,
-      meta: {
-        total,
-        page: safePage,
-        limit: safeLimit,
-        totalPages: Math.ceil(total / safeLimit),
-      },
-    });
-  } catch (error) {
-    console.error(error);
+        // Response
+        return Response.json({
+          data: proposals,
+          meta: {
+            total,
+            page: safePage,
+            limit: safeLimit,
+            totalPages: Math.ceil(total / safeLimit),
+          },
+        });
+      } catch (error) {
+        console.error(error);
 
-    return Response.json(
-      {
-        error: "Failed to fetch proposals",
-      },
-      {
-        status: 500,
+        return Response.json(
+          {
+            error: "Failed to fetch proposals",
+          },
+          {
+            status: 500,
+          }
+        );
       }
-    );
-  }
 }

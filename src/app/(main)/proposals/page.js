@@ -4,6 +4,7 @@ import ProposalsCard from './components/ProposalsCard.js'
 import ProposalSearch from './components/ProposalSearch.js'
 import Container from '@/components/layout/Container/Container.js'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout.js'
+import Input from '@/components/ui/input/Input'
 import { buildQueryString } from '@/modules/buildQueryString'
 import {useState, useEffect} from 'react'
 
@@ -50,8 +51,7 @@ export default function CreateProposal(){
                     clientEmail: proposal.clientProfile.user.userEmail
                 }))
                 console.log(allProposals)
-                setProposals(allProposals)
-                
+                setProposals(allProposals)  
                 
             })
         }, 300)
@@ -62,7 +62,8 @@ export default function CreateProposal(){
         query.status,
         query.type,
         query.sortBy,
-        query.sortOrder,])
+        query.sortOrder,]
+    )
 
     return(
 
@@ -73,7 +74,19 @@ export default function CreateProposal(){
             />
     
             <Container>
-                
+                <div className={styles['results-header']}>
+                    <select
+                        type='select'
+                        onChange={(e)=>(setQuery(prev => ({
+                            ...prev,
+                            sortOrder: e.target.value,
+                        })))}
+                    >
+
+                        <option value='desc'>Newest to oldest</option>
+                        <option value='asc'>Oldest to Newest</option>
+                    </select>
+                </div>
                 <div className={styles['card-container']}>
                     {proposals.map(p => (
                         <ProposalsCard
