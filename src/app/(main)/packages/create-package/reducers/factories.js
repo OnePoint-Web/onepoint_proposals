@@ -1,23 +1,21 @@
-export const createDealItem = () => ({
-    id: crypto.randomUUID(),
-    entry: '',
-    order: null
+export const createDealEntry = () => ({
+    itemEntryId: crypto.randomUUID(),
+    itemEntry: '',
+    displayOrder: 0,
 })
 
 export const createDeal = () => ({
-
-    id: crypto.randomUUID(),
+packageDealItemId: crypto.randomUUID(),
     item: '',
-    item_type: 'Paragraph',
-    display_order: null,
-    items: [createDealItem()]
-            
+    itemType: 'Paragraph',
+    displayOrder: 0,
+    packageDealEntries: [createDealEntry()]     
 })
 
 export const createInitialDeal = () => ([{
-    id: crypto.randomUUID(),
+    packageDealItemId: crypto.randomUUID(),
     item: '',
-    item_type: 'Paragraph',
-    display_order: null,
-    items: [createDealItem()]
+    itemType: 'Paragraph',
+    displayOrder: 0,
+    packageDealEntries: [createDealEntry()]     
 }])

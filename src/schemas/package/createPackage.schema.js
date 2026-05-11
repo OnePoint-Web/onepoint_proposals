@@ -24,7 +24,7 @@ export const createPackageSchema = z.object({
     const stripped = stripHtml(val)
     return stripped.length === 0 ? undefined : val
   }, z.string().optional()),
-  deals: z.object({
+  dealItems: z.object({
     create: z.array(
       z.object({
         dealItem: z.string(),
