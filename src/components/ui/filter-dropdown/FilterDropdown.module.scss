@@ -1,0 +1,21 @@
+.filter-dropdown{
+    font-weight: var(--font-weight);
+    width: 100px;
+    border-radius: 3px;
+    padding: 6px;
+    border: rgb(57, 57, 57);
+    background-color: var(--primary-color);
+    font-size: var(--fs-xs);
+    color: white;
+    font-family: var(--font-montserrat);
+    transition: all 0.1s ease-in-out;
+
+    &:focus-visible{
+            outline: none;
+        }
+
+    &::placeholder {
+        color: rgb(169, 169, 169);
+        font-weight: 400;
+    }
+}

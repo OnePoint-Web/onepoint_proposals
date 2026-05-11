@@ -4,7 +4,8 @@ import ProposalsCard from './components/ProposalsCard.js'
 import ProposalSearch from './components/ProposalSearch.js'
 import Container from '@/components/layout/Container/Container.js'
 import ChildLayout from '@/components/layout/ChildLayout/ChildLayout.js'
-import Input from '@/components/ui/input/Input'
+import FilterDropdown from '@/components/ui/filter-dropdown/FilterDropdown'
+import Pagination from '@/components/ui/pagination/Pagination'
 import { buildQueryString } from '@/modules/buildQueryString'
 import {useState, useEffect} from 'react'
 
@@ -101,23 +102,10 @@ export default function CreateProposal(){
 
                     <p className={styles['results-count']}>Showing Results: {`${start} - ${end}`} of {metaData.totalResults}</p>
 
-                    <select
-                    value={`${query.sortBy}-${query.sortOrder}`}
-                    onChange={(e) => {
-                        const [sortBy, sortOrder] = e.target.value.split('-')
-
-                        setQuery(prev => ({
-                        ...prev,
-                        sortBy,
-                        sortOrder
-                        }))
-                    }}
-                    >
-                        <option value="dateCreated-desc">Newest</option>
-                        <option value="dateCreated-asc">Oldest</option>
-                        <option value="proposalTitle-asc">A-Z</option>
-                        <option value="proposalTitle-desc">Z-A</option>
-                    </select>
+                    <FilterDropdown
+                        query={query}
+                        setQuery={setQuery}
+                    />
                 </div>
 
                 <hr></hr>
@@ -140,28 +128,11 @@ export default function CreateProposal(){
                 </div>
 
 
-                <div className={styles['pagination-container']}>
-
-                    <div className={styles['pagination']}>
-                     {Array.from(
-                        {length: metaData.totalPages},
-                        (_, i) => (
-                            <div
-                                key={i}
-                                className={`${styles['pagination-button']} ${metaData.currentPage === (i + 1) && styles['active']}`}
-                                onClick={()=>{
-                                    setQuery(prev => ({
-                                        ...prev,
-                                        page: i + 1,
-                                    }))
-                                }}
-                            >
-                                <p>{i+1}</p>
-                            </div>
-                        )
-                     )}
-                    </div>
-                </div>
+                <Pagination
+                    totalPages={metaData.totalPages}
+                    currentPage={metaData.currentPage}
+                    setPage={setQuery}
+                />
             </Container>
 
             
