@@ -3,7 +3,6 @@ export const createDeal = () => ({
     item: '',
     itemType: 'Paragraph',
     displayOrder: 0,
-    _status: 'new',
     packageDealEntries: [createDealEntry()]     
 })
 
@@ -11,7 +10,6 @@ export const createDealEntry = () => ({
     itemEntryId: crypto.randomUUID(),
     itemEntry: '',
     displayOrder: 0,
-    _status: 'new'
 })
 
 export const createTimeline = () => (
@@ -21,7 +19,6 @@ export const createTimeline = () => (
         progress: 0,
         assignedTo: 'OnePoint',
         timelineScopeItems: [createTimelineScope()],
-        _status: 'new'
     }
 )
 

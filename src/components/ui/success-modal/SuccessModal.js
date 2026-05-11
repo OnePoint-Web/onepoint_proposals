@@ -10,7 +10,7 @@ export default function SuccessModal({message, actionMessage, icon}){
         >  
 
             <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
-            <Icon className={styles.icon}/>
+            {icon && <Icon className={styles.icon}/>}
             <p className={styles.head}>{message}</p>
             <p className={styles.message}>{actionMessage}</p>
 

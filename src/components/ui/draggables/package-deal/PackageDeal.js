@@ -63,7 +63,7 @@ export default function PackageDeal({dealItems, deal, id, dispatch}){
                 
             </div>
 
-            {deal.item_type === 'Paragraph' ? (
+            {deal.itemType === 'Paragraph' ? (
                 <SingleItem
                     itemId={dealItems[0].itemEntryId}
                     dispatch={dispatch}
