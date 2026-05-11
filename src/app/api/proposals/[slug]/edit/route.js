@@ -8,22 +8,10 @@ import { requireUser } from "@/lib/getUserHelper"
 export async function PATCH(req){
     try{
 
-        
-
         const user = await requireUser()
         const data = await req.json()
         
         console.log('DATA', data)
-        // const postresult = proposalSchema.safeParse(body)
-
-        // if (!postresult.success) {
-        //     console.log("ZOD ERROR:", postresult.error.flatten())
-            
-        //     return NextResponse.json(
-        //         { error: postresult.error.flatten() },
-        //         { status: 400 }
-        //     )
-        // }
 
         const existing = await prisma.proposal.findUnique({
             where: { proposalId: data.proposalId },
