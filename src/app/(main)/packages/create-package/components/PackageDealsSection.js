@@ -1,3 +1,4 @@
+'use client'
 import styles from './PackageCreationForm.module.scss'
 import PackageDeal from '@/components/ui/draggables/package-deal/PackageDeal'
 import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemButton.js'
@@ -11,7 +12,7 @@ import { DndContext } from '@dnd-kit/core'
 export default function PackageDealSection({dealsState, dispatch}){
     
    
-
+    console.log('DEALS STATE:', dealsState)
 
     const addDeal = () => {
         dispatch({ type: 'ADD_DEAL' })
@@ -37,14 +38,14 @@ export default function PackageDealSection({dealsState, dispatch}){
     return(
         <div className={styles['section-main']}>
             <DndContext onDragEnd={handleDragEnd}>
-                <SortableContext items={dealsState.map(i => i.id)}>
+                <SortableContext items={dealsState.map(i => i.packageDealItemId)}>
                     {dealsState.map(item => (
                         <PackageDeal 
-                            key={item.id} 
-                            id={item.id}
+                            key={item.packageDealItemId} 
+                            id={item.packageDealItemId}
                             deal={item}
-                            dealItems={item.items}
-                            addListItem={() => addListItem(item.id)}
+                            dealItems={item.packageDealEntries}
+                            addListItem={() => addListItem(item.packageDealItemId)}
                             dispatch={dispatch}
                         />
                     ))}

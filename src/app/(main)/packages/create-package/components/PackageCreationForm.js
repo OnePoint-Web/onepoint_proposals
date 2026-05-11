@@ -5,6 +5,8 @@ import Button from '@/components/ui/button/Button'
 import styles from './PackageCreationForm.module.scss'
 import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
 import PackageDealSection from './PackageDealsSection'
+import SuccessModal from '@/components/ui/success-modal/SuccessModal'
+import {useRouter} from 'next/navigation'
 import {useForm, Controller} from "react-hook-form"
 import {zodResolver} from '@hookform/resolvers/zod'
 import {createPackageSchema} from '@/schemas/package/createPackage.schema.js'
@@ -17,11 +19,13 @@ export default function PackageCreationForm(){
     const [dealsState, dispatch] = useReducer(dealsReducer, createInitialDeal());
     const [price, setPrice] = useState(0)
     const [isSuccess, setIsSuccess] = useState(false);
+    const [toggleModal, setToggleModal] = useState(false);
+
+    const router = useRouter()
 
     const {
         register, 
         handleSubmit,   
-        setValue,
         setError,
         reset,
         control,
@@ -30,31 +34,39 @@ export default function PackageCreationForm(){
         resolver: zodResolver(createPackageSchema)
     })
 
-    const prepareDealsForSubmit = (dealsState) =>
-    dealsState.map((deal, dealIndex) => ({
-        ...deal,
-        display_order: dealIndex + 1,
-        items: deal.items.map((item, itemIndex) => ({
-        ...item,
-        order: itemIndex + 1
+    const prepareDealsForSubmit = (dealsState) => {
+        const payload = dealsState.map((deal, dealIndex) => ({
+            ...deal,
+            displayOrder: dealIndex + 1,
+            dealEntries: deal.dealEntries.map((item, itemIndex) => ({
+                ...item,
+                displayOrder: itemIndex + 1
+            }))
         }))
-    }));
+
+        console.log('PREPAREDEALS', payload)
+        return payload
+    }
 
     const cleanDeals = (dealsState) => {
-    return dealsState
-        .map(deal => ({
-            ...deal,
-            item: deal.item?.trim(),
-            items: (deal.items || [])
-                .map(item => ({
-                    ...item,
-                    entry: item.entry?.trim()
-                }))
-                .filter(item => item.entry) // remove empty entries
-        }))
-        .filter(deal => 
-            deal.item && deal.items.length > 0 // remove empty deals
-        )
+
+        const payload = dealsState
+            .map(deal => ({
+                ...deal,
+                dealItem: deal.item?.trim(),
+                dealEntries: (deal.packageDealEntries || [])
+                    .map(item => ({
+                        ...item,
+                        itemEntry: item.itemEntry?.trim()
+                    }))
+                    .filter(item => item.itemEntry) // remove empty entries
+            }))
+            .filter(deal => 
+                deal.dealItem && deal.dealEntries.length > 0 // remove empty deals
+            )
+
+            console.log('CLEANEDDEALS', payload)
+            return payload
     }
     const onSubmit = async (data) => {
         if (isSubmitting) return
@@ -63,27 +75,28 @@ export default function PackageCreationForm(){
         const cleanedDeals = cleanDeals(dealsState)
 
         const dealsPayload = prepareDealsForSubmit(cleanedDeals).map(deal => ({
-            dealItem: deal.item,
-            itemType: deal.item_type,
-            displayOrder: deal.display_order,
-            dealEntries: deal.items.length > 0
+            dealItem: deal.dealItem,
+            itemType: deal.itemType,
+            displayOrder: deal.displayOrder,
+            dealEntries: deal.dealEntries.length > 0
                 ? {
-                    create: deal.items.map(item => ({
-                        itemEntry: item.entry,
-                        displayOrder: item.order
+                    create: deal.dealEntries.map(item => ({
+                        itemEntry: item.itemEntry,
+                        displayOrder: item.displayOrder
                     }))
                 }   
                 : undefined // prevents empty create
         }))
 
+        console.log("DEALSPAYLOAD", dealsPayload)
+
         const payload = {
             ...data,
-            deals: {
-                create: dealsPayload
-            }
+            dealItems: {create: dealsPayload}
+            
         }
 
-        console.log(JSON.stringify(payload))
+        console.log(payload)
 
         try{
             const res = await fetch("/api/packages", {
@@ -106,6 +119,12 @@ export default function PackageCreationForm(){
                 console.error(result)
                 return
         }
+
+        setToggleModal(true)
+
+        setTimeout(() => {
+            router.push('/packages')
+        }, 1000)
 
         reset()
         setIsSuccess(true)
@@ -201,8 +220,12 @@ export default function PackageCreationForm(){
                 disabled={isSubmitting}
             />
 
-
-
+            {toggleModal && 
+                <SuccessModal
+                    message='Package Created'
+                    actionMessage={'Redirecting to packages list...'}
+                />
+            }
         </Form>
     )
 }
