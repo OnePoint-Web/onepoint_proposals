@@ -11,6 +11,8 @@ export async function POST(req){
         const data = createPackageSchema.parse(body)
         const slug = await generateUniqueSlug('package', data.package)
 
+        console.log('prismadata', data.dealItems)
+
         const result = await prisma.package.create({
                 data: {
                     slug,
@@ -19,7 +21,7 @@ export async function POST(req){
                     proposedSolution: data.solution,
                     basePrice: data.price,
                     isActive: true,
-                    dealItems: data.deals
+                    dealItems: data.dealItems
                 },
                 include: { 
                     dealItems: {
@@ -37,7 +39,6 @@ export async function POST(req){
 
     }catch (err) {
 
-        // Fallback for non-Prisma errors
         console.error("Unhandled error:", err)
 
         return NextResponse.json(
