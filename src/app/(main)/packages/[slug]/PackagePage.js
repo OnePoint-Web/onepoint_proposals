@@ -4,32 +4,37 @@ import Container from "@/components/layout/Container/Container.js"
 import Button from '@/components/ui/button/Button'
 import styles from './page.module.scss'
 import { useRouter } from 'next/navigation'
-import {useState} from 'react'
+import {useState, useMemo} from 'react'
 import {Icons} from '@/components/icons/icons'
-import DOMPurify from 'dompurify'
+import SuccessModal from '@/components/ui/success-modal/SuccessModal'
+import DOMPurify from 'isomorphic-dompurify'
 
 export default function PackagePage({packageData, slug}){
     const router = useRouter()
     const ErrorIcon = Icons.error
     const [toggleModal, setToggleModal] = useState(false)
+    const [toggleDeletedModal, setToggleDeletedModal] = useState(false)
 
     const proposedSolution = useMemo(() => {
         return DOMPurify.sanitize(packageData.proposedSolution ?? "");
     }, [packageData.proposedSolution]);
 
-      const handleDelete = async () => {
-        const res = await fetch(`/api/packages/${slug}`, { method: 'DELETE' })
-        if (!res.ok) {
-          console.error('Failed to delete')
-          return
-        }
-        const data = await res.json()
-        
-        router.push('/packages') 
-        console.log(data)
-
-        alert('Package deleted!')
+    const handleDelete = async () => {
+      const res = await fetch(`/api/packages/${slug}`, { method: 'DELETE' })
+      if (!res.ok) {
+        console.error('Failed to delete')
+        return
       }
+      const data = await res.json()
+
+      setToggleModal(false)
+      setToggleDeletedModal(true)
+      
+      setTimeout(() => {
+        router.push(`/packages`)
+      }, 1000)
+
+    }
 
     const inclusions = packageData.dealItems
     return (
@@ -48,22 +53,24 @@ export default function PackagePage({packageData, slug}){
 
                    <hr></hr>
 
-                  <p className={styles['header']}>Overview:</p>
-              
+                  <p className={styles['header']}>Overview</p>
+
                   <p>{packageData.description}</p>
 
                   <hr></hr>
 
-                  <p className={styles['header']}>Proposed Solution:</p>
-                  <div className={`${styles['proposal-solution-container']} ${styles['rich-text']}`} dangerouslySetInnerHTML={{__html: proposedSolution}}></div>   
-                
-                  <p className={styles['header']}>Inclusions:</p>
+                  <p className={styles['header']}>Proposed Solution</p>
+                  {proposedSolution ?
+                    <div className={`${styles['proposal-solution-container']} ${styles['rich-text']}`} dangerouslySetInnerHTML={{__html: proposedSolution}}></div>   
+                  : <p className={styles['empty-section-text']}>Package does not include a Proposed Solution</p>}
 
+                  <p className={styles['header']}>Inclusions</p>
 
+                  {inclusions.length !== 0 ? 
                   <div className={styles['inclusions-container']}>
 
-
-                    {inclusions.map((item, index) => {
+      
+                  {inclusions.map((item, index) => {
                       return item.itemType === 'Paragraph' ? (
                         <div key={item.dealItemId} className={`${styles['deal-container']} ${styles['paragraph']}`}>
                           <p className={styles['item-header']}>{item.dealItem}</p>
@@ -82,7 +89,7 @@ export default function PackagePage({packageData, slug}){
                     })}
 
                   </div>
-
+                  : <p className={styles['empty-section-text']}>Package does not have any inclusions</p>}
 
                 </div>
 
@@ -90,6 +97,7 @@ export default function PackagePage({packageData, slug}){
                   <Button
                       label='Edit'
                       size='xxs'
+                      onClick={() => router.push(`/packages/${slug}/edit`)}
                     />
 
                     <Button
@@ -138,7 +146,12 @@ export default function PackagePage({packageData, slug}){
 
 
               
-
+              {toggleDeletedModal && (
+                  <SuccessModal
+                      message='Package deleted'
+                      actionMessage={'Redirecting to packages list...'}
+                  />
+              )}
             </Container>
 
             
