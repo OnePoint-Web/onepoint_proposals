@@ -1,0 +1,45 @@
+
+.field-set{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    gap: 10px;
+    border: none;
+    margin-bottom: 5px;
+}
+
+
+.error{
+    color: red;
+    padding: 0;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+
+.input-child{
+    width: 430px;
+    min-width: 200px;
+    
+}
+
+.success{
+    margin-bottom: 5px;
+    width: fit-content;
+    background-color: rgb(229, 255, 229);
+    border-radius: 5px;
+    border: 1px solid rgb(40, 182, 40);
+    padding: 5px 10px;
+    
+    color: rgb(1, 100, 37) !important;
+}
+
+.section-main{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    
+}
+
+

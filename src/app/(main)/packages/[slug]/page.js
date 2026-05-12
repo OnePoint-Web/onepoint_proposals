@@ -21,9 +21,9 @@ import { prisma } from "@/lib/prisma";
   if (!packageData) return <div>Package not found</div>;
 
   const serializedData = {
-  ...packageData,
-  basePrice: packageData.basePrice.toString()
-}
+    ...packageData,
+    basePrice: packageData.basePrice.toString()
+  }
 
      return <PackagePage packageData={serializedData} slug={slug}/>
 }

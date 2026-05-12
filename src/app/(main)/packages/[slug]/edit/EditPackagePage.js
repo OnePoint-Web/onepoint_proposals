@@ -1,38 +1,56 @@
-"use client"
+'use client'
+import styles from './page.module.scss'
 import Form, {FormInputContainer} from '@/components/ui/form/Form.js'
 import Input from '@/components/ui/input/Input'
 import Button from '@/components/ui/button/Button'
-import styles from './PackageCreationForm.module.scss'
-import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
-import PackageDealSection from './PackageDealsSection'
 import SuccessModal from '@/components/ui/success-modal/SuccessModal'
-import {useRouter} from 'next/navigation'
+import RichTextEditor from '@/components/ui/rich-text-editor/RichTextEditor.js'
+import Container from '@/components/layout/Container/Container'
+import EditPackageDealSection from './components/PackageDealSection'
+import {createPackageSchema} from '@/schemas/package/createPackage.schema.js'
+import {useEffect, useState, useReducer} from 'react'
 import {useForm, Controller} from "react-hook-form"
 import {zodResolver} from '@hookform/resolvers/zod'
-import {createPackageSchema} from '@/schemas/package/createPackage.schema.js'
-import {dealsReducer} from '../reducers/packageDealReducer.js'
-import {createInitialDeal} from '../reducers/factories'
-import {useReducer, useState} from 'react'
+import {dealsReducer} from './reducers/packageDealReducer.js'
+import {useRouter} from 'next/navigation'
 
-export default function PackageCreationForm(){
+export default function EditPackagePage({packageData}){
 
-    const [dealsState, dispatch] = useReducer(dealsReducer, createInitialDeal());
+    const router = useRouter()
+
+    const [dealsState, dispatch] = useReducer(dealsReducer, null);
     const [price, setPrice] = useState(0)
     const [isSuccess, setIsSuccess] = useState(false);
     const [toggleModal, setToggleModal] = useState(false);
 
-    const router = useRouter()
+    useEffect(() => {
+        dispatch({
+            type: 'INITIALIZE',
+            payload: packageData.dealItems
+        })
+
+        setPrice(packageData.basePrice)
+    },[])
 
     const {
-        register, 
-        handleSubmit,   
-        setError,
-        reset,
-        control,
-        formState: { errors, isSubmitting},
-    } = useForm({
-        resolver: zodResolver(createPackageSchema)
-    })
+            register, 
+            handleSubmit,   
+            setError,
+            reset,
+            control,
+            formState: { errors, isSubmitting},
+        } = useForm({
+            resolver: zodResolver(createPackageSchema),
+
+            defaultValues: {
+                package: packageData.package || "",
+                price: Number(packageData.basePrice) || 0,
+                description: packageData.description || "",
+                solution: packageData.proposedSolution || "",
+        }
+        })
+
+    if(!dealsState) return <p>Loading Package Data</p>
 
     const prepareDealsForSubmit = (dealsState) => {
         const payload = dealsState.map((deal, dealIndex) => ({
@@ -68,6 +86,7 @@ export default function PackageCreationForm(){
             console.log('CLEANEDDEALS', payload)
             return payload
     }
+    
     const onSubmit = async (data) => {
         if (isSubmitting) return
 
@@ -92,6 +111,7 @@ export default function PackageCreationForm(){
 
         const payload = {
             ...data,
+            packageId: packageData.packageId,
             dealItems: dealsPayload
             
         }
@@ -99,8 +119,8 @@ export default function PackageCreationForm(){
         console.log(payload)
 
         try{
-            const res = await fetch("/api/packages", {
-            method: "POST",
+            const res = await fetch(`/api/packages/${packageData.slug}/edit`, {
+            method: "PATCH",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload)
             })
@@ -136,10 +156,13 @@ export default function PackageCreationForm(){
         }
     }
 
+    
+    
+
     return(
+        <Container>
         <Form 
-        header='Create New SLA Package'
-        description='Create a new SLA package for SLA proposals'
+        header={`You are now editing ${packageData.package}`}
         onSubmit={handleSubmit(onSubmit)}
         >
 
@@ -205,7 +228,7 @@ export default function PackageCreationForm(){
             
         </fieldset>
 
-        <PackageDealSection
+        <EditPackageDealSection
             dealsState={dealsState}
             dispatch={dispatch}
         />
@@ -213,7 +236,7 @@ export default function PackageCreationForm(){
            { isSuccess && <p className={styles.success}>Package created successfully</p>}
 
             <Button 
-                label={isSubmitting ? 'Creating package..' : 'Add Package'}
+                label={isSubmitting ? 'Applying changes..' : 'Update Package'}
                 size='xs'
                 color='dark'
                 action='submit'
@@ -222,11 +245,11 @@ export default function PackageCreationForm(){
 
             {toggleModal && 
                 <SuccessModal
-                    message='Package Created'
+                    message='Package Updated!'
                     actionMessage={'Redirecting to packages list...'}
                 />
             }
         </Form>
+        </Container>
     )
 }
-

@@ -1,12 +1,12 @@
 'use client'
-import styles from './PackageCreationForm.module.scss'
+import styles from './PackageDealSection.module.scss'
 import PackageDeal from '@/components/ui/draggables/package-deal/PackageDeal'
 import AddItemButton from '@/components/ui/draggables/add-item-button/AddItemButton.js'
 
 import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core'
 
-export default function PackageDealSection({dealsState, dispatch}){
+export default function EditPackageDealSection({dealsState, dispatch}){
     
    
     console.log('DEALS STATE:', dealsState)
