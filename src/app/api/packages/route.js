@@ -13,6 +13,22 @@ export async function POST(req){
 
         console.log('prismadata', data.dealItems)
 
+        const duplicate = await prisma.package.findFirst({
+            where: {
+                package: data.package,
+            }
+        })
+
+        if (duplicate) {
+            return NextResponse.json(
+                {
+                message: "Package title already exists",
+                field: "package"
+                },
+                { status: 409 }
+            )
+        }
+
         const result = await prisma.package.create({
                 data: {
                     slug,
@@ -21,7 +37,7 @@ export async function POST(req){
                     proposedSolution: data.solution,
                     basePrice: data.price,
                     isActive: true,
-                    dealItems: data.dealItems
+                    dealItems: {create: data.dealItems}
                 },
                 include: { 
                     dealItems: {
