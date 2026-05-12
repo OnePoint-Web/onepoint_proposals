@@ -8,11 +8,11 @@ const stripHtml = (html) => {
 }
 
 const safeNumber = z.preprocess((val) => {
-  if (val === '' || val === null || val === undefined) return undefined
+  if (val === "" || val === null || val === undefined) return undefined
 
   const num = Number(val)
   return isNaN(num) ? undefined : num
-}, z.number().optional())
+}, z.number().max(99999999.99, "Price exceeds maximum allowed value")).optional()
 
 export const createPackageSchema = z.object({
   package: z.string().min(1, { message: 'Package title is required' }),
@@ -24,8 +24,7 @@ export const createPackageSchema = z.object({
     const stripped = stripHtml(val)
     return stripped.length === 0 ? undefined : val
   }, z.string().optional()),
-  dealItems: z.object({
-    create: z.array(
+  dealItems: z.array(
       z.object({
         dealItem: z.string(),
         itemType: z.string(),
@@ -39,6 +38,5 @@ export const createPackageSchema = z.object({
           )
         })
       })
-    )
-  }).optional()
+    ).optional()
 })
