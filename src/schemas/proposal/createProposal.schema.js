@@ -58,7 +58,7 @@ const baseProposalSchema = z.object({
     //basePrice for SLA Offer
     subtotal: z.coerce.number().optional(),
 
-    discountType: z.enum(['Percent', 'Fixed', 'None']).optional(),
+    discountType: z.enum(['Percentage', 'Fixed', 'None']).optional(),
     discountValue: safeNumber.optional(),
     discountDescription: z.string().optional(),
     taxableAmount: safeNumber.optional(),
