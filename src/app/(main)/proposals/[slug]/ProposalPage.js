@@ -25,6 +25,27 @@ export default function ProposalPage({proposalData, slug}){
 
     console.log(proposalData)
 
+
+    const calculateItemDiscounts = (offers) => {
+
+        const totalDiscountValue = offers.reduce((sum, item) => {
+            let discount = 0;
+
+            if(item.itemDiscountType === 'Percentage'){
+                discount = item.totalPrice * (item.itemDiscountValue / 100)
+            }
+
+            if (item.itemDiscountType === 'Fixed') {
+                discount = item.itemDiscountValue
+            }
+
+            return sum + discount
+        }, 0)
+
+        return totalDiscountValue
+    }
+
+
     return(
         <ChildLayout>
 
@@ -219,8 +240,7 @@ export default function ProposalPage({proposalData, slug}){
 
                                                     <td className={styles['center-cell']}>
                                                         <p className={styles['description']}>
-                                                        (Discount Voucher Ultimate 1000
-                                                        {proposalData.slaOffers[0].discountReason})
+                                                        ({proposalData.slaOffers[0].discountReason})
                                                         </p>
                                                     </td>
 
@@ -372,8 +392,144 @@ export default function ProposalPage({proposalData, slug}){
                                             </tr>
                                         ))
                                     }
+
+                                    <tr  className={styles['data-row']}>
+                                        <th>
+                                        </th>
+
+                                        <th>
+                                        </th>
+
+                                        <th className={styles['center']}>
+                                        </th>
+
+                                        {proposalData.proposalType === 'Product Proposal' &&
+                                        <>
+                                            <th className={styles['center']}>
+                                            </th>
+                                            <th className={styles['center']}>
+                                            </th>
+                                        </>
+                                            
+                                        }
+                                        
+
+                                        <th className={styles['center']}>
+                                            <p className={styles['subtotal-text']}>Subtotal: </p>
+                                        </th>   
+
+                                        <th className={styles['center']}>
+                                                <p className={styles['subtotal-text']}>{`$ ${proposalData.serviceProductOffers[0].subTotal - calculateItemDiscounts(proposalData.serviceProductOffers[0].offerEntries)}`}</p>
+                                        </th>
+                                    </tr>
                                     </tbody>
                                 </table>
+
+                                   <div className={styles['price-table']}>
+                                     <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>Subtotal:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}></p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p>$ {proposalData.serviceProductOffers[0].subTotal}</p>
+                                                    </td>
+                                                </tr>
+
+                                                
+
+                                                    {calculateItemDiscounts(proposalData.serviceProductOffers[0].offerEntries) !== 0 && (
+                                                        <>
+                                                        <tr>
+                                                            <td className={styles['price-label']}>
+                                                                <p className={styles['label']}>Item discounts:</p>
+                                                            </td>
+
+                                                            <td className={styles['center-cell']}>
+                                                                <p className={styles['description']}>
+                
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles['price-value']}>
+                                                                
+                                                                    <p>- $ {calculateItemDiscounts(proposalData.serviceProductOffers[0].offerEntries) }</p>
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                        </>
+                                                        )
+                                                    }
+
+                                                    {proposalData.serviceProductOffers[0].discountType !== 'None' && (
+                                                        <>
+                                                        <tr>
+                                                            <td className={styles['price-label']}>
+                                                                <p className={styles['label']}>Global discount:</p>
+                                                            </td>
+
+                                                            <td className={styles['center-cell']}>
+                                                                <p className={styles['description']}>
+                                                                    {proposalData.serviceProductOffers[0].discountReason && `(${proposalData.serviceProductOffers[0].discountReason})`}
+                                                                </p>
+                                                            </td>
+                                                            <td className={styles['price-value']}>
+                                                                {proposalData.serviceProductOffers[0].discountType === 'Fixed' &&
+                                                                    <p>- $ {proposalData.serviceProductOffers[0].discountValue}</p>
+                                                                }
+
+                                                                {proposalData.serviceProductOffers[0].discountType === 'Percentage' &&
+                                                                    <p>- $ {(proposalData.serviceProductOffers[0].discountValue/100) * (proposalData.serviceProductOffers[0].subTotal - calculateItemDiscounts(proposalData.serviceProductOffers[0].offerEntries))}</p>
+                                                                }
+                                                                
+                                                            </td>
+                                                        </tr>
+                                                        </>
+                                                        )
+                                                    }
+                                                    
+                                                
+
+                                                <tr>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>GST:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}></p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p>+ $ {proposalData.serviceProductOffers[0].taxAmount}</p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr className={styles['last-row']}>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>Total:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}></p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p className={styles['final-price']}>
+                                                        $ {proposalData.serviceProductOffers[0].finalPrice}
+                                                        </p>
+                                                    </td>
+                                                </tr>         
+                                            </tbody>
+                                        </table>
+
+
+                                   </div>
+                                       
                                 </>
                             )}
                                 
