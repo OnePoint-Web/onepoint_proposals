@@ -49,7 +49,7 @@ export default function CreateProposal(){
         return errors
     }
 
-   const handleSubmit = async (e) => {
+   const handleSubmit = async (e, status) => {
         e.preventDefault()
 
         setIsSubmitting(true)
@@ -76,7 +76,10 @@ export default function CreateProposal(){
 
         dispatch({ type: 'CLEAR_VALIDATION_ERRORS' })
 
-        const payload = buildProposalPayload(proposalState, parsedResult)
+        const payload = {
+            ...buildProposalPayload(proposalState, parsedResult),
+            proposalStatus: status    
+        }
        
           try{
             const res = await fetch("/api/proposals", {
@@ -149,31 +152,20 @@ export default function CreateProposal(){
                         color='red' 
                         size ='md'
                         disabled={isSubmitting}
-                        onClick={handleSubmit}
+                        onClick={(e) => handleSubmit(e, 1)}
                     />
 
                     <Button
                         label='Save Draft'
                         color='dark'
                         size ='md'
+                        onClick={(e) => handleSubmit(e, 0)}
                     />
                 </div>
 
             </Container>
 
           {toggleModal && (
-                // <div 
-                //   className={`${styles['success-modal-bg']}`} 
-                // >  
-
-                //   <div className={styles['success-modal-container']} onClick={(e) => e.stopPropagation()}>
-                //     <ProposalIcon className={styles.icon}/>
-                //     <p className={styles.head}>Proposal Successfully Created!</p>
-                //     <p className={styles.message}>Redirecting to proposals page...</p>
-
-                //   </div>              
-              
-                // </div>  
 
                 <SuccessModal
                     onClick={(e) => e.stopPropagation()}

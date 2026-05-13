@@ -58,6 +58,7 @@ export default function EditProposalPage({proposalData}){
             proposedSolution: proposalData.proposedSolution,
             proposalDescription: proposalData.proposalDescription,
             proposalType: proposalData.proposalType,
+            statusId: proposalData.statusId,
 
             selectedMembers: proposalData.selectedMembers.map( m => ({
                 selectedMemberId: m.selectedMemberId,
@@ -242,12 +243,15 @@ export default function EditProposalPage({proposalData}){
         return payload
     }
 
-    const handleUpdateSubmit = async (e) => {
+    const handleUpdateSubmit = async (e, status) => {
             e.preventDefault()
 
             console.log('Clicking submit', proposalState)
 
-            const payload = buildProposalPayload(proposalState)
+            const payload = {
+                ...buildProposalPayload(proposalState),
+                statusId: status    
+            }
 
             try{
                 const res = await fetch(`/api/proposals/[${proposalData.slug}]/edit`, {
@@ -470,9 +474,25 @@ export default function EditProposalPage({proposalData}){
             <Container fit={'fullwidth'}>
                 <Button
                     label='Save Changes'
-                    onClick={(e)=> handleUpdateSubmit(e)}
+                    onClick={(e)=> handleUpdateSubmit(e, proposalData.statusId)}
                     color='dark'
                 />
+
+                {proposalData.statusId === 0 &&(
+                    <Button
+                        label='Publish for Sending'
+                        onClick={(e)=> handleUpdateSubmit(e, 1)}
+                        color='red'
+                    />
+                )}
+
+                {proposalData.statusId === 1 &&(
+                    <Button
+                        label='Save as Draft'
+                        onClick={(e)=> handleUpdateSubmit(e, 0)}
+                        color='red'
+                    />
+                )}
 
                 {toggleModal && (
                     <SuccessModal

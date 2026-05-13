@@ -145,10 +145,13 @@ export default function PriceSection({dispatch, proposalState}){
                     {id: 'Percentage', name: '(%) Percentage'}
                 ]}
                 onChange={(e) => {
+                    
                     dispatch({
                         type: "UPDATE_PROPOSAL_FIELD",
                         payload: {discountType: e.target.value, discountValue: 0}
                     })
+
+                    console.log(proposalState.discountType)
                 }}
                 />
 

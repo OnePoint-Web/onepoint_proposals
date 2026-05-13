@@ -33,13 +33,16 @@ export default function CreateUserForm(){
         .then(res => res.json())
         .then(data => {
         const formattedRoles = data.map(role => ({
-            id: role.roleId,
-            name: role.role
-            }))
+                id: role.roleId,
+                name: role.role
+            })).filter(r => r.id !== 3)
+
+            console.log('FORMATED', formattedRoles)
             setRoles(formattedRoles)
             setValue("role", String(roles[0].roleId))
         })
         .catch(err => console.error(err))
+
     }, [])
 
     const onSubmit = async (data) => {
@@ -76,6 +79,7 @@ export default function CreateUserForm(){
         }
     }
 
+    console.log(roles)
     return(
         <Form 
         header='Create User'

@@ -3,7 +3,7 @@ import styles from './page.module.scss'
 import ChildLayout from "@/components/layout/ChildLayout/ChildLayout";
 import Container from "@/components/layout/Container/Container.js"
 import MemberCard from '@/components/ui/member-card/MemberCard.js'
-import DOMPurify from 'dompurify'
+import DOMPurify from 'isomorphic-dompurify'
 import VideoPlayer from '@/components/ui/video-player/VideoPlayer'
 import ProposalPageHead from './components/ProposalPageHead'
 import {useMemo} from 'react'
@@ -191,7 +191,75 @@ export default function ProposalPage({proposalData, slug}){
                                             })}
                                         </div>
 
-                                        <p className={styles['budget-section-foot']}><span>{proposalData.description}</span></p>
+                                        <p className={styles['budget-section-foot']}><span>{proposalData.proposalDescription}</span></p>
+                                    </div>
+                                    
+                                    <div className={styles['price-table']}>
+
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>Package price:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}></p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p>$ {proposalData.slaOffers[0].basePrice}</p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>Discount:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}>
+                                                        (Discount Voucher Ultimate 1000
+                                                        {proposalData.slaOffers[0].discountReason})
+                                                        </p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p>- $ {proposalData.slaOffers[0].discountValue}</p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>GST:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}></p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p>+ $ {proposalData.slaOffers[0].taxAmount}</p>
+                                                    </td>
+                                                </tr>
+
+                                                <tr className={styles['last-row']}>
+                                                    <td className={styles['price-label']}>
+                                                        <p className={styles['label']}>Total:</p>
+                                                    </td>
+
+                                                    <td className={styles['center-cell']}>
+                                                        <p className={styles['description']}></p>
+                                                    </td>
+
+                                                    <td className={styles['price-value']}>
+                                                        <p className={styles['final-price']}>
+                                                        $ {proposalData.slaOffers[0].finalPrice}
+                                                        </p>
+                                                    </td>
+                                                </tr>         
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </>
                             )}
@@ -212,13 +280,18 @@ export default function ProposalPage({proposalData, slug}){
                                             <p>Item Price</p>
                                         </th>
 
-                                        <th>
-                                            <p>Qty</p>
-                                        </th>
+                                        {proposalData.proposalType === 'Product Proposal' &&
+                                            <>
+                                                <th>
+                                                    <p>Qty</p>
+                                                </th>
+                                            
 
-                                        <th>
-                                            <p>Subtotal</p>
-                                        </th>
+                                                <th>
+                                                    <p>Subtotal</p>
+                                                </th>
+                                            </>
+                                        }
 
                                         <th>
                                             <p>Item Discount</p>
@@ -244,23 +317,44 @@ export default function ProposalPage({proposalData, slug}){
                                                     <p>{`$ ${entry.itemPrice}`}</p>
                                                 </th>
 
-                                                <th className={styles['center']}>
-                                                    <p>{entry.quantity}</p>
-                                                </th>
+                                                {proposalData.proposalType === 'Product Proposal' &&
+                                                <>
+                                                    <th className={styles['center']}>
+                                                        <p>{entry.quantity}</p>
+                                                    </th>
 
-                                                <th className={styles['center']}>
-                                                    <p>{entry.totalPrice}</p>
-                                                </th>
+                                                    <th className={styles['center']}>
+                                                        <p>{entry.totalPrice}</p>
+                                                    </th>
+                                                </>
+                                                    
+                                                }
+                                                
 
                                                 <th className={styles['center']}>
                                                     {entry.itemDiscountType === 'Fixed' && (
-                                                        <p>{`$ ${entry.itemDiscountValue}`}</p>
+                                                        <>
+                                                         <p>{`- $ ${entry.itemDiscountValue}`}</p>
+                                                        <p className={styles['discount-description']}>({entry.itemDiscountDescription})</p>
+                                                        </>
+                                            
                                                     )}
                                                     {entry.itemDiscountType === 'Percentage' && (
-                                                        <p>{`% ${entry.itemDiscountValue}`}</p>
+                                                        <>
+                                                            <p>{`- % ${entry.itemDiscountValue}`}</p>
+                                                            <p className={styles['discount-description']}>({entry.itemDiscountDescription})</p>
+                                                        </>
+                                                        
                                                     )}
-                                                    <p>{entry.itemDiscountDescription}</p>
-                                                </th>
+
+                                                    {entry.itemDiscountType === 'None' && (
+                                                        <>
+                                                            <p>- -</p>
+                                                        </>
+                                                        
+                                                    )}
+                                                    
+                                                </th>   
 
                                                 <th className={styles['center']}>
 

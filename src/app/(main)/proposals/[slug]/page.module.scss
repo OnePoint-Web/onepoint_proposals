@@ -91,7 +91,7 @@
         width: 100%;
         border-radius: 10px;
         border: 1px solid var(--field-stroke);
-        min-height: 300px;
+        min-height: fit-content;
         background-color: var(--field-fill);
         color: black;
         display: flex;
@@ -116,9 +116,13 @@
             padding: 10px;
             width: 100%;
             border-top: 1px solid var(--field-stroke);
+            font-weight: 600;
+            color: var(--text-strong);
+            line-height: 1.4;
 
             span{
-                font-weight: 500;
+                font-size: 13px;
+                font-weight: 600;
                 
             }
         }
@@ -167,6 +171,68 @@
         }
     }
 
+    .price-table{
+        margin-top: 30px;
+        width: 100%;
+        height: auto;
+        color: black;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+
+        table{
+            width: fit-content;
+            border-collapse: collapse;
+            border: none;
+            background-color: transparent;
+
+            tr{
+                border-bottom: 0.5px solid var(--text-strong);
+            }
+
+            .price-label{
+                min-width: fit-content;
+                border: none;
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-start;
+                align-items: flex-start;
+
+                .label{
+                    font-weight: 600;
+                }
+            }
+
+            .center-cell{
+                min-width: 300px;
+                max-width: 300px;
+                width: auto;
+                border: none;
+               
+                .description{
+                    font-size: 12px;
+                }
+            }
+
+            .price-value{
+                min-width: fit-content;
+                
+                display: flex;
+                flex-direction: row;
+                justify-content: flex-end;
+                align-items: flex-start;
+                border: none;
+
+                   .final-price{
+                    font-weight: 600;
+                }
+            }
+
+            .last-row{
+                border-bottom: none;
+            }
+        }   
+    }
 
     .approval-details{
         display: flex;
@@ -309,6 +375,11 @@
     
     .description{
         width: 30%;
+    }
+
+    .discount-description{
+        font-size: 12px;
+        margin-top: 5px;
     }
 
     .item{

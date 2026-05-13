@@ -39,6 +39,7 @@ export default function ProposalPageHead({proposalData}){
                  <h1>{proposalData.proposalTitle}</h1>
 
                  <p className={styles.statuses}>Status: {' '}
+                    {proposalData.statusId === 0 && (<span className={styles.draft}>Draft</span>)}
                     {proposalData.statusId === 1 && (<span className={styles.published}>Published (not sent)</span>)}
                     {proposalData.statusId === 3 && (<span className={styles.sent}>sent</span>)}
                     {proposalData.statusId === 4 && (<span className={styles.viewed}>Viewed</span>)}
@@ -46,7 +47,7 @@ export default function ProposalPageHead({proposalData}){
                     {proposalData.statusId === 6 && (<span className={styles.declined}>Declined</span>)}
                  </p>
 
-                 {proposalData.statusId === 1 && (
+                 {(proposalData.statusId === 1 || proposalData.statusId === 0) && (
                 <div className={styles['top-btn-box']}>
                     <Button
                         label='Delete'
@@ -85,7 +86,10 @@ export default function ProposalPageHead({proposalData}){
             </div>
 
             <hr></hr>
-             <div className={`${styles['proposal-head-section']} ${styles['center']}`}>
+
+            {proposalData.statusId === 1 && 
+                (<>
+                <div className={`${styles['proposal-head-section']} ${styles['center']}`}>
                 <p>Recipients</p>
                 <EmailsInputBar/>
                 <Button
@@ -95,6 +99,10 @@ export default function ProposalPageHead({proposalData}){
              </div>
              
              <p className={styles['note-message']}>Proposals cannot be editted and undone once sent. Please review proposal before sending out to client.</p>
+                
+                </>)
+            }
+            
             
         </Container>
     )

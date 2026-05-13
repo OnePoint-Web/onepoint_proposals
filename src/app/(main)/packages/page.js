@@ -10,6 +10,11 @@ import {useEffect, useState} from 'react'
 export default function Packages(){
 
     const [packages, setPackages] = useState([])
+    const [query, setQuery] = useState({
+        search: '',
+        status: '',
+        orderBy: '',
+    })
 
     useEffect(() => {
         fetch('/api/packages')
