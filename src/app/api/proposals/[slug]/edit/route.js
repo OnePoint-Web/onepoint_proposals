@@ -36,6 +36,7 @@ export async function PATCH(req){
                     execVideoUrl: data.execVideoUrl,
                     proposedSolution: data.proposedSolution,
                     proposalDescription: data.proposalDescription,
+                    statusId: data.statusId,
 
                     timelines: {
                         deleteMany: {},

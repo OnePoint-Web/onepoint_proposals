@@ -22,6 +22,7 @@ export async function POST(req){
         }
 
         const data = postresult.data
+        console.log(data)
 
         const slug = await generateUniqueSlug('proposal', data.proposalTitle)
         
@@ -42,7 +43,8 @@ export async function POST(req){
                     timelines:  {create: data.timelines},
                     selectedMembers: {create: data.selectedMembers},
                     slaOffers: {create: data.slaOffers},
-                    serviceProductOffers: {create: data.serviceProductOffers}
+                    serviceProductOffers: {create: data.serviceProductOffers},
+                    statusId: data.proposalStatus
                     
                 },
 

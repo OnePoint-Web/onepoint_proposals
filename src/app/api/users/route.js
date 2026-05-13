@@ -20,7 +20,7 @@ export async function POST(req){
                 lastName: data.last_name,
                 userEmail: data.email,
                 userPassword: hashedPassword,
-                accountStatus: 1,
+                accountStatus: 2,
                 accountRole: parseInt(data.role),
             },
             select:{ 
