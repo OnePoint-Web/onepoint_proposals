@@ -1,0 +1,32 @@
+.not-found-main{
+    width: 100%;
+    height: 100%;
+    background-color: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .content-container{
+        height: fit-content;
+        display: flex;
+        align-items: center;
+        flex-direction: column  ;
+        justify-content: center;
+        max-width: 500px;
+        gap: 10px;
+        text-align: center;
+
+        .icon{
+            font-size: 9rem;
+            fill: var(--primary-color);
+        }
+
+        h1{color: var(--brand-red)}
+
+        p{
+            color: var(--text-strong)
+        }
+       
+    }
+}
+

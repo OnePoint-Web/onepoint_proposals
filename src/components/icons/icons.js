@@ -14,6 +14,7 @@ import { FaRegTrashCan } from "react-icons/fa6";
 import { FiPlusCircle } from "react-icons/fi";
 import { FaIdBadge } from "react-icons/fa";
 import { IoMdArrowDropup, IoMdArrowDropdown  } from "react-icons/io";
+import { IoConstructSharp } from "react-icons/io5";
 
 export const Icons = {
     dashboard: BiSolidDashboard,
@@ -38,7 +39,9 @@ export const Icons = {
     plusButton: FiPlusCircle,
     teamIcon: FaIdBadge,
     arrowDropUp: IoMdArrowDropup,
-    arrowDropDown: IoMdArrowDropdown
+    arrowDropDown: IoMdArrowDropdown,
+    construction: IoConstructSharp
+
 
 };
 
