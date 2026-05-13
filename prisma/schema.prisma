@@ -76,7 +76,7 @@ model Proposal {
   goalsAndObjectives String @db.LongText
   execVideoUrl String?
   proposedSolution String @db.LongText
-  proposalDescription String?
+  proposalDescription String? @db.LongText
   statusId Int
   createdBy Int
   statusUpdated DateTime @default(now()) //updated
@@ -174,7 +174,7 @@ model SlaOffer {
   taxAmount Decimal @db.Decimal(10, 2)
   taxReason String
   finalPrice Decimal @db.Decimal(10, 2)
-  paymentTerms String
+  paymentTerms String @db.LongText
   dateCreate DateTime @default(now())
 
   packageDealItem PackageDealItem[]
@@ -186,7 +186,7 @@ model Package{
   packageId Int @id @default(autoincrement())
   slug String @unique
   package String @unique
-  description String
+  description String @db.LongText
   proposedSolution String? @db.LongText
   basePrice Decimal @db.Decimal(10, 2)
   isActive Boolean @default(true)
@@ -248,7 +248,6 @@ model PackageDealEntry{
 model ServiceProductOffer {
   serviceProductOfferId Int @id @default(autoincrement())
   proposalId Int
-  //description String //removed
   type String
   isMultipleChoice Boolean @default(false)
   subTotal Decimal @db.Decimal(10, 2)
@@ -261,7 +260,7 @@ model ServiceProductOffer {
   taxAmount Decimal? @db.Decimal(10, 2)
   taxReason String?
   finalPrice Decimal @db.Decimal(10, 2)
-  paymentTerms String
+  paymentTerms String @db.LongText
   dateCreated DateTime @default(now())
 
   proposal Proposal @relation(fields: [proposalId], references: proposalId, onDelete: Cascade)

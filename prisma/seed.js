@@ -4,6 +4,44 @@ const bcrypt = require('bcryptjs')
 const prisma = new PrismaClient()
 
 async function main() {
+
+
+  await prisma.role.createMany({
+    data: [
+      {
+        roleId: 1,
+        role: "Superadmin",
+      },
+      {
+        roleId: 2,
+        role: "Admin",
+      },
+      {
+        roleId: 3,
+        role: "Client",
+      },
+    ],
+    skipDuplicates: true,
+  })
+
+  await prisma.accountStatus.createMany({
+    data: [
+      {
+        statusId: 1,
+        status: "Inactive",
+      },
+      {
+        statusId: 2,
+        status: "Active",
+      },
+      {
+        statusId: 3,
+        status: "Deleted",
+      },
+    ],
+    skipDuplicates: true,
+  })
+
   const existingUser = await prisma.user.findUnique({
     where: { userEmail: 'admin@test.com' },
   })

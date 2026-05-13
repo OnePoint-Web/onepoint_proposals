@@ -6,7 +6,7 @@ CREATE TABLE `User` (
     `lastName` VARCHAR(191) NOT NULL,
     `userEmail` VARCHAR(191) NOT NULL,
     `userPassword` VARCHAR(191) NOT NULL,
-    `accountStatus` VARCHAR(191) NOT NULL,
+    `accountStatus` INTEGER NOT NULL DEFAULT 1,
     `accountRole` INTEGER NOT NULL,
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dateUpdated` DATETIME(3) NULL,
@@ -17,17 +17,20 @@ CREATE TABLE `User` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+CREATE TABLE `AccountStatus` (
+    `statusId` INTEGER NOT NULL AUTO_INCREMENT,
+    `status` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`statusId`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `Role` (
     `roleId` INTEGER NOT NULL AUTO_INCREMENT,
     `role` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`roleId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
-INSERT INTO Role (roleId, role) VALUES
-(1, 'Admin'),
-(2, 'Superadmin'),
-(3, 'Client');
 
 -- CreateTable
 CREATE TABLE `ClientProfile` (
@@ -46,26 +49,29 @@ CREATE TABLE `ClientProfile` (
 -- CreateTable
 CREATE TABLE `Proposal` (
     `proposalId` INTEGER NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(191) NOT NULL,
     `clientId` INTEGER NOT NULL,
     `clientType` VARCHAR(191) NOT NULL,
     `proposalTitle` VARCHAR(191) NOT NULL,
     `proposalType` VARCHAR(191) NOT NULL,
     `executiveSummary` LONGTEXT NOT NULL,
     `goalsAndObjectives` LONGTEXT NOT NULL,
+    `execVideoUrl` VARCHAR(191) NULL,
     `proposedSolution` LONGTEXT NOT NULL,
+    `proposalDescription` LONGTEXT NULL,
     `statusId` INTEGER NOT NULL,
     `createdBy` INTEGER NOT NULL,
-    `statusUpdated` DATETIME(3) NOT NULL,
+    `statusUpdated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dateUpdated` DATETIME(3) NULL,
 
-    UNIQUE INDEX `Proposal_proposalTitle_key`(`proposalTitle`),
+    UNIQUE INDEX `Proposal_slug_key`(`slug`),
     PRIMARY KEY (`proposalId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `ProposalStatus` (
-    `statusId` INTEGER NOT NULL AUTO_INCREMENT,
+    `statusId` INTEGER NOT NULL,
     `status` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`statusId`)
@@ -98,6 +104,7 @@ CREATE TABLE `TeamMember` (
     `memberImage` VARCHAR(191) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
+    `deleted` BOOLEAN NOT NULL DEFAULT false,
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dateUpdated` DATETIME(3) NULL,
 
@@ -130,7 +137,7 @@ CREATE TABLE `TimelineScopeItem` (
 CREATE TABLE `SlaOffer` (
     `slaOfferId` INTEGER NOT NULL AUTO_INCREMENT,
     `proposalId` INTEGER NOT NULL,
-    `selectedPackageId` INTEGER NOT NULL,
+    `slaPackage` VARCHAR(191) NOT NULL,
     `basePrice` DECIMAL(10, 2) NOT NULL,
     `discountType` VARCHAR(191) NOT NULL,
     `discountValue` DECIMAL(10, 2) NULL,
@@ -141,7 +148,7 @@ CREATE TABLE `SlaOffer` (
     `taxAmount` DECIMAL(10, 2) NOT NULL,
     `taxReason` VARCHAR(191) NOT NULL,
     `finalPrice` DECIMAL(10, 2) NOT NULL,
-    `paymentTerms` VARCHAR(191) NOT NULL,
+    `paymentTerms` LONGTEXT NOT NULL,
     `dateCreate` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`slaOfferId`)
@@ -150,14 +157,16 @@ CREATE TABLE `SlaOffer` (
 -- CreateTable
 CREATE TABLE `Package` (
     `packageId` INTEGER NOT NULL AUTO_INCREMENT,
+    `slug` VARCHAR(191) NOT NULL,
     `package` VARCHAR(191) NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
-    `proposedSolution` LONGTEXT NOT NULL,
+    `description` LONGTEXT NOT NULL,
+    `proposedSolution` LONGTEXT NULL,
     `basePrice` DECIMAL(10, 2) NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `dateUpdated` DATETIME(3) NULL,
 
+    UNIQUE INDEX `Package_slug_key`(`slug`),
     UNIQUE INDEX `Package_package_key`(`package`),
     PRIMARY KEY (`packageId`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -168,6 +177,7 @@ CREATE TABLE `DealItem` (
     `packageId` INTEGER NOT NULL,
     `dealItem` VARCHAR(191) NOT NULL,
     `itemType` VARCHAR(191) NOT NULL,
+    `displayOrder` INTEGER NOT NULL,
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`dealItemId`)
@@ -212,7 +222,6 @@ CREATE TABLE `PackageDealEntry` (
 CREATE TABLE `ServiceProductOffer` (
     `serviceProductOfferId` INTEGER NOT NULL AUTO_INCREMENT,
     `proposalId` INTEGER NOT NULL,
-    `description` VARCHAR(191) NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `isMultipleChoice` BOOLEAN NOT NULL DEFAULT false,
     `subTotal` DECIMAL(10, 2) NOT NULL,
@@ -220,12 +229,12 @@ CREATE TABLE `ServiceProductOffer` (
     `discountValue` DECIMAL(10, 2) NULL,
     `discountDescription` VARCHAR(191) NULL,
     `taxableAmount` DECIMAL(10, 2) NOT NULL,
-    `taxApplicable` DECIMAL(10, 2) NOT NULL,
+    `taxApplicable` BOOLEAN NOT NULL,
     `taxRate` DECIMAL(10, 2) NULL,
     `taxAmount` DECIMAL(10, 2) NULL,
     `taxReason` VARCHAR(191) NULL,
     `finalPrice` DECIMAL(10, 2) NOT NULL,
-    `paymentTerms` VARCHAR(191) NOT NULL,
+    `paymentTerms` LONGTEXT NOT NULL,
     `dateCreated` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`serviceProductOfferId`)
@@ -236,7 +245,6 @@ CREATE TABLE `OfferEntry` (
     `offerEntryId` INTEGER NOT NULL AUTO_INCREMENT,
     `serviceProductOfferId` INTEGER NOT NULL,
     `serviceProductItem` VARCHAR(191) NOT NULL,
-    `itemImage` VARCHAR(191) NULL,
     `itemPrice` DECIMAL(10, 2) NOT NULL,
     `quantity` INTEGER NOT NULL,
     `totalPrice` DECIMAL(10, 2) NOT NULL,
@@ -294,6 +302,9 @@ CREATE TABLE `NotificationRules` (
 ALTER TABLE `User` ADD CONSTRAINT `User_accountRole_fkey` FOREIGN KEY (`accountRole`) REFERENCES `Role`(`roleId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE `User` ADD CONSTRAINT `User_accountStatus_fkey` FOREIGN KEY (`accountStatus`) REFERENCES `AccountStatus`(`statusId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE `ClientProfile` ADD CONSTRAINT `ClientProfile_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`userId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -309,37 +320,34 @@ ALTER TABLE `Proposal` ADD CONSTRAINT `Proposal_createdBy_fkey` FOREIGN KEY (`cr
 ALTER TABLE `ProposalView` ADD CONSTRAINT `ProposalView_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SelectedMember` ADD CONSTRAINT `SelectedMember_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `SelectedMember` ADD CONSTRAINT `SelectedMember_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `SelectedMember` ADD CONSTRAINT `SelectedMember_memberId_fkey` FOREIGN KEY (`memberId`) REFERENCES `TeamMember`(`memberId`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `Timeline` ADD CONSTRAINT `Timeline_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Timeline` ADD CONSTRAINT `Timeline_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `TimelineScopeItem` ADD CONSTRAINT `TimelineScopeItem_timelineId_fkey` FOREIGN KEY (`timelineId`) REFERENCES `Timeline`(`timelineId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `TimelineScopeItem` ADD CONSTRAINT `TimelineScopeItem_timelineId_fkey` FOREIGN KEY (`timelineId`) REFERENCES `Timeline`(`timelineId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SlaOffer` ADD CONSTRAINT `SlaOffer_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `SlaOffer` ADD CONSTRAINT `SlaOffer_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `SlaOffer` ADD CONSTRAINT `SlaOffer_selectedPackageId_fkey` FOREIGN KEY (`selectedPackageId`) REFERENCES `Package`(`packageId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DealItem` ADD CONSTRAINT `DealItem_packageId_fkey` FOREIGN KEY (`packageId`) REFERENCES `Package`(`packageId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `DealItem` ADD CONSTRAINT `DealItem_packageId_fkey` FOREIGN KEY (`packageId`) REFERENCES `Package`(`packageId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `DealEntry` ADD CONSTRAINT `DealEntry_dealItemId_fkey` FOREIGN KEY (`dealItemId`) REFERENCES `DealItem`(`dealItemId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `DealEntry` ADD CONSTRAINT `DealEntry_dealItemId_fkey` FOREIGN KEY (`dealItemId`) REFERENCES `DealItem`(`dealItemId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `PackageDealItem` ADD CONSTRAINT `PackageDealItem_slaOfferId_fkey` FOREIGN KEY (`slaOfferId`) REFERENCES `SlaOffer`(`slaOfferId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `PackageDealItem` ADD CONSTRAINT `PackageDealItem_slaOfferId_fkey` FOREIGN KEY (`slaOfferId`) REFERENCES `SlaOffer`(`slaOfferId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `PackageDealEntry` ADD CONSTRAINT `PackageDealEntry_packageDealItemId_fkey` FOREIGN KEY (`packageDealItemId`) REFERENCES `PackageDealItem`(`packageDealItemId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `PackageDealEntry` ADD CONSTRAINT `PackageDealEntry_packageDealItemId_fkey` FOREIGN KEY (`packageDealItemId`) REFERENCES `PackageDealItem`(`packageDealItemId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `ServiceProductOffer` ADD CONSTRAINT `ServiceProductOffer_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `ServiceProductOffer` ADD CONSTRAINT `ServiceProductOffer_proposalId_fkey` FOREIGN KEY (`proposalId`) REFERENCES `Proposal`(`proposalId`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `OfferEntry` ADD CONSTRAINT `OfferEntry_serviceProductOfferId_fkey` FOREIGN KEY (`serviceProductOfferId`) REFERENCES `ServiceProductOffer`(`serviceProductOfferId`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `OfferEntry` ADD CONSTRAINT `OfferEntry_serviceProductOfferId_fkey` FOREIGN KEY (`serviceProductOfferId`) REFERENCES `ServiceProductOffer`(`serviceProductOfferId`) ON DELETE CASCADE ON UPDATE CASCADE;
