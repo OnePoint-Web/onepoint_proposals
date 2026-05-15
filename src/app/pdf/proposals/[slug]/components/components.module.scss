@@ -1,0 +1,25 @@
+// ============================= 
+// COVER SECTION 
+// ============================= 
+
+
+.head{
+    width: 100%;
+    padding-top: 15mm;
+    padding-bottom: 8mm;
+    box-sizing: border-box;
+    border-bottom: 1px solid red;
+    padding-inline: 20mm;
+
+    .head-title{
+        color: black;
+        font-size: 22px;
+        font-weight: 600;
+        line-height: 24px;
+        
+        span{
+            font-size: 14px;
+            font-weight: 400;
+        }
+    }
+}

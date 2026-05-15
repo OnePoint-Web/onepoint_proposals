@@ -1,22 +1,32 @@
-import puppeteer from 'puppeteer'
+import puppeteer from "puppeteer";
+import { NextResponse } from "next/server";
 
+export async function GET(req, {params}) {
+  const browser = await puppeteer.launch({ headless: true });
 
-export async function GET() {
-    const browser = await puppeteer.launch()
+  const page = await browser.newPage();
 
-    const page = await browser.newPage()
+    const { slug } = await params;
 
-    await page.goto('http://localhost:3000/test-print')
+  await page.setExtraHTTPHeaders({
+    "x-pdf-secret": process.env.PDF_SECRET,
+  });
 
-    const pdf = await page.pdf({
-        format: 'A4'
-    })
+  await page.goto(`http://localhost:3000/pdf/proposals/${slug}`, {
+    waitUntil: "networkidle0",  
+  });
 
-    await browser.close()
+  const pdfBuffer = await page.pdf({
+    format: "A4",
+    printBackground: true,
+  });
 
-    return new Response(pdf, {
-        headers: {
-            'Content-Type': 'application/pdf',
-        },
-    })
+  await browser.close();
+
+  return new NextResponse(pdfBuffer, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": 'inline; filename="test.pdf"',
+    },
+  });
 }
