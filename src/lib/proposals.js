@@ -92,7 +92,9 @@ import { prisma } from "@/lib/prisma";
             itemDiscountValue: e.itemDiscountValue?.toNumber(),
         }))
     }))
-    }
+    }   
+
+    console.log(cleanedData)
 
      return cleanedData;
 }

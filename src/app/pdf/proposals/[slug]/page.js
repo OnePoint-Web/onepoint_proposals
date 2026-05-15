@@ -12,10 +12,11 @@ export default async function ProposalPDF({ params }) {
     return <div styles={{color: 'black'}}>Proposal not found</div>;
   }
   
+  console.log(proposal)
 
   return (
     <div className={styles["pdf-page"]}>
-      <CoverPage />
+      <CoverPage proposal={proposal}/>
     </div>
   );
 }
