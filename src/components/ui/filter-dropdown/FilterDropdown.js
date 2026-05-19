@@ -1,6 +1,6 @@
 import styles from './FilterDropdown.module.scss'
 
-export default function FilterDropdown({query, setQuery}){
+export default function FilterDropdown({query, setQuery, alphabeticalOrderBy}){
     return(
         <select
             className={styles['filter-dropdown']}
@@ -17,8 +17,8 @@ export default function FilterDropdown({query, setQuery}){
         >
             <option value="dateCreated-desc">Newest</option>
             <option value="dateCreated-asc">Oldest</option>
-            <option value="proposalTitle-asc">A-Z</option>
-            <option value="proposalTitle-desc">Z-A</option>
+            <option value={`${alphabeticalOrderBy}-asc`}>A-Z</option>
+            <option value={`${alphabeticalOrderBy}-desc`}>Z-A</option>
         </select>
     )
 }
