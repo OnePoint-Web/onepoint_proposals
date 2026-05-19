@@ -1,9 +1,22 @@
 @page {
   size: A4;
+  margin-top: 10mm;
+  margin-bottom: 10mm;
 }
 
 .pdf-page{
     width: 210mm;
-    min-height: 297mm;
+    height: 100%;
     background-color: white;
+}
+
+.pdf-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    background: #ffffff;
+    z-index: -1;
 }

@@ -56,7 +56,7 @@ export default function Login(){
             <div className={styles['form-container']}>
 
                 <p>Please enter your details</p>
-                <h2 onClick={() => console.log('jwt', process.env.JWT_SECRET)} >Welcome Back</h2>
+                <h2>Welcome Back</h2>
                 
 
                 <hr></hr>
