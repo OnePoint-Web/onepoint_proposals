@@ -1,0 +1,12 @@
+.results-header{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    .results-count{
+        color: var(--text-light);
+        font-size: var(--fs-xs);
+    }
+}

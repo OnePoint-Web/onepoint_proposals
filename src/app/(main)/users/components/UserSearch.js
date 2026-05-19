@@ -8,35 +8,73 @@ import Link from 'next/link'
 
 const UserIcon = Icons.users
 
-export default function UserSearch(){
+export default function UserSearch({query, setQuery}){
 
     const [status, setStatus] = useState([{
         id: '',
         name: ''
     }])
 
+    const [roles, setRoles] = useState([])
+
     useEffect(() => {
         fetch("/api/user-status")
         .then(res => res.json())
         .then(data => {
             const formattedStatus = data.map(status => ({
-                id: status.statusId,
+                id: status.status,
                 name: status.status
             }))
             setStatus(formattedStatus)
         })
 
-        console.log(status)
     }, [])
 
+    useEffect(() => {
+        fetch("/api/roles")
+        .then(res => res.json())
+        .then(data => {
+            const formattedRoles = data.map(role => ({
+                id: role.role,
+                name: role.role
+            }))
+            setRoles(formattedRoles)
+        })
+
+    }, [])
+
+
+    const statusOptions = [
+        {
+            id: '',
+            name: 'All'
+        },
+        ...status,
+    ]
+
+    const rolesOptions = [
+        {
+            id: '',
+            name: 'All'
+        },
+        ...roles,
+    ]
+
     return(
-        <Container fit='fit'>
+        <Container fit='fullwidth'>
 
             <div className={styles['container-child']}>
                     <Input
                         label='Search User:'
                         name='user'
                         placeholder='Username, email, etc...'
+                        onChange={(e) => {
+                            setQuery(prev => ({
+                                ...prev,
+                                search: e.target.value,
+                                page: 1
+                            }))
+                        }}
                         size='sm'
                         width='full'
                     ></Input>
@@ -51,27 +89,39 @@ export default function UserSearch(){
 
                 <div className={styles['container-child']}>
                     <Input
-                        label='Search User:'
-                        name='user'
-                        placeholder='Username, email, etc...'
-                        size='sm'
-                    ></Input>
-
-                    <Input
-                        label='Search User:'
-                        name='user'
+                        label='User Role:'
                         type='select'
-                        values={status}
+                        name='role'
+                        value={query.role}
+                        values={rolesOptions}
+                        onChange={(e) => {
+                            setQuery(prev => ({
+                                ...prev,
+                                role: e.target.value,
+                                page: 1
+                            }))
+                        }}
                         placeholder='Username, email, etc...'
                         size='sm'
                     ></Input>
 
                     <Input
-                        label='Search User:'
-                        name='user'
+                        label='Account Status:'
+                        name='status'
+                        type='select'
+                        values={statusOptions}
+                        value={query.status}
+                        onChange={(e) => {
+                            setQuery(prev => ({
+                                ...prev,
+                                status: e.target.value,
+                                page: 1
+                            }))
+                        }}
                         placeholder='Username, email, etc...'
                         size='sm'
                     ></Input>
+
                 </div>
             
         </Container>

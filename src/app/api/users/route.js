@@ -76,41 +76,117 @@ export async function POST(req){
 
 
     export async function GET(req){
+        
         try{
-            const user = await prisma.user.findMany({
-                where: {
-                    accountRole:{
-                        in: [1, 2]
+
+            const {searchParams} = new URL(req.url)
+            const page = parseInt(searchParams.get("page") || "1");
+            const limit = parseInt(searchParams.get("limit") || "12");
+
+            const search = searchParams.get("search") || "";
+            const status = searchParams.get("status");
+            const role = searchParams.get("role") || ""
+
+            const sortBy = searchParams.get("sortBy") || "dateCreated";
+            const sortOrder = searchParams.get("sortOrder") || "desc";
+
+            const safePage = Math.max(page, 1);
+            const safeLimit = Math.max(limit, 1);
+
+            const searchTerms = search
+                .trim()
+                .split(" ")
+                .filter(Boolean);
+
+            const where = {
+                ...(status && { userStatus:{status: status} }),
+                ...(role && { role: { role: role} }),
+                 NOT: {
+                    role: {
+                        roleId: 3
                     }
                 },
-                select: {
-                    userId: true,
-                    username: true,
-                    firstName: true,
-                    lastName: true,
-                    userEmail: true,
-                    accountStatus: true,
-                    role: {
-                        select: {
-                            roleId: true,
-                            role: true,
-                        },
-                    },
-                    userStatus: {
-                        select: {
-                            statusId: true,
-                            status: true
-                        }
-                    },
-                    dateCreated: true
-                },
-            })
 
-            return NextResponse.json(user)
+                ...(searchTerms.length > 0 && {
+                    AND: searchTerms.map((term) => ({
+                        OR: [
+                            {
+                                username: {
+                                    contains: term,
+                                },
+                            },
+                            {
+                                firstName: {
+                                    contains: term,
+                                }
+                            },
+                            {
+                                lastName: {
+                                    contains: term,
+                                }
+                            },
+                            {
+                                userEmail: {
+                                    contains: term,
+                                }
+                            }
+                        ]
+                    }))
+                })
+            }
+
+            const [users, total] = await Promise.all([
+            prisma.user.findMany({
+            where,
+    
+            select: {
+                userId: true,
+                username: true,
+                firstName: true,
+                lastName: true,
+                userEmail: true,
+                accountStatus: true,
+                role: {
+                    select: {
+                        roleId: true,
+                        role: true,
+                    }
+                },
+                userStatus: {
+                    select: {
+                        statusId: true,
+                        status: true
+                    }
+                },
+                dateCreated: true
+            },
+    
+            skip: (safePage - 1) * safeLimit,
+            take: safeLimit,
+    
+            orderBy: {
+                [sortBy]: sortOrder,
+            },
+            }),
+    
+            prisma.user.count({
+            where,
+                }),
+            ]);
+
+            return Response.json({
+                data: users,
+                meta: {
+                    total,
+                    page: safePage,
+                    limit: safeLimit,
+                    totalPages: Math.ceil(total / safeLimit),
+                },
+            });
 
         } catch(err){
             return NextResponse.json(
-                { error: "Failed to fetch roles" },
+                { error: "Failed to fetch users" },
                 { status: 500 }
             )
         }
