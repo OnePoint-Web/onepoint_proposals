@@ -108,7 +108,6 @@ export async function GET(req){
                 dateCreated: true,
                 clientProfiles: true,
             }     
-            
         })
 
         return NextResponse.json(client)
