@@ -105,6 +105,7 @@ export default function CreateProposal(){
                     <FilterDropdown
                         query={query}
                         setQuery={setQuery}
+                        alphabeticalOrderBy={'proposalTitle'}
                     />
                 </div>
 
