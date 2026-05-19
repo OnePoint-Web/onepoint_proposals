@@ -169,10 +169,12 @@ export async function POST(req){
             },
             }),
     
-            prisma.user.count({
-            where,
+                prisma.user.count({
+                    where,
                 }),
             ]);
+
+            console.log(users)
 
             return Response.json({
                 data: users,

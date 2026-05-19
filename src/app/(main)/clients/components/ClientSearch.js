@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const UserIcon = Icons.users
 
-export default function UserSearch(){
+export default function UserSearch({query, setQuery}){
 
     const [status, setStatus] = useState([{
         id: '',
@@ -20,23 +20,34 @@ export default function UserSearch(){
         .then(res => res.json())
         .then(data => {
             const formattedStatus = data.map(status => ({
-                id: status.statusId,
+                id: status.status,
                 name: status.status
             }))
             setStatus(formattedStatus)
         })
-
-        console.log(status)
     }, [])
 
+    const statusOptions = [
+        {id: '', name: 'All'},
+        ...status
+    ]
+
     return(
-        <Container fit='fit'>
+        <Container fit='fullwidth'>
 
             <div className={styles['container-child']}>
                     <Input
                         label='Search Client:'
+                        type='text'
                         name='client'
                         placeholder='Username, name, email...'
+                        value={query.search}
+                        onChange={(e) => {
+                            setQuery(prev => ({
+                                ...prev,
+                                search: e.target.value
+                            }))
+                        }}
                         size='sm'
                         width='full'
                     ></Input>
@@ -50,26 +61,20 @@ export default function UserSearch(){
                 </div>
 
                 <div className={styles['container-child']}>
-                    <Input
-                        label='Search User:'
-                        name='user'
-                        placeholder='Username, email, etc...'
-                        size='sm'
-                    ></Input>
-
+       
                     <Input
                         label='Account Status:'
                         name='user'
                         type='select'
-                        values={status}
+                        values={statusOptions}
+                        value={query.status}
+                        onChange={(e) => {
+                            setQuery(prev => ({
+                                ...prev,
+                                status: e.target.value
+                            }))
+                        }}
                         placeholder='-- Select Status --'
-                        size='sm'
-                    ></Input>
-
-                    <Input
-                        label='Search User:'
-                        name='user'
-                        placeholder='Username, email, etc...'
                         size='sm'
                     ></Input>
                 </div>

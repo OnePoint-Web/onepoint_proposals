@@ -94,10 +94,69 @@ export async function POST(req){
 export async function GET(req){
     try{
 
-        const client = await prisma.user.findMany({
-            where: {
-                accountRole: 3,
-            },
+
+        const {searchParams} = new URL(req.url)
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "12");
+
+        const search = searchParams.get("search") || "";
+        const status = searchParams.get("status");
+
+        const sortBy = searchParams.get("sortBy") || "dateCreated";
+        const sortOrder = searchParams.get("sortOrder") || "desc";
+
+        const safePage = Math.max(page, 1);
+        const safeLimit = Math.max(limit, 1);
+
+        const searchTerms = search
+            .trim()
+            .split(" ")
+            .filter(Boolean);
+
+
+        const where = {
+            role: {roleId: 3},
+            ...(status && { userStatus:{status: status} }),
+
+            ...(searchTerms.length > 0 && {
+                AND: searchTerms.map((term) => ({
+                    OR: [
+                        {
+                            username: {
+                                contains: term,
+                            },
+                        },
+                        {
+                            firstName: {
+                                contains: term,
+                            }
+                        },
+                        {
+                            lastName: {
+                                contains: term,
+                            }
+                        },
+                        {
+                            userEmail: {
+                                contains: term,
+                            }
+                        },
+                        {
+                            clientProfiles: {
+                                companyName: {
+                                    contains: term
+                                } 
+                            }
+                        }
+                    ]
+                }))
+            })
+        }
+
+        const [clients, total] = await Promise.all([
+            prisma.user.findMany({
+            where,
+    
             select: {
                 userId: true,
                 username: true,
@@ -105,12 +164,40 @@ export async function GET(req){
                 lastName: true,
                 userEmail: true,
                 accountStatus: true,
-                dateCreated: true,
-                clientProfiles: true,
-            }     
-        })
+                clientProfile: true,
+                userStatus: {
+                    select: {
+                        statusId: true,
+                        status: true
+                    }
+                },
+                dateCreated: true
+            },
+    
+            skip: (safePage - 1) * safeLimit,
+            take: safeLimit,
+    
+            orderBy: {
+                [sortBy]: sortOrder,
+            },
+            }),
+    
+            prisma.user.count({
+                where,
+            }),
+        ]);
 
-        return NextResponse.json(client)
+
+        return Response.json({
+            data: clients,
+            meta: {
+                total,
+                page: safePage,
+                limit: safeLimit,
+                totalPages: Math.ceil(total / safeLimit),
+            },
+        });
+
 
     }catch(err){
         return NextResponse.json(
