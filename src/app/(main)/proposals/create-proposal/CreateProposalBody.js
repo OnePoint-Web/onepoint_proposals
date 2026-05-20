@@ -19,8 +19,8 @@
         useEffect(() => {
             fetch('/api/members')
             .then(res => res.json())
-            .then(data => {
-                const membersOptions = data.map(member => ({
+            .then(results => {
+                const membersOptions = results.data.map(member => ({
                     id: member.memberId,
                     name: member.memberName,
                     role: member.memberRole,
@@ -34,8 +34,8 @@
         useEffect(() => {
             fetch('/api/packages')
             .then(res => res.json())
-            .then(data => {
-                const  packagesOptions = data.map(item => ({
+            .then(results => {
+                const  packagesOptions = results.data.map(item => ({
                     id: item.packageId,
                     title: item.package,
                     description: item.description,
@@ -127,7 +127,7 @@
                     <p>Team (leave blank if not applicable)</p>
 
                     <div className={styles['team-selection-container']}> 
-                        {
+                        { members.length !== 0 ?
                             members.map(member => (
                                 <Checkbox key={member.id} 
                                 label={member.name}
@@ -142,6 +142,8 @@
                                 }
                                 />
                             ))
+                            : <p>No available team members to choose from</p>
+
                         }
             
                     </div>

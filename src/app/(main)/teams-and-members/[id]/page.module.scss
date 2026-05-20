@@ -1,0 +1,144 @@
+.member-profile{
+    
+
+    h2{
+        color: var(--text-strong);
+         margin-bottom: 20px;
+         font-size: var(--fs-md);
+    }
+    
+
+    .profile-child{
+        margin-top: 20px;
+        width: auto;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+
+        .profile-section{
+       
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            max-width: 500px;
+            flex: 1;
+            min-width: 250px;
+
+            .text{
+                color: var(--text-strong);
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                gap: 20px;
+
+                span{
+                    font-weight: 500;
+                }
+            }
+
+            table, tbody{
+                margin-top: auto;
+                margin-bottom: auto;
+                border: 1px solid var(--field-stroke);
+                background-color: var(--field-fill);
+                border-collapse: collapse;
+
+                td{ 
+                    text-align: left;
+                    vertical-align: top;
+                    padding: 8px;
+                    border-bottom: 1px solid var(--field-stroke);
+                }
+
+                .label-td{
+                    width: 120px;
+                    min-width: fit-content;
+                }
+            }
+
+            
+        }
+        img{
+                width: 100%;
+                max-width: 300px;
+                min-width: 250px;
+                border-radius: 10px;
+            }
+
+            
+    }
+
+    
+}
+
+.buttons{
+    width: 100%;
+    gap: 10px;
+    display: flex;
+    flex-direction: row;
+    margin-top: auto;
+}
+
+
+ .modal-bg{
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        position: fixed;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+
+
+        .modal-container{
+            background-color: var(--background);
+            padding: 20px;
+            border-radius: 8px;
+            gap: 10px;
+            padding: 30px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 500px;
+            position: relative;
+
+
+            .icon{
+                fill: var(--brand-red);
+                width: 30px;
+                height: 30px;
+                opacity: 0.7;
+            }
+
+            .head{
+                color: var(--brand-red);
+                font-weight: 500;
+                font-size: var(--fs-lg);
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .body{
+                color: var(--text-strong);
+
+                span{
+                    font-weight: 600;
+                }
+            }
+
+            .delete-btns{
+                margin-top: 30px;
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                gap: 10px;
+            }
+        }
+    }

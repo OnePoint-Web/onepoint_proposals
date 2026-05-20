@@ -12,3 +12,22 @@
     min-width: 280px;
     gap: 30px;     
 }
+
+.packages-items{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.results-header{
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+
+    .results-count{
+        color: var(--text-light);
+        font-size: var(--fs-xs);
+    }
+}
