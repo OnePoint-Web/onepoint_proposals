@@ -66,10 +66,45 @@ export async function POST(req){
 
 export async function GET(req){
     try{
-        const packages = await prisma.package.findMany({
-            where: {
-                isActive: true,
-            },
+        const {searchParams} = new URL(req.url)
+        const page = parseInt(searchParams.get("page") || "1");
+        const limit = parseInt(searchParams.get("limit") || "12");
+
+        const search = searchParams.get("search") || "";
+        const status = searchParams.get("status");
+
+        const sortBy = searchParams.get("sortBy") || "dateCreated";
+        const sortOrder = searchParams.get("sortOrder") || "desc";
+
+        const safePage = Math.max(page, 1);
+        const safeLimit = Math.max(limit, 1);
+
+        const searchTerms = search
+            .trim()
+            .split(" ")
+            .filter(Boolean);
+
+
+            const where = {
+            ...(status && { isActive: status === 'true' }),
+
+            ...(searchTerms.length > 0 && {
+                AND: searchTerms.map((term) => ({
+                    OR: [
+                        {
+                            package: {
+                                contains: term,
+                            },
+                        },
+                    ]
+                }))
+            })
+        }
+        
+        const [packages, total] = await Promise.all([
+            prisma.package.findMany({
+            where,
+    
             select: {
                 packageId: true,
                 slug: true,
@@ -90,9 +125,30 @@ export async function GET(req){
                         }
                     }
             },
-        })
+    
+            skip: (safePage - 1) * safeLimit,
+            take: safeLimit,
+    
+            orderBy: {
+                [sortBy]: sortOrder,
+            },
+            }),
+    
+            prisma.package.count({
+                where,
+            }),
+        ]);
 
-        return NextResponse.json(packages)
+        return Response.json({
+            data: packages,
+            meta: {
+                total,
+                page: safePage,
+                limit: safeLimit,
+                totalPages: Math.ceil(total / safeLimit),
+            },
+        });
+
 
     }catch(err){
         return NextResponse.json(

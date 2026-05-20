@@ -13,7 +13,7 @@ export async function GET(req, { params }) {
       return new Response(JSON.stringify({ message: 'Not found' }), { status: 404 });
     }
 
-    return new Response(JSON.stringify(article), {
+    return new Response(JSON.stringify(selectedPackage), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
