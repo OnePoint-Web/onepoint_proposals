@@ -113,6 +113,8 @@ export default function Users({children}){
 
                     ]}
                 data={users}
+                idKey='userId'
+                linkTo={`/users/`}
                 />
 
                 <Pagination
