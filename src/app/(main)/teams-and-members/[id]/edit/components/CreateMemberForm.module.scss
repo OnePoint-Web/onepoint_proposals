@@ -1,0 +1,126 @@
+
+.field-set{
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    gap: 10px;
+    border: none;
+    margin-bottom: 5px;
+}
+
+
+.error{
+    color: red;
+    padding: 0;
+    font-size: 12px;
+    margin-bottom: 5px;
+}
+
+
+.input-child{
+    width: 430px;
+    min-width: 200px;
+    
+}
+
+.success{
+    margin-bottom: 5px;
+    width: fit-content;
+    background-color: rgb(229, 255, 229);
+    border-radius: 5px;
+    border: 1px solid rgb(40, 182, 40);
+    padding: 5px 10px;
+    
+    color: rgb(1, 100, 37) !important;
+}
+
+
+.upload-box{
+    position: relative;
+    width: 400px;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.cropper-container{
+    position: relative;
+    width: 500px;
+    aspect-ratio: 16/9;
+    border: 1px solid var(--field-stroke);
+    display: flex;
+
+     .cropped-preview{
+        margin: 10px auto;
+        position: relative;
+        max-height: 300px;
+        aspect-ratio: 7/10;
+        border: 1px solid var(--field-stroke);
+    }
+}
+
+
+.upload-button{
+        padding: 4px;
+        border-radius: 4px;
+        border: none;
+        height: fit-content;
+        font-size: 12px;
+        min-width: 200px;
+        width: 230px;
+        font-family: var(--font-montserrat);
+        transition: all 0.1s ease-in-out;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--field-fill);
+        border: 1px solid var(--field-stroke);
+        color: var(--text-light);
+        cursor: pointer;
+
+        &:hover{
+            background-color: rgb(216, 216, 216);
+            color: var(--text-strong);
+        }
+        
+    }
+
+
+.image-actions{
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    .action-button{
+        padding: 4px;
+        border-radius: 4px;
+        border: none;
+        height: fit-content;
+        font-size: 12px;
+        min-width: 160px;
+        flex: 1;
+        max-width: 230px;
+        font-family: var(--font-montserrat);
+        transition: all 0.1s ease-in-out;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        background-color: var(--field-fill);
+        border: 1px solid var(--field-stroke);
+        color: var(--text-light);
+        cursor: pointer;
+
+        &:hover{
+            background-color: rgb(216, 216, 216);
+            color: var(--text-strong);
+        }
+    }
+}
+
