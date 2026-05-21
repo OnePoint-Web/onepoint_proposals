@@ -74,8 +74,8 @@ export default function CreateMemberForm(){
             const result = await res.json()
 
             if (!res.ok) {
-            console.error(result)
-            return
+                console.log(result)
+                return
             }
 
             reset()
