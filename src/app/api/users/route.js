@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import { createUserSchema } from "@/schemas/user/createUser.schema"
 import prisma from "@/lib/prisma"
-import { Prisma } from '@prisma/client'
 import bcrypt from "bcryptjs"
 
 

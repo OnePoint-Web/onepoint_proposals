@@ -1,9 +1,11 @@
 'use client'
 import styles from './TableList.module.scss';
-
+import Link from 'next/link';
 export default function TableList({
     fields, //{fieldName, key, span}
-    data
+    data,
+    linkTo,
+    idKey
 }){
     console.log(data)
     return(
@@ -19,11 +21,14 @@ export default function TableList({
                     
                     {data && data.map((row, i) => {
                         return <tr key={i}>
-                            <td>{i+1}</td>
-                            {fields.map((field) => {
-                                return <td key={field.key}>{row[field.key]}</td>
-                            })}
-                        </tr>
+                    
+                                <td>{i+1}</td>
+                                {fields.map((field) => {
+                                    return <td key={field.key}><Link href={`${linkTo}${row[idKey]}`}>{row[field.key]}</Link></td>
+                                })}
+                                
+                            </tr>
+                        
                     })}
     
                 </tbody>
