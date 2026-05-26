@@ -114,11 +114,7 @@ export default function Sidebar(){
                     <Link href='/teams-and-members/add-member' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/teams-and-members/add-member' ? styles.active : ''}`}>
                         Add Member
                     </Link>
-
-                    <Link href='/teams-and-members/create-team' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/teams-and-members/create-team' ? styles.active : ''}`}>
-                        Create Teams
-                    </Link>
-
+                    
                 <p className={styles['item-section']}> ACCOUNTS </p>
                 <hr></hr>
 
