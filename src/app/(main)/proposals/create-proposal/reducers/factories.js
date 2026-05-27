@@ -41,6 +41,7 @@ export const createItem = () => ({
     itemDiscountDescription: '',
     discountedTotal: 0,
     itemDescription: '',
+    itemImage: '',
     displayOrder: null
 })
 

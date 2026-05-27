@@ -39,6 +39,7 @@ export const createItem = () => ({
     discountDescription: '',
     discountedTotal: 0,
     itemDescription: '',
+    itemImage: '',
     displayOrder: null,
     _status: 'new'
 })

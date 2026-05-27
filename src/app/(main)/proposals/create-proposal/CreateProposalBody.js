@@ -15,6 +15,7 @@
 
         const [members, setMembers] = useState([])
         const [packages, setPackages] = useState([])
+        const [serviceProductItems, setServiceProductItems] = useState([])
         console.log(proposalState.teamMembers)
         useEffect(() => {
             fetch('/api/members')
@@ -48,6 +49,41 @@
 
             
         }, [])
+
+        useEffect(() => {
+            if (proposalState.proposalType === 'Product Proposal') {
+                fetch('/api/products?limit=1000')
+                .then(res => res.json())
+                .then(results => {
+                    const productOptions = (results.data || []).map(item => ({
+                        id: item.productId,
+                        name: item.product,
+                        price: item.price,
+                        description: item.description,
+                        image: item.productImage
+                    }))
+                    setServiceProductItems(productOptions)
+                })
+                return
+            }
+
+            if (proposalState.proposalType === 'Service Proposal') {
+                fetch('/api/services?limit=1000')
+                .then(res => res.json())
+                .then(results => {
+                    const serviceOptions = (results.data || []).map(item => ({
+                        id: item.serviceId,
+                        name: item.service,
+                        price: item.price,
+                        description: item.description,
+                        image: ''
+                    }))
+                    setServiceProductItems(serviceOptions)
+                })
+                return
+            }
+
+        }, [proposalState.proposalType])
 
         const selectPackages = packages.map(item => (
             {
@@ -238,6 +274,7 @@
                     dispatch={dispatch}
                     proposalType={proposalState.proposalType}
                     errors={errors}
+                    serviceProductItems={serviceProductItems}
                 />
 
                 <hr></hr>
