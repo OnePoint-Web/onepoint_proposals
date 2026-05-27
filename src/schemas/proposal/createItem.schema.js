@@ -19,6 +19,7 @@ export const itemSchema = z.object({
   discountDescription: z.string().optional(),
   discountedTotal: z.number().optional(),
   itemDescription: z.string().optional(),
+  itemImage: z.string().optional(),
   displayOrder: z.number().nullable().optional(),
 })
 .refine((data) => {

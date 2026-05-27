@@ -40,6 +40,7 @@ export const cleanItems = (itemsState) => {
             ...item,
             item: item.serviceProductItem?.trim(),
             description: item.itemDescription?.trim() || '',
+            itemImage: item.itemImage || '',
             itemPrice: Number(item.itemPrice) ?? 0,
             quantity: Number(item.quantity),
             itemDiscountValue: Number(item.itemDiscountValue) ?? 0
@@ -100,6 +101,7 @@ const buildProposalOffersPayload = (parsedResult) => {
         itemDiscountValue: item.itemDiscountValue,
         itemDiscountDescription: item.itemDiscountDescription,
         description: item.description,
+        itemImage: item.itemImage || null,
         displayOrder: item.displayOrder, 
 
     }))
