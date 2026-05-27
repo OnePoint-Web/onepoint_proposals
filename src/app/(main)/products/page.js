@@ -7,6 +7,8 @@ import ChildLayout from '@/components/layout/ChildLayout/ChildLayout.js'
 import FilterDropdown from '@/components/ui/filter-dropdown/FilterDropdown'
 import Pagination from '@/components/ui/pagination/Pagination'
 import { buildQueryString } from '@/modules/buildQueryString'
+import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export default function Products(){
@@ -70,10 +72,29 @@ export default function Products(){
                 <div className={styles['card-container']}>
                     {products.map(product => (
                         <div className={styles['item-card']} key={product.productId}>
+                            {product.productImage && (
+                                <div className={styles['image-preview']}>
+                                    <Image
+                                        src={product.productImage}
+                                        alt={product.product}
+                                        width={72}
+                                        height={72}
+                                    />
+                                </div>
+                            )}
+
                             <div className={styles.details}>
                                 <h4>{product.product}</h4>
                                 <p className={styles.price}>$ {product.price}</p>
                                 <p className={styles.description}>{product.description}</p>
+                            </div>
+
+                            <div className={styles.buttons}>
+                                <div className={styles['card-btn']}>
+                                    <Link href={`/products/${product.productId}`}>
+                                        <p>View</p>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     ))}

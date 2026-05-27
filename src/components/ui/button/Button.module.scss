@@ -63,6 +63,11 @@
         width: 100%;
     }
 
+    &.small{
+        width: 100px;
+        min-width: 100px;
+    }
+
     &.xxs{
         font-size: 12px;
     }

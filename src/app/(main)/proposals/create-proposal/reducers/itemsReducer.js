@@ -64,6 +64,32 @@ export function itemsReducer(items = [], action) {
         return { ...updatedItem, ...totals }
     })
 
+    case 'SELECT_SERVICE_PRODUCT_ITEM':
+      return items.map(item => {
+        if (item.offerEntryId !== action.payload.itemId) return item
+
+        const selected = action.payload.item
+        const updatedItem = {
+          ...item,
+          serviceProductItem: selected.name,
+          itemPrice: Number(selected.price) || 0,
+          itemDescription: selected.description || item.itemDescription,
+          itemImage: selected.image || item.itemImage || '',
+        }
+        const totals = calculateTotals(updatedItem)
+
+        return { ...updatedItem, ...totals }
+      })
+
+    case 'UPDATE_PRODUCT_ITEM_IMAGE':
+      return items.map(item => {
+        if (item.offerEntryId !== action.payload.itemId) return item
+        return {
+          ...item,
+          itemImage: action.payload.itemImage || '',
+        }
+      })
+
     case 'DELETE_PRODUCT_ITEM': {
       const filtered = items.filter(d => d.offerEntryId !== action.payload.itemId)
       return recalcOrder(filtered, "displayOrder")

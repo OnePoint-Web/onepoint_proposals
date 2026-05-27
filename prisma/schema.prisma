@@ -280,6 +280,7 @@ model Service {
 model Product {
   productId Int @id @default(autoincrement())
   product String
+  productImage String?
   price Decimal @db.Decimal(10, 2)
   description String? @db.LongText
   dateCreated DateTime @default(now())
@@ -290,7 +291,7 @@ model OfferEntry {
   offerEntryId Int @id @default(autoincrement())
   serviceProductOfferId Int
   serviceProductItem String
-  //itemImage String? // removed
+  itemImage String?
   itemPrice Decimal @db.Decimal(10, 2)
   quantity Int
   totalPrice Decimal @db.Decimal(10, 2)

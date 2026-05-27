@@ -8,7 +8,7 @@ export default function Button(
         color, //dark, light, red, green
         border,
         size, // xxs, xs, sm, md, lg
-        fit, //full, fixed (null)
+        fit, //full, fixed (null), small
         icon,
         action,
         disabled,

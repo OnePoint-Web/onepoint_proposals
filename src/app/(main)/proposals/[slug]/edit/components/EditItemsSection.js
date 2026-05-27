@@ -6,7 +6,7 @@ import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core'
 
 
-export default function EditItemsSection({items, dispatch, proposalType, errors}){
+export default function EditItemsSection({items, dispatch, proposalType, errors, serviceProductItems = []}){
 
 
     const addItem = () => {
@@ -36,6 +36,7 @@ export default function EditItemsSection({items, dispatch, proposalType, errors}
                             items={items}
                             index={index}
                             proposalType={proposalType}
+                            serviceProductItems={serviceProductItems}
                         />
                     ))}
 

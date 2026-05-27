@@ -32,18 +32,57 @@ export async function POST(req){
 
 export async function GET(req){
     try{
+        const {searchParams} = new URL(req.url)
+        const page = parseInt(searchParams.get("page") || "1")
+        const limit = parseInt(searchParams.get("limit") || "12")
+        const search = searchParams.get("search") || ""
+        const sortBy = searchParams.get("sortBy") || "dateCreated"
+        const sortOrder = searchParams.get("sortOrder") || "desc"
+
+        const safePage = Math.max(page, 1)
+        const safeLimit = Math.max(limit, 1)
+        const searchTerms = search.trim().split(" ").filter(Boolean)
+
+        const where = {
+            ...(searchTerms.length > 0 && {
+                AND: searchTerms.map((term) => ({
+                    OR: [
+                        { service: { contains: term } },
+                        { description: { contains: term } },
+                    ],
+                })),
+            }),
+        }
   
-        const services = await prisma.service.findMany({
-            select: {
-                serviceId: true,
-                service: true,
-                price: true,
-                description: true
-            }
-        })
+        const [services, total] = await Promise.all([
+            prisma.service.findMany({
+                where,
+                select: {
+                    serviceId: true,
+                    service: true,
+                    price: true,
+                    description: true,
+                    dateCreated: true
+                },
+                skip: (safePage - 1) * safeLimit,
+                take: safeLimit,
+                orderBy: {
+                    [sortBy]: sortOrder,
+                },
+            }),
+            prisma.service.count({ where }),
+        ])
 
         return NextResponse.json(
-            {data: services},
+            {
+                data: services,
+                meta: {
+                    total,
+                    page: safePage,
+                    limit: safeLimit,
+                    totalPages: Math.ceil(total / safeLimit),
+                },
+            },
             {status: 200}       
         )
 

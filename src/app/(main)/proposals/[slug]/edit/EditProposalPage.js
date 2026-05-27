@@ -25,6 +25,7 @@ export default function EditProposalPage({proposalData}){
     const [proposalState, dispatch] = useReducer(editProposalReducer, null)
     const [clientDetails, setClientDetails] = useState({})
     const [toggleModal, setToggleModal] = useState(false)
+    const [serviceProductItems, setServiceProductItems] = useState([])
     const router = useRouter()
 
     useEffect(() => {
@@ -142,6 +143,8 @@ export default function EditProposalPage({proposalData}){
                     itemDiscountValue: e.itemDiscountValue,
                     itemDiscountDescription: e.itemDiscountDescription,
                     description: e.description,
+                    itemDescription: e.description,
+                    itemImage: e.itemImage,
                     displayOrder: e.displayOrder,
                     _status: 'existing'
                 })),
@@ -167,6 +170,41 @@ export default function EditProposalPage({proposalData}){
         console.log('PROPOSALSTATE', proposalData)
     }, [proposalState])
 
+    useEffect(() => {
+        if (proposalData.proposalType === 'Product Proposal') {
+            fetch('/api/products?limit=1000')
+            .then(res => res.json())
+            .then(results => {
+                const productOptions = (results.data || []).map(item => ({
+                    id: item.productId,
+                    name: item.product,
+                    price: item.price,
+                    description: item.description,
+                    image: item.productImage
+                }))
+                setServiceProductItems(productOptions)
+            })
+            return
+        }
+
+        if (proposalData.proposalType === 'Service Proposal') {
+            fetch('/api/services?limit=1000')
+            .then(res => res.json())
+            .then(results => {
+                const serviceOptions = (results.data || []).map(item => ({
+                    id: item.serviceId,
+                    name: item.service,
+                    price: item.price,
+                    description: item.description,
+                    image: ''
+                }))
+                setServiceProductItems(serviceOptions)
+            })
+            return
+        }
+
+    }, [proposalData.proposalType])
+
 
     const buildProposalPayload = (proposalState) => {
 
@@ -183,7 +221,7 @@ export default function EditProposalPage({proposalData}){
                     scope: s.scope,
                 }))},
             })),
-            ...(proposalState.proposalType === 'SLA Proposal' && [{
+            ...(proposalState.proposalType === 'SLA Proposal' ? {
                 slaOffers: {
                     slaPackage: proposalState.offer.slaPackage,
                     basePrice: proposalState.offer.basePrice,
@@ -197,47 +235,48 @@ export default function EditProposalPage({proposalData}){
                     taxReason: proposalState.offer.taxReason,
                     finalPrice: proposalState.offer.finalPrice,
                     paymentTerms: proposalState.offer.paymentTerms,
-                        packageDealItem: (proposalState.offer.packageDealItem ?? []).map(d => ({
-                            item: d.item,
-                            itemType: d.itemType,
-                            isCustom: false,
-                            displayOrder: d.displayOrder, 
-                            packageDealEntries: (d.packageDealEntries ?? []).map(p => ({
-                                itemEntry: p.itemEntry,
-                            }))
+                    packageDealItem: (proposalState.offer.packageDealItem ?? []).map(d => ({
+                        item: d.item,
+                        itemType: d.itemType,
+                        isCustom: false,
+                        displayOrder: d.displayOrder, 
+                        packageDealEntries: (d.packageDealEntries ?? []).map(p => ({
+                            itemEntry: p.itemEntry,
                         }))
-                    }
-                }]),
-
-            ...(proposalState.proposalType !== 'SLA Proposal' && [{
-                serviceProductOffer:{
-                type: proposalState.offer.type,
-                isMultipleChoice: proposalState.offer.isMultipleChoice,
-                subTotal: proposalState.offer.subTotal,
-                discountType: proposalState.offer.discountType,
-                discountValue: proposalState.offer.discountValue,
-                discountDescription: proposalState.offer.discountDescription,
-                taxableAmount: proposalState.offer.taxableAmount,
-                taxApplicable: proposalState.offer.taxApplicable,
-                taxRate: proposalState.offer.taxRate,
-                taxAmount: proposalState.offer.taxAmount,
-                taxReason: proposalState.offer.taxReason,
-                finalPrice: proposalState.offer.finalPrice,
-                paymentTerms: proposalState.offer.paymentTerms,
-
-                    offerEntries: proposalState.offer.offerEntries.map(e => ({
-                        serviceProductItem: e.serviceProductItem,
-                        itemPrice: e.itemPrice,
-                        quantity: e.quantity,
-                        totalPrice: e.totalPrice,
-                        itemDiscountType: e.itemDiscountType,
-                        itemDiscountValue: e.itemDiscountValue,
-                        itemDiscountDescription: e.itemDiscountDescription,
-                        description: e.description,
-                        displayOrder: e.displayOrder,
-                    })),
+                    }))
                 }
-            }])
+            } : {}),
+            ...(proposalState.proposalType !== 'SLA Proposal' ? {
+                serviceProductOffers:{
+                    type: proposalState.offer.type,
+                    isMultipleChoice: proposalState.offer.isMultipleChoice,
+                    subTotal: proposalState.offer.subTotal,
+                    discountType: proposalState.offer.discountType,
+                    discountValue: proposalState.offer.discountValue,
+                    discountDescription: proposalState.offer.discountDescription,
+                    taxableAmount: proposalState.offer.taxableAmount,
+                    taxApplicable: proposalState.offer.taxApplicable,
+                    taxRate: proposalState.offer.taxRate,
+                    taxAmount: proposalState.offer.taxAmount,
+                    taxReason: proposalState.offer.taxReason,
+                    finalPrice: proposalState.offer.finalPrice,
+                    paymentTerms: proposalState.offer.paymentTerms,
+                    offerEntries: {
+                        create: proposalState.offer.offerEntries.map(e => ({
+                            serviceProductItem: e.serviceProductItem,
+                            itemPrice: e.itemPrice,
+                            quantity: e.quantity,
+                            totalPrice: e.totalPrice,
+                            itemDiscountType: e.itemDiscountType,
+                            itemDiscountValue: e.itemDiscountValue,
+                            itemDiscountDescription: e.itemDiscountDescription,
+                            description: e.description,
+                            itemImage: e.itemImage || null,
+                            displayOrder: e.displayOrder,
+                        }))
+                    },
+                }
+            } : {})
         }
 
         return payload
@@ -417,7 +456,12 @@ export default function EditProposalPage({proposalData}){
                             <EditDealsSection deals={proposalState.offer.packageDealItem} dispatch={dispatch}/>
                         )
                         : (
-                            <EditItemsSecion items={proposalState.offer.offerEntries} dispatch={dispatch} proposalType={proposalState.proposalType}/>
+                            <EditItemsSecion
+                                items={proposalState.offer.offerEntries}
+                                dispatch={dispatch}
+                                proposalType={proposalState.proposalType}
+                                serviceProductItems={serviceProductItems}
+                            />
                         )}
                         
                     

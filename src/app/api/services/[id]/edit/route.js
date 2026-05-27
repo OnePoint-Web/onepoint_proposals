@@ -1,16 +1,17 @@
 import {prisma} from '@/lib/prisma'
-import {NextResponse} from 'next/navigation'
+import {NextResponse} from 'next/server'
 
 
 export async function PATCH(req, {params}){
     
     try{
-        const {id} = params
+        const {id} = await params
+        const serviceId = parseInt(id)
         
         const body = await req.json()
 
         const updateService = await prisma.service.update({
-            where: {serviceId: id},
+            where: {serviceId},
             data: {
                 service: body.service,
                 price: body.price,
@@ -19,7 +20,7 @@ export async function PATCH(req, {params}){
         })
 
         return NextResponse.json(
-            {message: 'Servie Updated', data: updateService},
+            {message: 'Service updated', data: updateService},
             {status: 200}
         )
     }catch(err){
