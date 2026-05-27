@@ -1,0 +1,11 @@
+.field-set{
+    border: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.success{
+    color: green;
+    font-size: var(--fs-xs);
+}

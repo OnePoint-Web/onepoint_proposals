@@ -7,6 +7,7 @@ import ChildLayout from '@/components/layout/ChildLayout/ChildLayout.js'
 import FilterDropdown from '@/components/ui/filter-dropdown/FilterDropdown'
 import Pagination from '@/components/ui/pagination/Pagination'
 import { buildQueryString } from '@/modules/buildQueryString'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 export default function Services(){
@@ -74,6 +75,14 @@ export default function Services(){
                                 <h4>{service.service}</h4>
                                 <p className={styles.price}>$ {service.price}</p>
                                 <p className={styles.description}>{service.description}</p>
+                            </div>
+
+                            <div className={styles.buttons}>
+                                <div className={styles['card-btn']}>
+                                    <Link href={`/services/${service.serviceId}`}>
+                                        <p>View</p>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     ))}
