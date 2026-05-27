@@ -81,8 +81,8 @@ export default function Sidebar(){
                         List Products
                     </Link>
 
-                    <Link href='/products/add-product' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/products/add-product' ? styles.active : ''}`}>
-                        Add New Product
+                    <Link href='/products/create-product' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/products/create-product' ? styles.active : ''}`}>
+                        Create Product
                     </Link>
 
                 <Link 
@@ -96,8 +96,8 @@ export default function Sidebar(){
                         List Services
                     </Link>
 
-                    <Link href='/services/add-service' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/services/add-service' ? styles.active : ''}`}>
-                        Add New Service
+                    <Link href='/services/create-service' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/services/create-service' ? styles.active : ''}`}>
+                        Create Services
                     </Link>
 
                 <Link 
