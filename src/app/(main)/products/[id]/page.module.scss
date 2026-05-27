@@ -1,0 +1,116 @@
+.item-container{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+
+    h1{
+        font-size: var(--fs-lg);
+        font-weight: 600;
+        color: var(--text-strong);
+    }
+
+    p{
+        color: var(--text-light);
+        font-size: var(--fs-xs);
+        font-weight: 400;
+    }
+
+    .price{
+        font-size: var(--fs-xl);
+        font-weight: 400;
+    }
+
+    .header{
+        font-weight: 600;
+    }
+
+    .image-preview{
+        width: 200px;
+        height: 200px;
+        border-radius: 8px;
+        border: 1px solid var(--field-stroke);
+        overflow: hidden;
+        background-color: var(--field-fill);
+
+        img{
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    hr{
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
+}
+
+.btn-container{
+    margin-top: auto;
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+}
+
+.modal-bg{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+
+    .modal-container{
+        background-color: var(--background);
+        border-radius: 8px;
+        gap: 10px;
+        padding: 30px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        max-width: 500px;
+        position: relative;
+
+        .icon{
+            fill: var(--brand-red);
+            width: 30px;
+            height: 30px;
+            opacity: 0.7;
+        }
+
+        .head{
+            color: var(--brand-red);
+            font-weight: 500;
+            font-size: var(--fs-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .body{
+            color: var(--text-strong);
+
+            span{
+                font-weight: 600;
+            }
+        }
+
+        .delete-btns{
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+        }
+    }
+}
