@@ -2,15 +2,13 @@
 import styles from './EmailsInputBar.module.scss'
 import {useState} from 'react'
 
-export default function EmailsInputBar(){
+export default function EmailsInputBar({ tags, setTags }){
 
   const [input, setInput] = useState("");
-  const [tags, setTags] = useState([]);
 
   const handleKeyDown = (e) => {
     if (e.key === "," && input.trim()) {
       e.preventDefault();
-
       setTags([...tags, input.trim()]);
       setInput("");
     }
@@ -35,6 +33,6 @@ export default function EmailsInputBar(){
                 className={styles.input}
                 placeholder="Separate emails with a coma..."
             />
-        </div>      
+        </div>
     )
 }

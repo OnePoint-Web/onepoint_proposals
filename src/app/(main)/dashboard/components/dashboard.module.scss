@@ -1,0 +1,258 @@
+/* ── Dashboard layout ─────────────────────────────── */
+
+.dashboard-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+
+    .section-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+
+        h2 {
+            font-size: var(--fs-sm);
+            font-weight: 600;
+            color: var(--text-strong);
+        }
+    }
+}
+
+/* ── Range filter pills ───────────────────────────── */
+
+.range-filter {
+    display: flex;
+    gap: 6px;
+
+    button {
+        padding: 4px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--field-stroke);
+        background-color: var(--field-fill);
+        color: var(--text-light);
+        font-size: 11px;
+        font-family: var(--font-montserrat);
+        cursor: pointer;
+        transition: all 0.15s ease-in-out;
+
+        &:hover {
+            border-color: var(--brand-red);
+            color: var(--brand-red);
+        }
+
+        &.active {
+            background-color: var(--brand-red);
+            border-color: var(--brand-red);
+            color: #fff;
+        }
+    }
+}
+
+/* ── Stat cards ───────────────────────────────────── */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+
+    @media (max-width: 640px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.stat-card {
+    background-color: var(--background);
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    .stat-label {
+        font-size: 11px;
+        color: var(--text-light);
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text-strong);
+        line-height: 1;
+    }
+
+    &.sent .stat-value   { color: rgb(51, 51, 232); }
+    &.approved .stat-value { color: rgb(49, 196, 100); }
+    &.declined .stat-value { color: rgb(217, 70, 2); }
+}
+
+/* ── Recent proposals table ───────────────────────── */
+
+.proposals-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    background-color: var(--background);
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.proposals-row {
+    display: grid;
+    grid-template-columns: 1fr 120px 140px 100px 70px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--field-fill);
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    &.header-row {
+        background-color: var(--field-fill);
+
+        span {
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+    }
+
+    .proposal-title {
+        font-size: var(--fs-xs);
+        font-weight: 500;
+        color: var(--text-strong);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .proposal-meta {
+        font-size: 10px;
+        color: var(--text-light);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .view-btn{
+        color: white;
+        background-color: var(--field-stroke);
+        border: 1px solid var(--field-stroke);
+        transition: all 0.2s ease-in-out;
+        padding: 3px 8px;
+        border-radius: 6px;
+
+        &:hover{
+            background-color: white;
+            color: var(--field-stroke);
+        }
+    }
+}
+
+.status-badge {
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    text-align: center;
+    background-color: var(--field-fill);
+    border: 1px solid var(--field-stroke);
+    color: var(--text-light);
+    white-space: nowrap;
+
+    &.approved { background-color: rgb(226, 255, 226); border-color: green; color: green; }
+    &.declined  { background-color: rgb(255, 235, 235); border-color: rgb(245, 11, 11); color: red; }
+    &.draft     { background-color: rgb(238, 244, 255); border-color: blue; color: blue; }
+    &.viewed    { background-color: rgb(234, 255, 255); border-color: teal; color: teal; }
+    &.sent      { background-color: rgb(235, 235, 255); border-color: rgb(51, 51, 232); color: rgb(51, 51, 232); }
+    &.published { background-color: var(--field-fill); border-color: var(--field-stroke); color: var(--text-light); }
+}
+
+.empty-state {
+    padding: 24px 16px;
+    text-align: center;
+    font-size: var(--fs-xs);
+    color: var(--text-light);
+}
+
+/* ── Quick navigate ───────────────────────────────── */
+
+.quick-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.quick-nav-card {
+    background-color: var(--background);
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease-in-out;
+    text-decoration: none;
+
+    &:hover {
+        border-color: var(--brand-red);
+    }
+
+    .nav-icon {
+        font-size: 24px;
+        color: var(--brand-red);
+    }
+
+    .nav-label {
+        font-size: 11px;
+        font-weight: 500;
+        color: var(--text-strong);
+        text-align: center;
+        line-height: 1.3;
+    }
+}
+
+/* ── Recent activity ──────────────────────────────── */
+
+.activity-placeholder {
+    background-color: var(--background);
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    padding: 32px 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+
+    .placeholder-icon {
+        font-size: 32px;
+        color: var(--text-light);
+        opacity: 0.4;
+    }
+
+    p {
+        font-size: var(--fs-xs);
+        color: var(--text-light);
+    }
+}
