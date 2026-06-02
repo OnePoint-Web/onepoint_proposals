@@ -3,10 +3,14 @@ import Container from '@/components/layout/Container/Container'
 import Button from '@/components/ui/button/Button'
 import EmailsInputBar from './EmailsInputBar'
 import {useRouter} from 'next/navigation'
+import {useState} from 'react'
 
 export default function ProposalPageHead({proposalData}){
 
     const router = useRouter()
+    const [recipients, setRecipients] = useState([])
+    const [isSending, setIsSending] = useState(false)
+    const [sendError, setSendError] = useState(null)
 
     const toggleDeleteProposal = async () => {
         try{
@@ -24,12 +28,37 @@ export default function ProposalPageHead({proposalData}){
 
             if (!res.ok) {
                 throw new Error(data.message || "Request failed");
-            } 
+            }
 
             router.push(`/proposals/`)
-            
+
         }catch(err){
             console.error("Delete failed:", err.message);
+        }
+    }
+
+    const handleSendProposal = async () => {
+        if (isSending || recipients.length === 0) return
+        setSendError(null)
+        setIsSending(true)
+        try {
+            const res = await fetch(`/api/proposals/${proposalData.slug}/send`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipients })
+            })
+
+            const data = await res.json()
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to send proposal')
+            }
+
+            router.refresh()
+        } catch (err) {
+            setSendError(err.message)
+        } finally {
+            setIsSending(false)
         }
     }
 
@@ -87,23 +116,26 @@ export default function ProposalPageHead({proposalData}){
 
             <hr></hr>
 
-            {proposalData.statusId === 1 && 
+            {proposalData.statusId === 1 &&
                 (<>
                 <div className={`${styles['proposal-head-section']} ${styles['center']}`}>
                 <p>Recipients</p>
-                <EmailsInputBar/>
+                <EmailsInputBar tags={recipients} setTags={setRecipients} />
+                {sendError && <p className={styles['send-error']}>{sendError}</p>}
                 <Button
-                    label='Send Proposal'
+                    label={isSending ? 'Sending...' : 'Send Proposal'}
                     color='dark'
+                    onClick={handleSendProposal}
+                    disabled={isSending || recipients.length === 0}
                 />
              </div>
-             
+
              <p className={styles['note-message']}>Proposals cannot be editted and undone once sent. Please review proposal before sending out to client.</p>
-                
+
                 </>)
             }
-            
-            
+
+
         </Container>
     )
 }
