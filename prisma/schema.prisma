@@ -83,6 +83,14 @@ model Proposal {
   dateCreated DateTime @default(now())
   dateUpdated DateTime? @updatedAt
 
+  //Addtional fields for proposal view tracking
+  firstViewedAt DateTime?
+  lastViewedAt DateTime?
+  viewCount Int?
+
+
+  // ______________
+
   clientProfile ClientProfile @relation(fields: [clientId], references: clientId)
   proposalStatus ProposalStatus @relation(fields: [statusId], references: statusId)
   user User @relation(fields: [createdBy], references: userId)
@@ -108,6 +116,16 @@ model ProposalView {
   dateViewed DateTime @default(now())
 
   proposal Proposal @relation(fields: [proposalId], references: proposalId)
+}
+
+// Proposal sessions to track propsal view time 
+model ProposalSession {
+  sessionId Int @id @default(autoincrement())
+  clientId Int 
+  startedAt DateTime @default(now())
+  lastActivityAt DateTime?
+  endedAt DateTime?
+  durationSeconds Int
 }
 
 // Team Members
@@ -317,7 +335,55 @@ model Notification{
   entityId Int
   notificationType String
   isRead Boolean @default(false)
+  readtAt DateTime?
   createdAt DateTime @default(now())
+
+  //NOTIFICATION ACTIONS
+  //For Proposals
+  //action: create/delete/update
+  // -- notificationType: proposal_created/proposal_deleted/proposal_updated
+  // -- title: Propsoal created/deleted/updated
+  // -- message: {user} deleted/created/updated proposal {proposalTitle}
+  // -- Entity Type: proposals
+  // -- entityId: proposalSlug (what is used to view proposals when navigating to proposal page)
+  //action: client view/accept/reject
+  // -- notificationType: proposal_viewed/proposal_accepted/proposal_rejected
+  // -- title: Proposal Viewed / Proposal Accepted / Proposal  Rejected
+  // -- message: {client} viewed /accepted/rejected proposal {proposalTitle} (view notification log is only on first view session)
+  // -- Entity Type: proposals
+  // -- entityId: proposalSlug (what is used to view proposals when navigating to proposal page)
+ 
+  //For Packages
+  //action: create/delete/update
+  // -- notificationType: package_created/package_deleted/package_updated
+  // -- title: Package created/deleted/updated
+  // -- message: {user} deleted/created/updated proposal {package}
+  // -- Entity Type: packages
+  // -- entityId: packageSlug (what is used to view packages when navigating to package page)
+
+  //For Services
+  //action: create/delete/update
+  // -- notificationType: service_created/service_deleted/service_updated
+  // -- title: Service created/ deleted/ updated
+  // -- message: {user} created/deleted/updated {service}
+  // -- EntityTpe: services
+  // -- entityId: serviceId
+
+  //For products
+  //action: create/delete/update
+  // -- notificationType: product_created/product_deleted/product_updated
+  // -- title: products created/ deleted/ updated
+  // -- message: {user} created/deleted/updated {products}
+  // -- EntityTpe: products
+  // -- entityId: productId
+
+  //For members
+  //action: create/delete/update
+  // -- notificationType: member_created/member_deleted/member_updated
+  // -- title: member created/ deleted/ updated
+  // -- message: {user} created/deleted/updated member {member}
+  // -- EntityTpe: members
+  // -- entityId: memberId
 }
 
 model ActivityLogs{
@@ -330,12 +396,41 @@ model ActivityLogs{
   metaData Json?
   createdAt DateTime @default(now())
 
+
+//ACTIVITY ACTIONS
+// proposal_created
+// proposal_updated
+// proposal_sent
+// proposal_viewed
+// proposal_accepted
+// proposal_rejected
+
+// package_created
+// package_updated
+// package_deleted
+
+// product_created
+// product_updated
+// product_deleted
+
+// service_created
+// service_updated
+// service_deleted
+
+// member_created
+// member_deleted
+// member_updated
+
+// user_created
+// user_updated
+// user_deleted
+
 }
 
-model NotificationRules{
-  ruleId Int @id @default(autoincrement())
-  eventAction String
-  entityType String
-  notifyRole String
-  isActive Boolean @default(true)
-}
+// model NotificationRules{
+//   ruleId Int @id @default(autoincrement())
+//   eventAction String
+//   entityType String
+//   notifyRole String
+//   isActive Boolean @default(true)
+// }
