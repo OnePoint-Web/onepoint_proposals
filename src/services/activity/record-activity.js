@@ -1,6 +1,7 @@
 import {prisma} from  '@/lib/prisma'
 
 export async function recordActivity({
+    tx,
     action,
     userId,
     title,
@@ -14,15 +15,11 @@ export async function recordActivity({
         'proposal_viewed',
         'proposal_accepted',
         'proposal_rejected'
-
     ]
 
     const shouldNotify = notifiableActions.includes(action)
 
     try{
-
-        const result = await prisma.$transaction(async (tx) => {
-
             const user = await tx.user.findUnique({
                 where: {userId},
                 select: {
@@ -73,10 +70,7 @@ export async function recordActivity({
             }
 
             return successPayload
-        })
         
-        return result
-
     }catch(err){
         console.error('Error creating activity', err)        
         throw new Error('Error creating activity')
