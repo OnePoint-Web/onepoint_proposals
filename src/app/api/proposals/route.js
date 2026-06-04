@@ -79,7 +79,7 @@ export async function POST(req){
                 title: 'Proposal Created',
                 message: `Created proposal "${data.proposalTitle}"`,
                 entityType: 'proposals',
-                entityId: proposal.proposalId
+                entityId: proposal.slug
             })
 
             return proposal

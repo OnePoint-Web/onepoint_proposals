@@ -52,7 +52,7 @@ export async function POST(req){
                 title: 'Package Created',
                 message: `Created package "${data.package}"`,
                 entityType: 'packages',
-                entityId: pkg.packageId
+                entityId: pkg.slug
             })
 
             return pkg

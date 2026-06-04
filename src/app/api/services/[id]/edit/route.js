@@ -30,7 +30,7 @@ export async function PATCH(req, {params}){
                 title: 'Service Updated',
                 message: `Updated service "${body.service}"`,
                 entityType: 'services',
-                entityId: serviceId
+                entityId: String(serviceId)
             })
 
             return updated

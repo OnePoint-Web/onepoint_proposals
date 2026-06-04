@@ -83,7 +83,7 @@ export async function POST(req, { params }) {
                 title: 'Proposal Sent',
                 message: `Sent proposal "${proposal.proposalTitle}" to ${recipients.join(', ')}`,
                 entityType: 'proposals',
-                entityId: proposal.proposalId
+                entityId: slug
             })
         })
 

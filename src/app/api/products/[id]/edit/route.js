@@ -60,7 +60,7 @@ export async function PATCH(req, {params}){
                 title: 'Product Updated',
                 message: `Updated product "${body.product}"`,
                 entityType: 'products',
-                entityId: productId
+                entityId: String(productId)
             })
 
             return updated

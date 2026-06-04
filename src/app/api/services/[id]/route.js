@@ -63,7 +63,7 @@ export async function DELETE(_req, {params}){
                 title: 'Service Deleted',
                 message: `Deleted service "${existing?.service ?? serviceId}"`,
                 entityType: 'services',
-                entityId: serviceId
+                entityId: String(serviceId)
             })
         })
 

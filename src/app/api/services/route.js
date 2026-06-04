@@ -25,7 +25,7 @@ export async function POST(req){
                 title: 'Service Created',
                 message: `Created service "${body.service}"`,
                 entityType: 'services',
-                entityId: service.serviceId
+                entityId: String(service.serviceId)
             })
 
             return service

@@ -57,7 +57,7 @@ export async function POST(req) {
         title: 'Member Created',
         message: `Created member "${parsed.member_name}"`,
         entityType: 'members',
-        entityId: member.memberId
+        entityId: String(member.memberId)
       })
 
       return member

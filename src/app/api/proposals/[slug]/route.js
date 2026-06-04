@@ -12,7 +12,7 @@ export async function DELETE(req){
 
         const existing = await prisma.proposal.findUnique({
             where: { proposalId },
-            select: { proposalTitle: true }
+            select: { proposalTitle: true, slug: true }
         })
 
         await prisma.$transaction(async (tx) => {
@@ -25,7 +25,7 @@ export async function DELETE(req){
                 title: 'Proposal Deleted',
                 message: `Deleted proposal "${existing?.proposalTitle ?? proposalId}"`,
                 entityType: 'proposals',
-                entityId: proposalId
+                entityId: existing?.slug ?? String(proposalId)
             })
         })
 

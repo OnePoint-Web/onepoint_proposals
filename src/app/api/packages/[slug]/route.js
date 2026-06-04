@@ -51,7 +51,7 @@ export async function DELETE(_req, { params }) {
         title: 'Package Deleted',
         message: `Deleted package "${existing.package}"`,
         entityType: 'packages',
-        entityId: existing.packageId
+        entityId: slug
       })
     })
 

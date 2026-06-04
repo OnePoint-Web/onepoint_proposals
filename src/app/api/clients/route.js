@@ -69,7 +69,7 @@ export async function POST(req){
                 title: `Created client account`,
                 message: `Created client "${user.username}" account`,
                 entityType: 'clients',
-                entityId: user.userId
+                entityId: String(user.userId)
             })
             
             return { user, clientProfile };

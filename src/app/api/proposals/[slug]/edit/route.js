@@ -92,7 +92,7 @@ export async function PATCH(req){
                 title: 'Proposal Updated',
                 message: `Updated proposal "${data.proposalTitle}"`,
                 entityType: 'proposals',
-                entityId: data.proposalId
+                entityId: slug
             })
 
             return updated

@@ -60,7 +60,7 @@ export async function POST(req){
                 title: 'Product Created',
                 message: `Created product "${body.product}"`,
                 entityType: 'products',
-                entityId: product.productId
+                entityId: String(product.productId)
             })
 
             return product

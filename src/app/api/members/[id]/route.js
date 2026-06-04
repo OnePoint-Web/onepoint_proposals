@@ -46,7 +46,7 @@ export async function DELETE(_req, {params}){
                 title: 'Member Deleted',
                 message: `Deleted member "${existing?.memberName ?? memberId}"`,
                 entityType: 'members',
-                entityId: memberId
+                entityId: String(memberId)
             })
         })
 

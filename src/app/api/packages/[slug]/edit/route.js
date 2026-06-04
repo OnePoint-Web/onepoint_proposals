@@ -72,7 +72,7 @@ export async function PATCH(req, _params){
                 title: 'Package Updated',
                 message: `Updated package "${data.package}"`,
                 entityType: 'packages',
-                entityId: body.packageId
+                entityId: updated.slug
             })
 
             return updated

@@ -45,7 +45,7 @@ export async function PATCH(req, { params }) {
                 title: 'Member Updated',
                 message: `Updated member "${member_name}"`,
                 entityType: 'members',
-                entityId: memberId
+                entityId: String(memberId)
             })
 
             return updated

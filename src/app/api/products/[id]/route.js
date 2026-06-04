@@ -62,7 +62,7 @@ export async function DELETE(_req, {params}){
                 title: 'Product Deleted',
                 message: `Deleted product "${existing?.product ?? productId}"`,
                 entityType: 'products',
-                entityId: productId
+                entityId: String(productId)
             })
         })
 
