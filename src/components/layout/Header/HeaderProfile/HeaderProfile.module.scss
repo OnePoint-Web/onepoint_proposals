@@ -51,20 +51,49 @@
         
 
         .icon-container{
+            position: relative;
             width: auto;
-            height: auto;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        .notif-icon-wrapper{
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .notif-badge{
+            position: absolute;
+            top: -5px;
+            right: -6px;
+            background-color: var(--brand-red);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            border-radius: 50%;
+            min-width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 3px;
+            line-height: 1;
+            pointer-events: none;
+        }
+
         .notification-container{
             position: absolute;
             top: 110%;
-            left: 0;
-            width: 100%;
+            right: 0;
+            width: 320px;
             height: auto;
-            min-height: 250px;
+            max-height: 400px;
+            overflow-y: auto;
             box-shadow: var(--box-shadow);
             background-color: white;
             border: 1px solid var(--field-stroke);
@@ -74,6 +103,7 @@
             padding: 5px 10px;
             box-sizing: border-box;
             gap: 5px;
+            z-index: 100;
 
             h3{
                 color: var(--text-light);
@@ -84,5 +114,47 @@
             &.active{
                 display: flex;
             }
+        }
+
+        .notif-empty{
+            font-size: 11px;
+            color: var(--text-light);
+            text-align: center;
+            padding: 16px 0;
+        }
+
+        .notif-list{
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .notif-item{
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            padding: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--field-fill);
+            transition: background-color 0.1s ease-in-out;
+
+            &:last-child{ border-bottom: none; }
+            &:hover{ background-color: var(--field-fill); }
+        }
+
+        .notif-title{
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-strong);
+        }
+
+        .notif-message{
+            font-size: 10px;
+            color: var(--text-light);
+            line-height: 1.4;
         }
 }
