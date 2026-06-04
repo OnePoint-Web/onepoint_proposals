@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import { proposalSchema } from "@/schemas/proposal/createProposal.schema.js"
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import {generateUniqueSlug} from '@/utils/slug.js'
 import { requireUser } from "@/lib/getUserHelper"
+import { recordActivity } from "@/services/activity/record-activity"
 
 
 export async function PATCH(req){
@@ -10,7 +11,7 @@ export async function PATCH(req){
 
         const user = await requireUser()
         const data = await req.json()
-        
+
         console.log('DATA', data)
 
         const existing = await prisma.proposal.findUnique({
@@ -21,10 +22,11 @@ export async function PATCH(req){
         let slug = existing.slug
 
         if (existing.proposalTitle !== data.proposalTitle) {
-         slug = await generateUniqueSlug('proposal', data.proposalTitle)
+            slug = await generateUniqueSlug('proposal', data.proposalTitle)
         }
 
-          const result = await prisma.proposal.update({
+        const result = await prisma.$transaction(async (tx) => {
+            const updated = await tx.proposal.update({
                 where: {proposalId: data.proposalId},
                 data: {
                     slug: slug,
@@ -65,24 +67,36 @@ export async function PATCH(req){
 
                 include: {
                     timelines: {
-                    include: { timelineScopeItems: true }
+                        include: { timelineScopeItems: true }
                     },
                     selectedMembers: true,
                     slaOffers: {
-                    include: {
-                        packageDealItem: {
-                        include: { packageDealEntries: true }
+                        include: {
+                            packageDealItem: {
+                                include: { packageDealEntries: true }
+                            }
                         }
-                    }
                     },
                     serviceProductOffers: {
-                    include: {
-                        offerEntries: true
-                    }
+                        include: {
+                            offerEntries: true
+                        }
                     }
                 }
+            })
 
-            });
+            await recordActivity({
+                tx,
+                action: 'proposal_updated',
+                userId: user.userId,
+                title: 'Proposal Updated',
+                message: `Updated proposal "${data.proposalTitle}"`,
+                entityType: 'proposals',
+                entityId: slug
+            })
+
+            return updated
+        })
 
         return NextResponse.json(
             { message: "Package created", ...result },

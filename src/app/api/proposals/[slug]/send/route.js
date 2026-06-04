@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
-import prisma from '@/lib/prisma'
+import { prisma } from '@/lib/prisma'
 import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
@@ -9,7 +10,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export async function POST(req, { params }) {
     try {
-        await requireUser()
+        const user = await requireUser()
 
         const { slug } = await params
         const { recipients } = await req.json()
@@ -69,9 +70,21 @@ export async function POST(req, { params }) {
             )
         )
 
-        await prisma.proposal.update({
-            where: { proposalId: proposal.proposalId },
-            data: { statusId: 3, statusUpdated: new Date() }
+        await prisma.$transaction(async (tx) => {
+            await tx.proposal.update({
+                where: { proposalId: proposal.proposalId },
+                data: { statusId: 3, statusUpdated: new Date() }
+            })
+
+            await recordActivity({
+                tx,
+                action: 'proposal_sent',
+                userId: user.userId,
+                title: 'Proposal Sent',
+                message: `Sent proposal "${proposal.proposalTitle}" to ${recipients.join(', ')}`,
+                entityType: 'proposals',
+                entityId: slug
+            })
         })
 
         return NextResponse.json({ success: true })

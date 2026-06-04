@@ -1,24 +1,25 @@
 import { NextResponse } from "next/server"
 import { createMemberSchema } from "@/schemas/member/createMember.schema"
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import fs from "fs"
 import path from "path"
+import { requireUser } from "@/lib/getUserHelper"
+import { recordActivity } from "@/services/activity/record-activity"
 
 export async function POST(req) {
   try {
+    const authUser = await requireUser()
     const formData = await req.formData()
 
     const data = {
       member_name: formData.get("member_name"),
       role: formData.get("role"),
       description: formData.get("description"),
-      image: formData.get("image") // optional file
+      image: formData.get("image")
     }
 
-    // Validate text fields
     const parsed = createMemberSchema.parse(data)
 
-    // Handle file upload
     let imageUrl = null
     const file = formData.get("image")
     if (file && file.size > 0) {
@@ -29,25 +30,40 @@ export async function POST(req) {
       imageUrl = `/uploads/${fileName}`
     }
 
-    const user = await prisma.teamMember.create({
-      data: {
-        memberName: parsed.member_name,
-        memberRole: parsed.role,
-        description: parsed.description,
-        memberImage: imageUrl,
-        isActive: true
-      },
-      select: {
-        memberName: true,
-        memberRole: true,
-        description: true,
-        memberImage: true,
-        isActive: true,
-        dateCreated: true
-      }
+    const result = await prisma.$transaction(async (tx) => {
+      const member = await tx.teamMember.create({
+        data: {
+          memberName: parsed.member_name,
+          memberRole: parsed.role,
+          description: parsed.description,
+          memberImage: imageUrl,
+          isActive: true
+        },
+        select: {
+          memberId: true,
+          memberName: true,
+          memberRole: true,
+          description: true,
+          memberImage: true,
+          isActive: true,
+          dateCreated: true
+        }
+      })
+
+      await recordActivity({
+        tx,
+        action: 'member_created',
+        userId: authUser.userId,
+        title: 'Member Created',
+        message: `Created member "${parsed.member_name}"`,
+        entityType: 'members',
+        entityId: String(member.memberId)
+      })
+
+      return member
     })
 
-    return NextResponse.json({ message: "Member Created", user }, { status: 201 })
+    return NextResponse.json({ message: "Member Created", user: result }, { status: 201 })
   } catch (err) {
     console.error("Unhandled error:", err)
     if (err.name === "ZodError") {

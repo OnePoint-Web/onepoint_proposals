@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
 export async function GET(req, {params}){
     try{
@@ -39,17 +41,33 @@ export async function GET(req, {params}){
     }
 }
 
-export async function DELETE(req, {params}){
+export async function DELETE(_req, {params}){
     try{
+        const user = await requireUser()
         const {id} = await params
         const productId = parseInt(id)
 
-        const deletedProduct = await prisma.product.delete({
-            where: { productId }
+        const existing = await prisma.product.findUnique({
+            where: { productId },
+            select: { product: true }
+        })
+
+        await prisma.$transaction(async (tx) => {
+            await tx.product.delete({ where: { productId } })
+
+            await recordActivity({
+                tx,
+                action: 'product_deleted',
+                userId: user.userId,
+                title: 'Product Deleted',
+                message: `Deleted product "${existing?.product ?? productId}"`,
+                entityType: 'products',
+                entityId: String(productId)
+            })
         })
 
         return NextResponse.json(
-            {message: 'Product deleted successfully', data: deletedProduct},
+            {message: 'Product deleted successfully'},
             {status: 200}
         )
     }catch(err){

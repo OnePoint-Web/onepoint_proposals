@@ -1,12 +1,16 @@
 import {NextResponse} from 'next/server'
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import fs from "fs"
 import path from "path"
+import { requireUser } from "@/lib/getUserHelper"
+import { recordActivity } from "@/services/activity/record-activity"
 
 export async function PATCH(req, { params }) {
     const { id } = await params
+    const memberId = Number(id)
 
     try{
+        const authUser = await requireUser()
         const formData = await req.formData()
 
         const member_name = formData.get("member_name")
@@ -20,32 +24,39 @@ export async function PATCH(req, { params }) {
             description,
         }
 
-        // only update image IF new image uploaded
         if (image && image.size > 0) {
-
-            const buffer = Buffer.from(await file.arrayBuffer())
-            const fileName = `${Date.now()}-${file.name}`
+            const buffer = Buffer.from(await image.arrayBuffer())
+            const fileName = `${Date.now()}-${image.name}`
             const uploadPath = path.join(process.cwd(), "public/uploads", fileName)
             await fs.promises.writeFile(uploadPath, buffer)
-            const imageUrl = `/uploads/${fileName}`
-
-            updateData.memberImage = imageUrl
+            updateData.memberImage = `/uploads/${fileName}`
         }
 
-        const updatedMember = await prisma.teamMember.update({
-            where: {
-                memberId: Number(id)
-            },
-            data: updateData
+        const result = await prisma.$transaction(async (tx) => {
+            const updated = await tx.teamMember.update({
+                where: { memberId },
+                data: updateData
+            })
+
+            await recordActivity({
+                tx,
+                action: 'member_updated',
+                userId: authUser.userId,
+                title: 'Member Updated',
+                message: `Updated member "${member_name}"`,
+                entityType: 'members',
+                entityId: String(memberId)
+            })
+
+            return updated
         })
 
-        return NextResponse.json({updated: updatedMember}, {status: 200})
+        return NextResponse.json({updated: result}, {status: 200})
     }catch(err){
-         return NextResponse.json(
+        console.error('Error updating member:', err)
+        return NextResponse.json(
             {error: "Failed to update member"},
             {status: 500}
         )
-
     }
-    
 }

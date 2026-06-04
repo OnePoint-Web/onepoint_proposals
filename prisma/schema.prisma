@@ -331,8 +331,8 @@ model Notification{
   userId Int
   title String
   message String
-  entityType String 
-  entityId Int
+  entityType String
+  entityId String
   notificationType String
   isRead Boolean @default(false)
   readtAt DateTime?
@@ -388,8 +388,8 @@ model Notification{
 
 model ActivityLogs{
   activityId Int @id @default(autoincrement())
-  entityType String 
-  entityId Int
+  entityType String
+  entityId String
   action String
   performedBy Int
   performedByRole String

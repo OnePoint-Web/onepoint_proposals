@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from "next/server"
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
-export async function GET(req, { params }) {
+export async function GET(_req, { params }) {
   const { slug } = await params;
 
   try {
@@ -24,19 +26,36 @@ export async function GET(req, { params }) {
 }
 
 
-export async function DELETE(req, { params }) {
-  const { slug } = await params  // grabs slug from URL
+export async function DELETE(_req, { params }) {
+  const { slug } = await params
 
   try {
-    // Delete the package by slug
-    const deletedPackage = await prisma.package.delete({
+    const user = await requireUser()
+
+    const existing = await prisma.package.findUnique({
       where: { slug },
+      select: { packageId: true, package: true }
     })
 
-    return NextResponse.json({
-      message: "Package deleted successfully",
-      data: deletedPackage
+    if (!existing) {
+      return NextResponse.json({ error: "Package not found" }, { status: 404 })
+    }
+
+    await prisma.$transaction(async (tx) => {
+      await tx.package.delete({ where: { slug } })
+
+      await recordActivity({
+        tx,
+        action: 'package_deleted',
+        userId: user.userId,
+        title: 'Package Deleted',
+        message: `Deleted package "${existing.package}"`,
+        entityType: 'packages',
+        entityId: slug
+      })
     })
+
+    return NextResponse.json({ message: "Package deleted successfully" })
   } catch (error) {
     console.error("Error deleting package:", error)
     return NextResponse.json(

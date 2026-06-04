@@ -1,17 +1,35 @@
 import { NextResponse } from "next/server"
 import { createClientSchema } from "@/schemas/client/createClient.schema"
+import { recordActivity } from "@/services/activity/record-activity"
 import prisma from "@/lib/prisma"
 import bcrypt from 'bcryptjs'
+import { jwtVerify } from "jose"
+import { cookies } from "next/headers"
+
 
 
 
 export async function POST(req){
+
+    const cookieStore = await cookies()
+    const token = cookieStore.get('auth_token')?.value
+
+    if (!token) {
+    return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+    )
+    }
+    
     try{
+
         const body = await req.json()
 
         const data = createClientSchema.parse(body)
 
         const hashedPassword = await bcrypt.hash(data.password, 12)
+
+        const {payload} = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET))
 
         const result = await prisma.$transaction(async (tx) => {
             const user = await tx.user.create({
@@ -44,6 +62,16 @@ export async function POST(req){
                 },
             });
 
+            await recordActivity({
+                tx,
+                action: 'client_created',
+                userId: payload.userId,
+                title: `Created client account`,
+                message: `Created client "${user.username}" account`,
+                entityType: 'clients',
+                entityId: String(user.userId)
+            })
+            
             return { user, clientProfile };
             });
 
@@ -54,7 +82,6 @@ export async function POST(req){
         )
 
     }catch (err) {
-        // Handle Prisma duplicate errors (P2002)
         if (err && typeof err === "object" && "code" in err) {
             if (err.code === "P2002") {
             const prismaField = err.meta?.target ?? "field"
