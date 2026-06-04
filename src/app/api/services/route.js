@@ -1,28 +1,43 @@
 import {prisma} from '@/lib/prisma'
 import { NextResponse } from 'next/server'
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
 export async function POST(req){
 
     try{
+        const user = await requireUser()
         const body = await req.json()
 
-        const service = await prisma.service.create({
-            data: {
-                service: body.service,
-                price: body.price,
-                description: body.description
-            }
+        const result = await prisma.$transaction(async (tx) => {
+            const service = await tx.service.create({
+                data: {
+                    service: body.service,
+                    price: body.price,
+                    description: body.description
+                }
+            })
+
+            await recordActivity({
+                tx,
+                action: 'service_created',
+                userId: user.userId,
+                title: 'Service Created',
+                message: `Created service "${body.service}"`,
+                entityType: 'services',
+                entityId: service.serviceId
+            })
+
+            return service
         })
 
         return NextResponse.json(
-            {   message: 'Service successfully created', 
-                data: service
-            },
+            { message: 'Service successfully created', data: result },
             {status: 201}
         )
 
     }catch(err){
-        console.error('Error creating servce: ', err)
+        console.error('Error creating service: ', err)
         return NextResponse.json(
             {message: 'Error creating service'},
             {status: 500}

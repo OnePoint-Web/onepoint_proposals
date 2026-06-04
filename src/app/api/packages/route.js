@@ -1,11 +1,14 @@
 import { NextResponse } from "next/server"
 import { createPackageSchema } from "@/schemas/package/createPackage.schema"
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import {generateUniqueSlug} from '@/utils/slug.js'
+import { requireUser } from "@/lib/getUserHelper"
+import { recordActivity } from "@/services/activity/record-activity"
 
 
 export async function POST(req){
     try{
+        const user = await requireUser()
         const body = await req.json()
 
         const data = createPackageSchema.parse(body)
@@ -14,22 +17,18 @@ export async function POST(req){
         console.log('prismadata', data.dealItems)
 
         const duplicate = await prisma.package.findFirst({
-            where: {
-                package: data.package,
-            }
+            where: { package: data.package }
         })
 
         if (duplicate) {
             return NextResponse.json(
-                {
-                message: "Package title already exists",
-                field: "package"
-                },
+                { message: "Package title already exists", field: "package" },
                 { status: 409 }
             )
         }
 
-        const result = await prisma.package.create({
+        const result = await prisma.$transaction(async (tx) => {
+            const pkg = await tx.package.create({
                 data: {
                     slug,
                     package: data.package,
@@ -39,14 +38,25 @@ export async function POST(req){
                     isActive: true,
                     dealItems: {create: data.dealItems}
                 },
-                include: { 
+                include: {
                     dealItems: {
-                        include: {
-                            dealEntries: true
-                        }
+                        include: { dealEntries: true }
                     }
                 },
-            });
+            })
+
+            await recordActivity({
+                tx,
+                action: 'package_created',
+                userId: user.userId,
+                title: 'Package Created',
+                message: `Created package "${data.package}"`,
+                entityType: 'packages',
+                entityId: pkg.packageId
+            })
+
+            return pkg
+        })
 
         return NextResponse.json(
             { message: "Package created", ...result },

@@ -1,8 +1,10 @@
 import {prisma} from '@/lib/prisma'
 import {NextResponse} from 'next/server'
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
 
-export async function GET(req, {params}){
+export async function GET(_req, {params}){
     try{
         const {id} = await params
         const serviceId = parseInt(id)
@@ -27,10 +29,7 @@ export async function GET(req, {params}){
         }
 
         return NextResponse.json(
-            {
-                message: 'Service fetched',
-                data: service
-            },
+            { message: 'Service fetched', data: service },
             {status: 200}
         )
 
@@ -43,17 +42,33 @@ export async function GET(req, {params}){
     }
 }
 
-export async function DELETE(req, {params}){
+export async function DELETE(_req, {params}){
     try{
+        const user = await requireUser()
         const {id} = await params
         const serviceId = parseInt(id)
 
-        const deletedService = await prisma.service.delete({
-            where: {serviceId}
+        const existing = await prisma.service.findUnique({
+            where: {serviceId},
+            select: { service: true }
+        })
+
+        await prisma.$transaction(async (tx) => {
+            await tx.service.delete({ where: {serviceId} })
+
+            await recordActivity({
+                tx,
+                action: 'service_deleted',
+                userId: user.userId,
+                title: 'Service Deleted',
+                message: `Deleted service "${existing?.service ?? serviceId}"`,
+                entityType: 'services',
+                entityId: serviceId
+            })
         })
 
         return NextResponse.json(
-            {message: 'Service deleted successfully', data: deletedService},
+            {message: 'Service deleted successfully'},
             {status: 200}
         )
     }catch(err){

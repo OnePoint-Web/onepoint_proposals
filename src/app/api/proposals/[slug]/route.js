@@ -1,58 +1,42 @@
-import {prisma} from '@/lib/prisma'
-import {NextResponse} from 'next/server'
-
-// export async function PUT(req, { params }){
-//     const data = await req.jason()
-//     const {id} = await params;
-
-//     const slug = await generateUniqueSlug('proposal', data.proposalTitle)
-
-//     const updatedProposal = await prisma.proposal.update({
-//         where: {id},
-
-//         data:{
-//                 slug,
-//                 clientType: data.clientType,
-//                 proposalTitle: data.proposalTitle,
-//                 executiveSummary: data.executiveSummary,
-//                 goalsAndObjectives: data.goalsAndObjectives,
-//                 execVideoUrl: data.execVideoUrl,
-//                 proposedSolution: data.proposedSolution,
-//                 proposalDescription: data.proposalDescription,
-
-
-//                 timelines:  {create: data.timelines},
-//                 selectedMembers: {create: data.selectedMembers},
-//                 slaOffers: {create: data.slaOffers},
-//                 serviceProductOffers: {create: data.serviceProductOffers}
-//         }
-//     })
-// }
+import { prisma } from '@/lib/prisma'
+import { NextResponse } from 'next/server'
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
 export async function DELETE(req){
     try{
+        const user = await requireUser()
         const body = await req.json()
 
-        const proposalId = Number(body.proposalId);
+        const proposalId = Number(body.proposalId)
 
-        console.log('PROPOSAL ID', proposalId)
+        const existing = await prisma.proposal.findUnique({
+            where: { proposalId },
+            select: { proposalTitle: true }
+        })
 
-        const deletedProposal = await prisma.proposal.delete({
-            where: {proposalId},
+        await prisma.$transaction(async (tx) => {
+            await tx.proposal.delete({ where: { proposalId } })
+
+            await recordActivity({
+                tx,
+                action: 'proposal_deleted',
+                userId: user.userId,
+                title: 'Proposal Deleted',
+                message: `Deleted proposal "${existing?.proposalTitle ?? proposalId}"`,
+                entityType: 'proposals',
+                entityId: proposalId
+            })
         })
 
         return NextResponse.json({
             message: "Proposal deleted successfully",
             status: "success",
-            data: deletedProposal
-        });
+        })
     }catch(err){
         return NextResponse.json(
-        {
-            message: err.message || "Failed to delete proposal",
-            status: "error"
-        },
-        { status: 500 }
-        );
+            { message: err.message || "Failed to delete proposal", status: "error" },
+            { status: 500 }
+        )
     }
 }

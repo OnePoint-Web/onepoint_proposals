@@ -2,6 +2,8 @@ import {prisma} from '@/lib/prisma'
 import { NextResponse } from 'next/server'
 import fs from 'fs'
 import path from 'path'
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
 async function readProductPayload(req){
     const contentType = req.headers.get('content-type') || ''
@@ -38,19 +40,34 @@ async function readProductPayload(req){
 
 export async function POST(req){
     try{
+        const user = await requireUser()
         const body = await readProductPayload(req)
 
-        const product = await prisma.product.create({
-            data:{
-                product: body.product,
-                price: body.price,
-                description: body.description,
-                productImage: body.productImage
-            }
+        const result = await prisma.$transaction(async (tx) => {
+            const product = await tx.product.create({
+                data:{
+                    product: body.product,
+                    price: body.price,
+                    description: body.description,
+                    productImage: body.productImage
+                }
+            })
+
+            await recordActivity({
+                tx,
+                action: 'product_created',
+                userId: user.userId,
+                title: 'Product Created',
+                message: `Created product "${body.product}"`,
+                entityType: 'products',
+                entityId: product.productId
+            })
+
+            return product
         })
 
         return NextResponse.json(
-            {message: 'Successfully created product', data: product},
+            {message: 'Successfully created product', data: result},
             {status: 201}
         )
 

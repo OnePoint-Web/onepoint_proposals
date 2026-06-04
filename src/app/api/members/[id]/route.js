@@ -1,7 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from "next/server"
+import { requireUser } from '@/lib/getUserHelper'
+import { recordActivity } from '@/services/activity/record-activity'
 
-export async function GET(req, {params}) {
+export async function GET(_req, {params}) {
     const {id} = await params;
 
     try{
@@ -10,48 +12,47 @@ export async function GET(req, {params}) {
         })
 
         if (!member) {
-            return new Response(JSON.stringify({ message: 'Not found' }), { status: 404 });
+            return NextResponse.json({ message: 'Not found' }, { status: 404 });
         }
 
-        return NextResponse.json(
-            {data: member},
-            {status: 200,},
-            {success: true}
-        );
-
+        return NextResponse.json({ data: member }, { status: 200 });
 
     } catch(err){
         console.log(err)
-        return new Response(JSON.stringify({ message: 'Server error' }), { status: 500 });
+        return NextResponse.json({ message: 'Server error' }, { status: 500 });
     }
-    
 }
 
 
-export async function DELETE(req, {params}){
-
+export async function DELETE(_req, {params}){
     const {id} = await params
+    const memberId = Number(id)
 
     try{
-        const deleteMember = await prisma.teamMember.delete({
-            where: {memberId: Number(id)}
+        const user = await requireUser()
+
+        const existing = await prisma.teamMember.findUnique({
+            where: { memberId },
+            select: { memberName: true }
         })
 
-        if(!deleteMember){
-            return NextResponse.json(
-                {status: 404},
-                {success: false},
-                {message: 'Not Found'},
-            )
-        }
+        await prisma.$transaction(async (tx) => {
+            await tx.teamMember.delete({ where: { memberId } })
 
-        return NextResponse.json(
-            {status: 200},
-            {succes: true},
-            {message: 'Member Deleted'},
-            {data: deleteMember}
-        )
+            await recordActivity({
+                tx,
+                action: 'member_deleted',
+                userId: user.userId,
+                title: 'Member Deleted',
+                message: `Deleted member "${existing?.memberName ?? memberId}"`,
+                entityType: 'members',
+                entityId: memberId
+            })
+        })
+
+        return NextResponse.json({ message: 'Member deleted successfully' }, { status: 200 })
     } catch(err){
+        console.error('Error deleting member:', err)
         return NextResponse.json({ message: 'Server error' }, { status: 500 });
     }
 }

@@ -1,20 +1,21 @@
 import { NextResponse } from "next/server"
 import { proposalSchema } from "@/schemas/proposal/createProposal.schema.js"
-import prisma from "@/lib/prisma"
+import { prisma } from "@/lib/prisma"
 import {generateUniqueSlug} from '@/utils/slug.js'
 import { requireUser } from "@/lib/getUserHelper"
+import { recordActivity } from "@/services/activity/record-activity"
 
 
 export async function POST(req){
     try{
         const user = await requireUser()
         const body = await req.json()
-    
+
         const postresult = proposalSchema.safeParse(body)
 
         if (!postresult.success) {
             console.log("ZOD ERROR:", postresult.error.flatten())
-            
+
             return NextResponse.json(
                 { error: postresult.error.flatten() },
                 { status: 400 }
@@ -25,8 +26,9 @@ export async function POST(req){
         console.log(data)
 
         const slug = await generateUniqueSlug('proposal', data.proposalTitle)
-        
-        const result = await prisma.proposal.create({
+
+        const result = await prisma.$transaction(async (tx) => {
+            const proposal = await tx.proposal.create({
                 data: {
                     slug,
                     clientId: data.clientId,
@@ -45,7 +47,7 @@ export async function POST(req){
                     slaOffers: {create: data.slaOffers},
                     serviceProductOffers: {create: data.serviceProductOffers},
                     statusId: data.proposalStatus
-                    
+
                 },
 
                 include: {
@@ -53,7 +55,7 @@ export async function POST(req){
                         include: {
                             timelineScopeItems: true
                         }
-                    }, 
+                    },
                     selectedMembers: true,
                     slaOffers: {
                         include: {
@@ -67,9 +69,21 @@ export async function POST(req){
                             offerEntries: true
                         }
                     }
-
                 },
-            });
+            })
+
+            await recordActivity({
+                tx,
+                action: 'proposal_created',
+                userId: user.userId,
+                title: 'Proposal Created',
+                message: `Created proposal "${data.proposalTitle}"`,
+                entityType: 'proposals',
+                entityId: proposal.proposalId
+            })
+
+            return proposal
+        })
 
         return NextResponse.json(
             { message: "Package created", ...result },
