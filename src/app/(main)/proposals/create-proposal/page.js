@@ -119,7 +119,7 @@ export default function CreateProposal(){
             }, 2000)
 
         }catch(err){
-            console.error(err)
+
             setIsSubmitting(false)
             setIsSuccess(false)
             setSubmitMessage('Error creating proposal')

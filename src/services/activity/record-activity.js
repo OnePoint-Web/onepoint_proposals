@@ -10,6 +10,9 @@ export async function recordActivity({
     entityId, //unique identifier of entity
 }){  
 
+    if (!tx) {
+        throw new Error('Transaction client (tx) is required')
+    }
     const notifiableActions = [
         'proposal_sent',
         'proposal_viewed',
@@ -20,6 +23,8 @@ export async function recordActivity({
     const shouldNotify = notifiableActions.includes(action)
 
     try{
+
+        
             const user = await tx.user.findUnique({
                 where: {userId},
                 select: {
@@ -39,7 +44,7 @@ export async function recordActivity({
                 message,
                 executor: userName,
             }
-            const activity = await tx.activitylogs.create({
+            const activity = await tx.activityLogs.create({
                 data: {
                     entityType,
                     entityId,
@@ -69,10 +74,11 @@ export async function recordActivity({
                 successPayload.notification = notification
             }
 
+            console.log('Activity Created')
             return successPayload
         
     }catch(err){
         console.error('Error creating activity', err)        
-        throw new Error('Error creating activity')
+        throw err
     }
 }

@@ -16,7 +16,7 @@
         const [members, setMembers] = useState([])
         const [packages, setPackages] = useState([])
         const [serviceProductItems, setServiceProductItems] = useState([])
-        console.log(proposalState.teamMembers)
+        
         useEffect(() => {
             fetch('/api/members')
             .then(res => res.json())
@@ -87,7 +87,7 @@
 
         const selectPackages = packages.map(item => (
             {
-            id: item.id,
+            id: item.title,
             name: item.title
             }
         ))
@@ -130,12 +130,12 @@
                     <Input
                         label='Select Package'
                         type='select'
-                        value={proposalState.proposalPackage}
+                        value={proposalState.slaPackage}
                         values={packageOptions}
                         error={errors['proposalPackage']}
                         errorMessage={errors.proposalPackage}
                         onChange={(e) => {
-                            const selectedId = Number(e.target.value)
+                            const selectedId = e.target.value
                             if (selectedId === "Custom Package") {
                                 dispatch({
                                 type: 'SELECT_PACKAGE',
@@ -144,12 +144,13 @@
                                 return
                             }
 
-                            const selectedPackage = packages.find(p => p.id === selectedId)
-                         
+                            const selectedPackage = packages.find(p => p.title === selectedId)
                             dispatch({
                                 type: 'SELECT_PACKAGE',
                                 payload: selectedPackage
                             })
+
+                            console.log('PACKAGE', packages)
                         }} 
                     />
                 </div>
@@ -169,12 +170,10 @@
                                 label={member.name}
                                 checked={proposalState.selectedMembers.some(m => m.memberId === member.id)}
                                 onChange={() =>{
-                                    console.log(proposalState.selectedMembers)
                                     dispatch({
                                     type: 'TOGGLE_TEAM_MEMBER',
                                     payload: member.id
                                     })}
-                                    
                                 }
                                 />
                             ))

@@ -30,8 +30,7 @@ export const timelineReducer = (timelines, action) => {
     case 'UPDATE_SCOPE':
       return timelines.map(t =>
         t.timelineId === action.payload.timelineId
-          ? {
-              ...t,
+          ? {...t,
               timelineScopeItems: t.timelineScopeItems.map(scope =>
                 scope.scopeItemId === action.payload.scopeId
                   ? { ...scope, ...action.payload.data }

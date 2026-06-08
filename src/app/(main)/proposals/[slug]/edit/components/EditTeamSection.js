@@ -14,7 +14,7 @@ export default function EditTeamSection({
         fetch('/api/members')
         .then(res => res.json())
         .then(data => {
-            const membersOptions = data.map(member => ({
+            const membersOptions = (data.data || []).map(member => ({
                 memberId: member.memberId,
                 memberName: member.memberName,
                 memberRole: member.memberRole,
