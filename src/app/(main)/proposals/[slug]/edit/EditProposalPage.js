@@ -21,28 +21,28 @@ import {useState, useEffect, useReducer} from 'react'
 const ProposalIcon = Icons.proposals
 export default function EditProposalPage({proposalData}){
 
-    const [packages, setPackages] = useState([])
+    // const [packages, setPackages] = useState([])
     const [proposalState, dispatch] = useReducer(editProposalReducer, null)
     const [clientDetails, setClientDetails] = useState({})
     const [toggleModal, setToggleModal] = useState(false)
     const [serviceProductItems, setServiceProductItems] = useState([])
     const router = useRouter()
 
-    useEffect(() => {
-        fetch('/api/packages')
-        .then(res => res.json())
-        .then(data => {
-            const  packagesOptions = data.map(item => ({
-                packageId: item.packageId,
-                slaPackage: item.package,
-                proposalDescription: item.description,
-                proposedSolution: item.proposedSolution,
-                basePrice: item.basePrice,
-                dealItems: item.dealItems
-            }))
-            setPackages(packagesOptions)
-        })
-    }, [])
+    // useEffect(() => {
+    //     fetch('/api/packages')
+    //     .then(res => res.json())
+    //     .then(data => {
+    //         const  packagesOptions = data.map(item => ({
+    //             packageId: item.packageId,
+    //             slaPackage: item.package,
+    //             proposalDescription: item.description,
+    //             proposedSolution: item.proposedSolution,
+    //             basePrice: item.basePrice,
+    //             dealItems: item.dealItems
+    //         }))
+    //         setPackages(packagesOptions)
+    //     })
+    // }, [])
 
     useEffect(() => {
 
@@ -216,7 +216,8 @@ export default function EditProposalPage({proposalData}){
             )),
             timelines: (proposalState.timelines ?? []).map(t => ({
                 timeFrame: t.timeFrame,
-                progress: t.progress,
+                progress: parseInt(t.progress, 10) || 0,
+                assignedTo: t.assignedTo ?? null,
                 timelineScopeItems: { create: (t.timelineScopeItems ?? []).map(s => ({
                     scope: s.scope,
                 }))},
@@ -235,15 +236,20 @@ export default function EditProposalPage({proposalData}){
                     taxReason: proposalState.offer.taxReason,
                     finalPrice: proposalState.offer.finalPrice,
                     paymentTerms: proposalState.offer.paymentTerms,
-                    packageDealItem: (proposalState.offer.packageDealItem ?? []).map(d => ({
-                        item: d.item,
-                        itemType: d.itemType,
-                        isCustom: false,
-                        displayOrder: d.displayOrder, 
-                        packageDealEntries: (d.packageDealEntries ?? []).map(p => ({
-                            itemEntry: p.itemEntry,
+                    packageDealItem: {
+                        create: (proposalState.offer.packageDealItem ?? []).map(d => ({
+                            item: d.item,
+                            itemType: d.itemType,
+                            isCustom: false,
+                            displayOrder: d.displayOrder,
+                            packageDealEntries: {
+                                create: (d.packageDealEntries ?? []).map(p => ({
+                                    itemEntry: p.itemEntry,
+                                    displayOrder: p.displayOrder ?? 0,
+                                }))
+                            }
                         }))
-                    }))
+                    }
                 }
             } : {}),
             ...(proposalState.proposalType !== 'SLA Proposal' ? {
@@ -293,14 +299,18 @@ export default function EditProposalPage({proposalData}){
             }
 
             try{
-                const res = await fetch(`/api/proposals/[${proposalData.slug}]/edit`, {
+                const res = await fetch(`/api/proposals/${proposalData.slug}/edit`, {
                     method: 'PATCH',
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(payload)
                 })
 
                 const result = await res.json()
-                console.log(result.slug)
+
+                if (!res.ok || !result.slug) {
+                    console.error('Update failed:', result)
+                    return
+                }
 
                 setToggleModal(true)
 
