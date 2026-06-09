@@ -100,6 +100,7 @@ model Proposal {
   proposalViews ProposalView[]
   selectedMembers SelectedMember[]
   timelines Timeline[]
+  shareTokens ProposalShareToken[]
 }
 
 model ProposalStatus {
@@ -110,22 +111,39 @@ model ProposalStatus {
 }
 
 model ProposalView {
-  viewId Int @id @default(autoincrement())
+  viewId     Int      @id @default(autoincrement())
   proposalId Int
-  clientId Int
+  clientId   Int?
+  tokenId    Int?
   dateViewed DateTime @default(now())
 
   proposal Proposal @relation(fields: [proposalId], references: proposalId)
 }
 
-// Proposal sessions to track propsal view time 
+// Proposal sessions to track proposal view time
 model ProposalSession {
-  sessionId Int @id @default(autoincrement())
-  clientId Int 
-  startedAt DateTime @default(now())
-  lastActivityAt DateTime?
-  endedAt DateTime?
-  durationSeconds Int
+  sessionId       Int       @id @default(autoincrement())
+  proposalId      Int
+  clientId        Int?
+  tokenId         Int?
+  startedAt       DateTime  @default(now())
+  lastActivityAt  DateTime?
+  endedAt         DateTime?
+  durationSeconds Int?
+}
+
+model ProposalShareToken {
+  tokenId        Int       @id @default(autoincrement())
+  token          String    @unique
+  proposalId     Int
+  recipientEmail String
+  isPortalUser   Boolean   @default(false)
+  portalUserId   Int?
+  usedAt         DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+
+  proposal Proposal @relation(fields: [proposalId], references: proposalId, onDelete: Cascade)
 }
 
 // Team Members
