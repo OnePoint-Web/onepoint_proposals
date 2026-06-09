@@ -30,6 +30,10 @@ export default function StatsSection({ stats, range, setRange }) {
                     <span className={styles['stat-label']}>Proposals Sent</span>
                     <span className={styles['stat-value']}>{stats?.sent ?? '—'}</span>
                 </div>
+                <div className={`${styles['stat-card']} ${styles.viewed}`}>
+                    <span className={styles['stat-label']}>Viewed</span>
+                    <span className={styles['stat-value']}>{stats?.viewed ?? '—'}</span>
+                </div>
                 <div className={`${styles['stat-card']} ${styles.approved}`}>
                     <span className={styles['stat-label']}>Approved</span>
                     <span className={styles['stat-value']}>{stats?.approved ?? '—'}</span>

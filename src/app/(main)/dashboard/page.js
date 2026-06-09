@@ -33,8 +33,8 @@ export default function Dashboard() {
                 <div className={styles['dashboard-grid']}>
                     <StatsSection stats={stats} range={range} setRange={setRange} />
                     <RecentProposals proposals={recentProposals} />
-                    <QuickNavigate />
                     <RecentActivity />
+                    <QuickNavigate />
                 </div>
             </Container>
         </ChildLayout>
