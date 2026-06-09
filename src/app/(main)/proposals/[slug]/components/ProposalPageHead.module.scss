@@ -73,12 +73,157 @@
     width: 100%;
 }
 
- .note-message{
-        border: 1px solid rgb(237, 201, 133);
-        width: 100%;
-        padding: 10px;
-        border-radius: 8px;
-        background-color: rgb(251, 251, 233);
-        color: rgb(216, 143, 6);
+ .note-message {
+    border: 1px solid rgb(237, 201, 133);
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgb(251, 251, 233);
+    color: rgb(216, 143, 6);
+    font-size: 12px;
+}
+
+.recipient-hint {
+    font-size: 11px;
+    color: var(--text-light);
+    width: 100%;
+
+    strong {
+        color: var(--text-strong);
+    }
+}
+
+/* ── View tracking table ───────────────────── */
+
+.tracking-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 16px 0 8px;
+
+    .tracking-header {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        h3 {
+            font-size: var(--fs-sm);
+            font-weight: 600;
+            color: var(--text-strong);
+        }
+    }
+
+    .tracking-meta {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+
+        span {
+            font-size: 11px;
+            color: var(--text-light);
+
+            strong {
+                color: var(--text-strong);
+            }
+        }
+    }
+}
+
+.tracking-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: var(--box-shadow);
+
+    th, td {
+        text-align: left;
+        padding: 10px 14px;
         font-size: 12px;
+    }
+
+    th {
+        background-color: var(--field-fill);
+        color: var(--text-light);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        font-size: 10px;
+        border-bottom: 1px solid var(--field-divider);
+    }
+
+    td {
+        color: var(--text-strong);
+        border-bottom: 1px solid var(--field-fill);
+        background: var(--background);
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+
+    .email-cell {
+        font-weight: 500;
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .portal-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        font-size: 9px;
+        padding: 2px 6px;
+        border-radius: 4px;
+        background: #eef2ff;
+        color: #4f46e5;
+        border: 1px solid #c7d2fe;
+        font-weight: 600;
+        margin-left: 4px;
+    }
+}
+
+.status-viewed {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: rgb(49, 196, 100);
+
+    &::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: rgb(49, 196, 100);
+    }
+}
+
+.status-unopened {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-light);
+
+    &::before {
+        content: '';
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--field-stroke);
+    }
+}
+
+.tracking-loading {
+    font-size: var(--fs-xs);
+    color: var(--text-light);
+    padding: 12px 0;
 }

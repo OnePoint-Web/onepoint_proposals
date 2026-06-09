@@ -22,9 +22,12 @@ export async function GET(req) {
 
         const dateFilter = { dateCreated: { gte: startDate } }
 
-        const [sent, approved, declined] = await Promise.all([
+        const [sent, viewed, approved, declined] = await Promise.all([
             prisma.proposal.count({
                 where: { ...dateFilter, statusId: { in: [3, 4, 5, 6] } }
+            }),
+            prisma.proposal.count({
+                where: { ...dateFilter, statusId: { in: [4, 5, 6] } }
             }),
             prisma.proposal.count({
                 where: { ...dateFilter, statusId: 5 }
@@ -34,7 +37,7 @@ export async function GET(req) {
             }),
         ])
 
-        return NextResponse.json({ sent, approved, declined })
+        return NextResponse.json({ sent, viewed, approved, declined })
 
     } catch (err) {
         console.error('Dashboard stats error:', err)

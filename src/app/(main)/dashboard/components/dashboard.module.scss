@@ -62,10 +62,14 @@
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
 
-    @media (max-width: 640px) {
+    @media (max-width: 900px) {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 480px) {
         grid-template-columns: 1fr;
     }
 }
@@ -94,7 +98,8 @@
         line-height: 1;
     }
 
-    &.sent .stat-value   { color: rgb(51, 51, 232); }
+    &.sent .stat-value     { color: rgb(51, 51, 232); }
+    &.viewed .stat-value   { color: rgb(14, 165, 233); }
     &.approved .stat-value { color: rgb(49, 196, 100); }
     &.declined .stat-value { color: rgb(217, 70, 2); }
 }
@@ -254,5 +259,72 @@
     p {
         font-size: var(--fs-xs);
         color: var(--text-light);
+    }
+}
+
+.activity-list {
+    background-color: var(--background);
+    box-shadow: var(--box-shadow);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--field-fill);
+
+    &:last-child {
+        border-bottom: none;
+    }
+}
+
+.activity-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 14px;
+
+    &.viewed    { background: rgb(234, 255, 255); color: teal; }
+    &.approved  { background: rgb(226, 255, 226); color: green; }
+    &.rejected  { background: rgb(255, 235, 235); color: red; }
+    &.sent      { background: rgb(235, 235, 255); color: rgb(51, 51, 232); }
+    &.created   { background: var(--field-fill);  color: var(--text-light); }
+    &.updated   { background: var(--field-fill);  color: var(--text-light); }
+    &.default   { background: var(--field-fill);  color: var(--text-light); }
+}
+
+.activity-body {
+    flex: 1;
+    min-width: 0;
+
+    .activity-title {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-strong);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .activity-message {
+        font-size: 11px;
+        color: var(--text-light);
+        margin-top: 1px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .activity-time {
+        font-size: 10px;
+        color: var(--icon-light);
+        margin-top: 3px;
     }
 }
