@@ -1,9 +1,8 @@
 import {NextResponse} from 'next/server'
 import { prisma } from "@/lib/prisma"
-import fs from "fs"
-import path from "path"
 import { requireUser } from "@/lib/getUserHelper"
 import { recordActivity } from "@/services/activity/record-activity"
+import { uploadToR2 } from "@/lib/uploadToR2"
 
 export async function PATCH(req, { params }) {
     const { id } = await params
@@ -25,11 +24,8 @@ export async function PATCH(req, { params }) {
         }
 
         if (image && image.size > 0) {
-            const buffer = Buffer.from(await image.arrayBuffer())
-            const fileName = `${Date.now()}-${image.name}`
-            const uploadPath = path.join(process.cwd(), "public/uploads", fileName)
-            await fs.promises.writeFile(uploadPath, buffer)
-            updateData.memberImage = `/uploads/${fileName}`
+            const { url } = await uploadToR2(image, { folder: 'members', uploadedBy: authUser.userId })
+            updateData.memberImage = url
         }
 
         const result = await prisma.$transaction(async (tx) => {

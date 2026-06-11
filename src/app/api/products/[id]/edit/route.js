@@ -1,9 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import { NextResponse } from 'next/server'
-import fs from 'fs'
-import path from 'path'
 import { requireUser } from '@/lib/getUserHelper'
 import { recordActivity } from '@/services/activity/record-activity'
+import { uploadToR2 } from '@/lib/uploadToR2'
 
 async function readProductPayload(req){
     const contentType = req.headers.get('content-type') || ''
@@ -19,11 +18,8 @@ async function readProductPayload(req){
         const removeImage = formData.get('removeImage') === 'true'
 
         if (image && image.size > 0) {
-            const buffer = Buffer.from(await image.arrayBuffer())
-            const fileName = `${Date.now()}-${image.name}`
-            const uploadPath = path.join(process.cwd(), 'public/uploads', fileName)
-            await fs.promises.writeFile(uploadPath, buffer)
-            updateData.productImage = `/uploads/${fileName}`
+            const { url } = await uploadToR2(image, { folder: 'products' })
+            updateData.productImage = url
         } else if (removeImage) {
             updateData.productImage = null
         }

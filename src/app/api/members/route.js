@@ -1,10 +1,9 @@
 import { NextResponse } from "next/server"
 import { createMemberSchema } from "@/schemas/member/createMember.schema"
 import { prisma } from "@/lib/prisma"
-import fs from "fs"
-import path from "path"
 import { requireUser } from "@/lib/getUserHelper"
 import { recordActivity } from "@/services/activity/record-activity"
+import { uploadToR2 } from "@/lib/uploadToR2"
 
 export async function POST(req) {
   try {
@@ -23,11 +22,8 @@ export async function POST(req) {
     let imageUrl = null
     const file = formData.get("image")
     if (file && file.size > 0) {
-      const buffer = Buffer.from(await file.arrayBuffer())
-      const fileName = `${Date.now()}-${file.name}`
-      const uploadPath = path.join(process.cwd(), "public/uploads", fileName)
-      await fs.promises.writeFile(uploadPath, buffer)
-      imageUrl = `/uploads/${fileName}`
+      const { url } = await uploadToR2(file, { folder: 'members', uploadedBy: authUser.userId })
+      imageUrl = url
     }
 
     const result = await prisma.$transaction(async (tx) => {
@@ -94,6 +90,7 @@ export async function GET(req){
             .filter(Boolean);
 
         const where = {
+            deleted: false,
             ...(status && { isActive: status === 'true'}),
 
             ...(searchTerms.length > 0 && {
