@@ -56,7 +56,10 @@ export default function ProposalsCard(
 
                 <div className={`${styles.status} ${styles[classStatus]}`}>{status}</div>
 
-                <button className={styles['pdf-button']}>
+                <button
+                    className={styles['pdf-button']}
+                    onClick={(e) => { e.stopPropagation(); window.open(`/api/proposals/${slug}/pdf`, '_blank') }}
+                >
                     Generate PDF
                 </button>
             </div>

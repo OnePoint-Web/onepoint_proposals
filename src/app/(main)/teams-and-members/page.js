@@ -64,8 +64,14 @@ export default function MembersPage(){
     metaData.totalResults
     );
 
-    const deleteMember = (memberId) => {
-        
+    const deleteMember = async (memberId) => {
+        try {
+            const res = await fetch(`/api/members/${memberId}`, { method: 'DELETE' })
+            if (!res.ok) throw new Error('Failed to delete member')
+            setMembers(prev => prev.filter(m => m.id !== memberId))
+        } catch (err) {
+            console.error('Delete member error:', err)
+        }
     }
 
     return(
@@ -93,6 +99,7 @@ export default function MembersPage(){
                             role={m.memberRole}
                             description={m.description}
                             onClick={() => router.push(`teams-and-members/${m.id}`)}
+                            onDelete={(e) => { e.stopPropagation(); deleteMember(m.id) }}
                         />
                     ))}
                 

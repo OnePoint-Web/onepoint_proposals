@@ -34,29 +34,32 @@ export default function MemberPage({}){
     }, [])
 
     const deleteMember = async (id) => {
+        try {
+            const res = await fetch(`/api/members/${id}`, {
+                method: "DELETE",
+            });
 
-        try{
-            const deletedMember = await fetch(`/api/members/${id}`, {
-                method: 'DELETE'
-            })
-    
-            if(!deletedMember.ok){ throw new Error("Failed to delete member");}
+            if (!res.ok) {
+                throw new Error("Failed to delete member");
+            }
 
-             const result = await deletedMember.json();
+            let result = null;
+            const contentType = res.headers.get("content-type");
 
-                console.log("Deleted:", result);
+            if (contentType?.includes("application/json")) {
+                result = await res.json();
+            }
 
-                setToggleDeletedModal(false)
-                setToggleModal(true)
+            console.log("Deleted:", result);
 
-                 setTimeout(() => {
-                    router.push(`/teams-and-members`)
-                }, 1000)
+            setToggleDeletedModal(false);
 
-        }catch(err){
-             console.error("Delete error:", err);
-        }
-    }
+            router.push("/teams-and-members");
+
+        } catch (err) {
+            console.error("Delete error:", err);
+        }   
+    };
 
     if(!member) return <p>Member Not Found</p>
 

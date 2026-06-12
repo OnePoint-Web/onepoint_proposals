@@ -64,12 +64,20 @@ export default function ProposalPageHead({ proposalData }) {
                     {proposalData.statusId === 6 && <span className={styles.declined}>Declined</span>}
                 </p>
 
-                {(proposalData.statusId === 1 || proposalData.statusId === 0) && (
-                    <div className={styles['top-btn-box']}>
-                        <Button label='Delete' color='red' onClick={toggleDeleteProposal} />
-                        <Button label='Edit' color='dark' onClick={() => router.push(`/proposals/${proposalData.slug}/edit`)} />
-                    </div>
-                )}
+                <div className={styles['top-btn-box']}>
+                    {(proposalData.statusId === 1 || proposalData.statusId === 0) && (
+                        <>
+                            <Button label='Delete' color='red' onClick={toggleDeleteProposal} />
+                            <Button label='Edit' color='dark' onClick={() => router.push(`/proposals/${proposalData.slug}/edit`)} />
+                        </>
+                    )}
+                    <Button
+                        label='Download PDF'
+                        color='dark'
+                        size='xs'
+                        onClick={() => window.open(`/api/proposals/${proposalData.slug}/pdf`, '_blank')}
+                    />
+                </div>
             </div>
 
             <hr />

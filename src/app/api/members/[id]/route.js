@@ -36,8 +36,18 @@ export async function DELETE(_req, {params}){
             select: { memberName: true }
         })
 
+        if (!existing) {
+            return NextResponse.json(
+                { message: "Member not found" },
+                { status: 404 }
+            );
+        }
+
         await prisma.$transaction(async (tx) => {
-            await tx.teamMember.delete({ where: { memberId } })
+            await tx.teamMember.update({
+                where: { memberId },
+                data: { deleted: true, isActive: false }
+            })
 
             await recordActivity({
                 tx,
