@@ -258,7 +258,7 @@
     }
 }
 
-.head-footer{
+.head-footer {
     color: white;
     margin-top: auto;
     width: 100%;
@@ -267,9 +267,43 @@
     padding-inline: 20mm;
     padding-top: 6mm;
     padding-bottom: 6mm;
-    opacity: 0.7;
-    font-size: 12px;
+    opacity: 0.8;
+    font-size: 10px;
     text-transform: uppercase;
+    letter-spacing: 0.03em;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    p:first-child {
+        opacity: 0.6;
+        font-size: 9px;
+    }
+}
+
+.footer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    text-align: right;
+
+    p:first-child {
+        font-weight: 700;
+        font-size: 11px;
+    }
+
+    p:last-child {
+        opacity: 0.7;
+        font-size: 9px;
+    }
 }
 
 // ============================= 
@@ -289,5 +323,317 @@
     padding-inline: 20mm;
     padding-top: 8mm;
     padding-bottom: 8mm;
-   
+}
+
+// =============================
+// TEAM SECTION
+// =============================
+
+.team-body {
+    padding-inline: 20mm;
+    padding-top: 8mm;
+    padding-bottom: 8mm;
+}
+
+.team-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding-top: 12px;
+}
+
+.team-card {
+    width: 150px;
+    border: 1px solid var(--field-divider);
+    border-radius: 8px;
+    overflow: hidden;
+    break-inside: avoid;
+
+    img {
+        width: 100%;
+        aspect-ratio: 7 / 10;
+        object-fit: cover;
+        display: block;
+        background-color: var(--field-fill);
+    }
+}
+
+.team-card-info {
+    padding: 8px;
+    border-top: 2px solid var(--brand-red);
+}
+
+.team-name {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 2px;
+}
+
+.team-role {
+    font-size: 10px;
+    color: var(--brand-red);
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.team-desc {
+    font-size: 9px;
+    color: var(--text-light);
+    line-height: 1.4;
+}
+
+// =============================
+// TIMELINE SECTION
+// =============================
+
+.approach-body {
+    padding-inline: 20mm;
+    padding-top: 8mm;
+    padding-bottom: 8mm;
+}
+
+.timeline-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 11px;
+
+    th {
+        background: var(--primary-color);
+        color: white;
+        padding: 8px 10px;
+        text-align: left;
+        font-size: 10px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+    }
+
+    td {
+        padding: 8px 10px;
+        border-bottom: 1px solid var(--field-divider);
+        vertical-align: top;
+        color: var(--text-strong);
+    }
+
+    tr:last-child td {
+        border-bottom: none;
+    }
+}
+
+.progress-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.progress-bar {
+    height: 6px;
+    width: 80px;
+    background: var(--field-divider);
+    border-radius: 3px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--brand-red);
+    border-radius: 3px;
+}
+
+.progress-label {
+    font-size: 10px;
+    color: var(--text-light);
+    white-space: nowrap;
+}
+
+.scope-list {
+    margin: 0;
+    padding-left: 14px;
+    list-style: disc;
+
+    li {
+        font-size: 10px;
+        color: var(--text-strong);
+        margin-bottom: 2px;
+        line-height: 1.4;
+    }
+}
+
+// =============================
+// BUDGET SECTION
+// =============================
+
+.budget-body {
+    padding-inline: 20mm;
+    padding-top: 8mm;
+    padding-bottom: 8mm;
+}
+
+.budget-package-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--primary-color);
+    margin-bottom: 4px;
+
+    span {
+        color: var(--brand-red);
+    }
+}
+
+.budget-hint {
+    font-size: 10px;
+    color: var(--text-light);
+    margin-bottom: 12px;
+}
+
+.inclusions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.inclusion-box {
+    border: 1px solid var(--field-divider);
+    border-radius: 6px;
+    padding: 10px;
+    break-inside: avoid;
+
+    &.full-width {
+        grid-column: 1 / -1;
+    }
+}
+
+.inclusion-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: 6px;
+}
+
+.inclusion-list {
+    margin: 0;
+    padding-left: 14px;
+    list-style: disc;
+
+    li {
+        font-size: 10px;
+        color: var(--text-strong);
+        margin-bottom: 2px;
+        line-height: 1.4;
+    }
+}
+
+.inclusion-paragraph {
+    font-size: 10px;
+    color: var(--text-strong);
+    line-height: 1.5;
+}
+
+.description-box {
+    font-size: 10px;
+    color: var(--text-light);
+    line-height: 1.5;
+    padding: 10px;
+    background: var(--field-fill);
+    border-radius: 6px;
+    margin-bottom: 16px;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+    margin-bottom: 16px;
+
+    th {
+        background: var(--field-fill);
+        padding: 7px 8px;
+        text-align: left;
+        font-weight: 600;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        border-bottom: 2px solid var(--field-divider);
+    }
+
+    td {
+        padding: 7px 8px;
+        border-bottom: 1px solid var(--field-fill);
+        color: var(--text-strong);
+        vertical-align: top;
+    }
+
+    .center {
+        text-align: right;
+    }
+
+    .discount-note {
+        display: block;
+        font-size: 8px;
+        color: var(--text-light);
+        margin-top: 1px;
+    }
+}
+
+.pricing-summary {
+    margin-left: auto;
+    width: 280px;
+    border: 1px solid var(--field-divider);
+    border-radius: 6px;
+    overflow: hidden;
+    font-size: 11px;
+}
+
+.pricing-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 12px;
+    border-bottom: 1px solid var(--field-divider);
+
+    .pricing-label {
+        color: var(--text-light);
+    }
+
+    .pricing-value {
+        font-weight: 500;
+        color: var(--text-strong);
+    }
+}
+
+.pricing-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    background: var(--primary-color);
+    color: white;
+    font-weight: 700;
+    font-size: 13px;
+}
+
+.payment-terms-box {
+    font-size: 10px;
+    color: var(--text-light);
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: var(--field-fill);
+    border-radius: 6px;
+    border-left: 3px solid var(--brand-red);
+    line-height: 1.5;
+
+    strong {
+        display: block;
+        font-size: 9px;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--text-strong);
+        margin-bottom: 4px;
+    }
 }
