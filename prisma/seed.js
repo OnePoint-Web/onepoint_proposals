@@ -56,8 +56,8 @@ async function main() {
         lastName: 'User',
         userEmail: 'admin@test.com',
         accountRole: 2,
-        userPassword: hashedPassword, 
-        accountStatus: 1, 
+        userPassword: hashedPassword,
+        accountStatus: 2,
       },
     })
     console.log('Default user created')

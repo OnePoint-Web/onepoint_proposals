@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `OfferEntry` ADD COLUMN `isSelected` BOOLEAN NOT NULL DEFAULT true;

@@ -42,7 +42,8 @@ export const createItem = () => ({
     discountedTotal: 0,
     itemDescription: '',
     itemImage: '',
-    displayOrder: null
+    displayOrder: null,
+    isSelected: true,
 })
 
 export const createInitialProposal = ({ proposalType, clientType }) => {

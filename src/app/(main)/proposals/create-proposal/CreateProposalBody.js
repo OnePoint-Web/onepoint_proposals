@@ -268,6 +268,15 @@
                 <>
                 <p>Products</p>
 
+                <Checkbox
+                    label="Allow client to choose items (Multiple Choice)"
+                    checked={proposalState.isMultipleChoice ?? false}
+                    onChange={(e) => dispatch({
+                        type: 'UPDATE_PROPOSAL_FIELD',
+                        payload: { isMultipleChoice: e.target.checked }
+                    })}
+                />
+
                 <ProposalItemSection
                     items={proposalState.items}
                     dispatch={dispatch}

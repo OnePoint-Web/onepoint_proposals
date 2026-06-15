@@ -7,13 +7,15 @@ export default function CreateProposalHead({proposalState, dispatch, errors}){
     const [options, setOptions] = useState([])
 
     useEffect(() => {
-            fetch("/api/clients")
+            fetch("/api/clients?status=Active&limit=1000")
             .then(res => res.json())
             .then(results => {
-                const clientOptions = results.data.map(user => ({
-                    id: user.clientProfile.clientId,
-                    name: user.firstName + ' ' + user.lastName,
-                }))
+                const clientOptions = results.data
+                    .filter(user => user.clientProfile)
+                    .map(user => ({
+                        id: user.clientProfile.clientId,
+                        name: user.firstName + ' ' + user.lastName,
+                    }))
             setOptions(clientOptions)
             })
             

@@ -102,8 +102,8 @@ const buildProposalOffersPayload = (parsedResult) => {
         itemDiscountDescription: item.itemDiscountDescription,
         description: item.description,
         itemImage: item.itemImage || null,
-        displayOrder: item.displayOrder, 
-
+        displayOrder: item.displayOrder,
+        isSelected: item.isSelected ?? true,
     }))
 
     return offerEntriesPayload

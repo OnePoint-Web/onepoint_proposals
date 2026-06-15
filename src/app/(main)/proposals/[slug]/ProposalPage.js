@@ -286,6 +286,11 @@ export default function ProposalPage({proposalData, slug}){
                             
                             {proposalData.proposalType !== 'SLA Proposal' && (
                                 <>
+                                {proposalData.serviceProductOffers[0].isMultipleChoice && (
+                                    <div className={styles['multiple-choice-notice']}>
+                                        <p>Multiple Choice Proposal — client may select individual items before approving.</p>
+                                    </div>
+                                )}
                                 <table className={styles['product-service-table']}>
                                     <tbody>
                                     <tr>
@@ -317,9 +322,15 @@ export default function ProposalPage({proposalData, slug}){
                                             <p>Item Discount</p>
                                         </th>
 
-                                        <th>    
+                                        <th>
                                             <p>Total</p>
                                         </th>
+
+                                        {proposalData.serviceProductOffers[0].isMultipleChoice && (
+                                            <th className={styles['center']}>
+                                                <p>Selected</p>
+                                            </th>
+                                        )}
                                     </tr>
 
                                     {
@@ -387,8 +398,16 @@ export default function ProposalPage({proposalData, slug}){
                                                     {entry.itemDiscountType === 'None' && (
                                                         <p>{`$ ${entry.totalPrice}`}</p>
                                                     )}
-                                                    
+
                                                 </th>
+
+                                                {proposalData.serviceProductOffers[0].isMultipleChoice && (
+                                                    <th className={styles['center']}>
+                                                        <p style={{ color: entry.isSelected !== false ? '#22C55E' : '#A0AEC0', fontWeight: 600 }}>
+                                                            {entry.isSelected !== false ? 'Yes' : 'No'}
+                                                        </p>
+                                                    </th>
+                                                )}
                                             </tr>
                                         ))
                                     }

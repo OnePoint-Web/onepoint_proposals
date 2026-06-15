@@ -32,7 +32,7 @@ export async function POST(req){
         )
     }
 
-    if (user.userStatus.statusId !== 1) {
+    if (user.userStatus.statusId !== 2) {
         return NextResponse.json(
             { type: 'error', message: `Account is ${user.userStatus.status}` },
             { status: 403 }
