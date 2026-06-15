@@ -1,160 +1,253 @@
-.header-element-container{
+.header-element-container {
     width: fit-content;
     display: flex;
     flex-direction: row;
+    align-items: center;
     gap: 10px;
     position: relative;
-    
-    .profile-container{
-        width: 100px;
-        border: 1px solid var(--field-stroke);
-        border-radius: 10px;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        padding: 8px 10px;
-        background-color: white;
-        min-width: 280px;
-        gap: 10px;
-        
+}
 
-        .profile{
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            border: 1px solid var(--field-stroke);
-            background-color: var(--field-fill);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-            font-size: 10px
-        }
-        
-        p{
-            font-size: 12px;
-            color: var(--text-strong);
+/* ── Notification bell ─────────────────────────────────── */
 
-            span{
-                font-weight: 500;
-                color: var(--brand-red)
-            }
-        }
+.notif-icon {
+    width: 25px;
+    height: 25px;
+    fill: var(--text-strong);
+}
+
+.icon-container {
+    position: relative;
+    width: auto;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notif-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -6px;
+    background-color: var(--brand-red);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    line-height: 1;
+    pointer-events: none;
+}
+
+.notification-container {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 320px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: var(--box-shadow);
+    background-color: white;
+    border: 1px solid var(--field-stroke);
+    border-radius: 5px;
+    display: none;
+    flex-direction: column;
+    padding: 5px 10px;
+    box-sizing: border-box;
+    gap: 5px;
+    z-index: 100;
+
+    h3 {
+        color: var(--text-light);
+        font-size: var(--fs-xs);
+        font-weight: 500;
     }
 
-    .notif-icon{
-                width: 25px;
-                height: 25px;
-                fill: var(--text-strong);
-        }
+    &.active { display: flex; }
+}
 
-        
+.notif-empty {
+    font-size: 11px;
+    color: var(--text-light);
+    text-align: center;
+    padding: 16px 0;
+}
 
-        .icon-container{
-            position: relative;
-            width: auto;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.notif-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0;
+    margin: 0;
+}
 
-        .notif-icon-wrapper{
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
+.notif-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
+    border-bottom: 1px solid var(--field-fill);
+    transition: background-color 0.1s ease-in-out;
 
-        .notif-badge{
-            position: absolute;
-            top: -5px;
-            right: -6px;
-            background-color: var(--brand-red);
-            color: #fff;
-            font-size: 9px;
-            font-weight: 700;
-            border-radius: 50%;
-            min-width: 16px;
-            height: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 3px;
-            line-height: 1;
-            pointer-events: none;
-        }
+    &:last-child { border-bottom: none; }
+    &:hover { background-color: var(--field-fill); }
+}
 
-        .notification-container{
-            position: absolute;
-            top: 110%;
-            right: 0;
-            width: 320px;
-            height: auto;
-            max-height: 400px;
-            overflow-y: auto;
-            box-shadow: var(--box-shadow);
-            background-color: white;
-            border: 1px solid var(--field-stroke);
-            border-radius: 5px;
-            display: none;
-            flex-direction: column;
-            padding: 5px 10px;
-            box-sizing: border-box;
-            gap: 5px;
-            z-index: 100;
+.notif-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-strong);
+}
 
-            h3{
-                color: var(--text-light);
-                font-size: var(--fs-xs);
-                font-weight: 500;
-            }
+.notif-message {
+    font-size: 10px;
+    color: var(--text-light);
+    line-height: 1.4;
+}
 
-            &.active{
-                display: flex;
-            }
-        }
+/* ── Profile card ──────────────────────────────────────── */
 
-        .notif-empty{
-            font-size: 11px;
-            color: var(--text-light);
-            text-align: center;
-            padding: 16px 0;
-        }
+.profile-wrapper {
+    position: relative;
+}
 
-        .notif-list{
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 0;
-            margin: 0;
-        }
+.profile-container {
+    border: 1px solid var(--field-stroke);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 6px 10px;
+    background-color: white;
+    min-width: 240px;
+    gap: 10px;
+    cursor: default;
+}
 
-        .notif-item{
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--field-fill);
-            transition: background-color 0.1s ease-in-out;
+.profile {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: var(--brand-red);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 
-            &:last-child{ border-bottom: none; }
-            &:hover{ background-color: var(--field-fill); }
-        }
+    span {
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        line-height: 1;
+    }
+}
 
-        .notif-title{
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-strong);
-        }
+.profile-container p {
+    flex: 1;
+    font-size: 12px;
+    color: var(--text-strong);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 
-        .notif-message{
-            font-size: 10px;
-            color: var(--text-light);
-            line-height: 1.4;
-        }
+    span {
+        font-weight: 500;
+        color: var(--brand-red);
+    }
+}
+
+.settings-btn {
+    background: none;
+    border: none;
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 4px;
+    color: var(--text-light);
+    transition: color 0.15s, background-color 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+        color: var(--text-strong);
+        background-color: var(--field-fill);
+    }
+}
+
+.settings-icon {
+    width: 16px;
+    height: 16px;
+}
+
+/* ── Profile dropdown menu ─────────────────────────────── */
+
+.profile-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    width: 180px;
+    background-color: white;
+    border: 1px solid var(--field-stroke);
+    border-radius: 8px;
+    box-shadow: var(--box-shadow);
+    display: none;
+    flex-direction: column;
+    padding: 4px;
+    z-index: 200;
+
+    &.active { display: flex; }
+}
+
+.profile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text-strong);
+    border-radius: 6px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    width: 100%;
+    text-align: left;
+    text-decoration: none;
+    transition: background-color 0.1s;
+
+    &:hover { background-color: var(--field-fill); }
+
+    &.logout {
+        color: var(--brand-red);
+
+        &:hover { background-color: #fff0f0; }
+    }
+}
+
+.menu-icon {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+}
+
+.menu-divider {
+    margin: 2px 0;
+    border: none;
+    border-top: 1px solid var(--field-stroke);
 }
