@@ -102,6 +102,11 @@ export default function ProposedBudget({ proposal }) {
 
                 {!isSla && svc && (
                     <>
+                        {svc.isMultipleChoice && (
+                            <p className={styles['multiple-choice-notice']}>
+                                This proposal allows the client to select their desired items before approval.
+                            </p>
+                        )}
                         <table className={styles['items-table']}>
                             <thead>
                                 <tr>
@@ -116,6 +121,9 @@ export default function ProposedBudget({ proposal }) {
                                     )}
                                     <th style={{ textAlign: 'right' }}>Discount</th>
                                     <th style={{ textAlign: 'right' }}>Total</th>
+                                    {svc.isMultipleChoice && (
+                                        <th style={{ textAlign: 'center' }}>Selected</th>
+                                    )}
                                 </tr>
                             </thead>
                             <tbody>
@@ -126,9 +134,10 @@ export default function ProposedBudget({ proposal }) {
                                             : entry.itemDiscountType === 'Percentage'
                                             ? entry.totalPrice - (entry.itemDiscountValue / 100) * entry.totalPrice
                                             : entry.totalPrice
+                                    const isEntrySelected = entry.isSelected !== false
 
                                     return (
-                                        <tr key={entry.offerEntryId}>
+                                        <tr key={entry.offerEntryId} style={svc.isMultipleChoice && !isEntrySelected ? { opacity: 0.45 } : undefined}>
                                             <td>{entry.serviceProductItem}</td>
                                             <td>{entry.description || '—'}</td>
                                             <td className={styles.center}>{fmt(entry.itemPrice)}</td>
@@ -153,6 +162,11 @@ export default function ProposedBudget({ proposal }) {
                                                 )}
                                             </td>
                                             <td className={styles.center}>{fmt(discounted)}</td>
+                                            {svc.isMultipleChoice && (
+                                                <td className={styles.center} style={{ color: isEntrySelected ? '#22C55E' : '#A0AEC0', fontWeight: 600 }}>
+                                                    {isEntrySelected ? 'Selected' : 'Not selected'}
+                                                </td>
+                                            )}
                                         </tr>
                                     )
                                 })}
