@@ -156,7 +156,7 @@ export async function POST(req, { params }) {
         await Promise.all(
             recipientData.map(({ email, token }) =>
                 resend.emails.send({
-                    from: process.env.RESEND_FROM_EMAIL,
+                    from: `${process.env.RESEND_FROM_NAME} <${process.env.RESEND_FROM_EMAIL}>`,
                     to: email,
                     subject: `Proposal: ${proposal.proposalTitle}`,
                     html: buildEmailHtml(firstName, lastName, proposal.proposalTitle, `${portalUrl}/view/${token}`)
