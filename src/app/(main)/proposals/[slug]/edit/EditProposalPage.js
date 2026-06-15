@@ -16,6 +16,7 @@ import { Icons } from '@/components/icons/icons'
 
 
 import {editProposalReducer} from './reducers/editProposalReducer'
+import Checkbox from '@/components/ui/checkbox/Checkbox'
 import {useState, useEffect, useReducer} from 'react'
 
 const ProposalIcon = Icons.proposals
@@ -146,6 +147,7 @@ export default function EditProposalPage({proposalData}){
                     itemDescription: e.description,
                     itemImage: e.itemImage,
                     displayOrder: e.displayOrder,
+                    isSelected: e.isSelected ?? true,
                     _status: 'existing'
                 })),
             }
@@ -279,6 +281,7 @@ export default function EditProposalPage({proposalData}){
                             description: e.description,
                             itemImage: e.itemImage || null,
                             displayOrder: e.displayOrder,
+                            isSelected: e.isSelected ?? true,
                         }))
                     },
                 }
@@ -466,12 +469,22 @@ export default function EditProposalPage({proposalData}){
                             <EditDealsSection deals={proposalState.offer.packageDealItem} dispatch={dispatch}/>
                         )
                         : (
-                            <EditItemsSecion
-                                items={proposalState.offer.offerEntries}
-                                dispatch={dispatch}
-                                proposalType={proposalState.proposalType}
-                                serviceProductItems={serviceProductItems}
-                            />
+                            <>
+                                <Checkbox
+                                    label="Allow client to choose items (Multiple Choice)"
+                                    checked={proposalState.offer.isMultipleChoice ?? false}
+                                    onChange={(e) => dispatch({
+                                        type: 'UPDATE_PRICING_FIELD',
+                                        payload: { isMultipleChoice: e.target.checked }
+                                    })}
+                                />
+                                <EditItemsSecion
+                                    items={proposalState.offer.offerEntries}
+                                    dispatch={dispatch}
+                                    proposalType={proposalState.proposalType}
+                                    serviceProductItems={serviceProductItems}
+                                />
+                            </>
                         )}
                         
                     

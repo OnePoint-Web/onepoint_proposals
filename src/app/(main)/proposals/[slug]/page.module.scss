@@ -391,3 +391,21 @@
     }
 }
 
+.multiple-choice-notice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background-color: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-left: 3px solid #3B82F6;
+    border-radius: 6px;
+    margin-bottom: 8px;
+
+    p {
+        font-size: 13px;
+        color: #1D4ED8;
+        font-weight: 500;
+    }
+}
+
