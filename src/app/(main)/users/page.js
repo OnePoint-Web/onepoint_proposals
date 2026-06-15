@@ -9,7 +9,7 @@ import TableList from "@/components/ui/TableList/TableList.js"
 import UserSearch from "./components/UserSearch"
 import {useEffect, useState} from 'react'
 
-export default function Users({children}){
+export default function Users(){
 
     const [users, setUsers] = useState([])
     const [metaData, setMetaData] = useState({
@@ -29,18 +29,6 @@ export default function Users({children}){
         sortOrder: 'desc'
     });
 
-    const formatDate = (date) => {
-    if (!date) return null;
-
-    const d = new Date(date);
-
-    return d.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric'
-    });
-    }
-
     const start =
         (metaData.currentPage - 1) * metaData.limit + 1;
 
@@ -58,8 +46,8 @@ export default function Users({children}){
                 username: user.username,
                 name: user.firstName + ' ' + user.lastName,
                 userEmail: user.userEmail,
-                accountRole: user.role.role,
-                accountStatus: user.userStatus.status,
+                accountRole: user.role?.role ?? '—',
+                accountStatus: user.userStatus?.status ?? '—',
                 dateCreated: new Date(user.dateCreated).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -74,10 +62,7 @@ export default function Users({children}){
                 limit: meta.limit
             })
             setUsers(formattedUsers)
-            console.log(formattedUsers)
         })
-
-        console.log(users)
     }, [query.search,
         query.page,
         query.status,

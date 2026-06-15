@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 const UserIcon = Icons.users
 
-export default function UserSearch({query, setQuery}){
+export default function ClientSearch({query, setQuery}){
 
     const [status, setStatus] = useState([{
         id: '',
@@ -45,7 +45,8 @@ export default function UserSearch({query, setQuery}){
                         onChange={(e) => {
                             setQuery(prev => ({
                                 ...prev,
-                                search: e.target.value
+                                search: e.target.value,
+                                page: 1
                             }))
                         }}
                         size='sm'
@@ -54,32 +55,32 @@ export default function UserSearch({query, setQuery}){
 
                     <div className={styles['button-container']}>
                         <label>____</label>
-                        <Link className={styles['link-btn']} href='/users/create-client'>
+                        <Link className={styles['link-btn']} href='/clients/create-client'>
                             <UserIcon className={styles.icon}/> Create New Client Account
                         </Link>
                     </div>
                 </div>
 
                 <div className={styles['container-child']}>
-       
+
                     <Input
                         label='Account Status:'
-                        name='user'
+                        name='status'
                         type='select'
                         values={statusOptions}
                         value={query.status}
                         onChange={(e) => {
                             setQuery(prev => ({
                                 ...prev,
-                                status: e.target.value
+                                status: e.target.value,
+                                page: 1
                             }))
                         }}
                         placeholder='-- Select Status --'
                         size='sm'
                     ></Input>
                 </div>
-            
+
         </Container>
     )
 }
-

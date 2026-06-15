@@ -10,7 +10,7 @@ import { buildQueryString } from '@/modules/buildQueryString'
 import ClientSearch from "./components/ClientSearch"
 import {useEffect, useState} from 'react'
 
-export default function Clients({children}){
+export default function Clients(){
 
     const [clients, setClients] = useState([])
 
@@ -26,7 +26,6 @@ export default function Clients({children}){
         page: 1,
         limit: 20,
         status: "",
-        type: "",
         sortBy: "dateCreated",
         sortOrder: 'desc'
     });
@@ -48,8 +47,8 @@ export default function Clients({children}){
                 username: client.username,
                 name: client.firstName + ' ' + client.lastName,
                 userEmail: client.userEmail,
-                companyName: client.clientProfile.companyName,
-                accountStatus: client.userStatus.status,
+                companyName: client.clientProfile?.companyName ?? '—',
+                accountStatus: client.userStatus?.status ?? '—',
                 dateCreated: new Date(client.dateCreated).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
@@ -66,12 +65,9 @@ export default function Clients({children}){
                 limit: meta.limit
             })
         })
-
-        console.log(clients)
     }, [query.search,
         query.page,
         query.status,
-        query.type,
         query.sortBy,
         query.sortOrder])
 
@@ -89,7 +85,7 @@ export default function Clients({children}){
                         alphabeticalOrderBy={'username'}
                     />
                 </div>
-                <TableList 
+                <TableList
                 fields={
                     [
                         {fieldName: 'ID', key: 'userId', span: 'fit-content'},
@@ -102,6 +98,8 @@ export default function Clients({children}){
 
                     ]}
                 data={clients}
+                idKey='userId'
+                linkTo='/clients/'
                 />
 
                 <Pagination
