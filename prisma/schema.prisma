@@ -336,6 +336,7 @@ model OfferEntry {
   itemDiscountDescription String?
   description String?
   displayOrder Int
+  isSelected Boolean @default(true)
   dateCreated DateTime @default(now())
 
   serviceProductOffer ServiceProductOffer @relation(fields: [serviceProductOfferId], references: serviceProductOfferId, onDelete: Cascade)
