@@ -12,7 +12,7 @@ export default function PackageCard({title, price, description, slug}){
 
             <div className={styles['buttons']}>
                 <div className={styles['card-btn']}>
-                    <Link href={`packages/${slug}`}>
+                    <Link href={`/packages/${slug}`}>
                         <p>View</p>
                     </Link>
                 </div>

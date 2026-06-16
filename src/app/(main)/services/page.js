@@ -83,6 +83,11 @@ export default function Services(){
                                         <p>View</p>
                                     </Link>
                                 </div>
+                                <div className={styles['card-btn']}>
+                                    <Link href={`/services/${service.serviceId}/edit`}>
+                                        <p>Edit</p>
+                                    </Link>
+                                </div>
                             </div>
                         </div>
                     ))}

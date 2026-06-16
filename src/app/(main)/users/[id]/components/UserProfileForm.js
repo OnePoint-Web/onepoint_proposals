@@ -39,6 +39,8 @@ export default function UserProfileForm() {
     }, [id])
 
     const isSuperAdmin = currentUser?.accountRole === 1
+    const isOwnProfile = currentUser?.userId === Number(id)
+    const canChangePassword = isSuperAdmin || isOwnProfile
 
     const handleSave = async () => {
         setError('')
@@ -133,7 +135,7 @@ export default function UserProfileForm() {
 
             </fieldset>
 
-            {isSuperAdmin && (
+            {canChangePassword && (
                 <>
                     <hr />
                     <fieldset className={styles['field-set']}>

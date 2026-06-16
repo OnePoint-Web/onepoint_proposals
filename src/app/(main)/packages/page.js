@@ -51,7 +51,8 @@ export default function Packages(){
         })
     }, [query.search,
         query.status,
-        query.orderBy])
+        query.orderBy,
+        query.page])
 
     const start =
     (metaData.currentPage - 1) * metaData.limit + 1;
