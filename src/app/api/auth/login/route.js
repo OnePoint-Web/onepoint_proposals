@@ -6,7 +6,7 @@ import prisma from '@/lib/prisma'
 
 
 export async function POST(req){
-    const {username, password} = await req.json()
+    const { username, password, rememberMe = false } = await req.json()
 
     const user = await prisma.user.findUnique({
         where: {username},
@@ -41,6 +41,8 @@ export async function POST(req){
     
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
 
+    const sessionDuration = rememberMe ? '30d' : '1d'
+
     const token = await new SignJWT(
         {
             userId: user.userId,
@@ -48,7 +50,7 @@ export async function POST(req){
             status: user.userStatus.statusId
         })
         .setProtectedHeader({ alg: "HS256" })
-        .setExpirationTime("1d")
+        .setExpirationTime(sessionDuration)
         .sign(secret)
 
     const res = NextResponse.json({success: true})
@@ -57,7 +59,8 @@ export async function POST(req){
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         sameSite: 'strict',
-        path: '/'
+        path: '/',
+        ...(rememberMe && { maxAge: 60 * 60 * 24 * 30 })
     })
 
     return res

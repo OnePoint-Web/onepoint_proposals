@@ -6,12 +6,12 @@ import Button from '@/components/ui/button/Button.js'
 import {useForm} from 'react-hook-form'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import {useEffect, useState} from 'react'
+import {useState} from 'react'
 import {userLoginSchema} from '@/schemas/user/userLogin.schema.js'
 import {useRouter} from 'next/navigation'
 
 export default function Login(){
-    const [credentials, setCredentials] = useState([]);
+    const [rememberMe, setRememberMe] = useState(false)
     const [isError, setIsError] = useState([{error: false, message: ''}])
     const router = useRouter()
 
@@ -32,7 +32,7 @@ export default function Login(){
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: {'Content-Type': "application/json"},
-                body: JSON.stringify(data)
+                body: JSON.stringify({ ...data, rememberMe })
             })
 
             const result = await res.json()
@@ -89,11 +89,11 @@ export default function Login(){
                 </fieldset>
 
                 <div className={styles['reg-container']}>
-                    <div className={styles['checkbox']}>
-                        <input type='checkbox'/> 
-                    </div>
-                    
-                    <label>Remember for 30 days</label>
+                    <div
+                        className={`${styles['checkbox']} ${rememberMe ? styles['checked'] : ''}`}
+                        onClick={() => setRememberMe(v => !v)}
+                    />
+                    <label onClick={() => setRememberMe(v => !v)}>Remember for 30 days</label>
                 </div>
 
 
