@@ -55,7 +55,7 @@ async function main() {
         firstName: 'Testing',
         lastName: 'User',
         userEmail: 'admin@test.com',
-        accountRole: 2,
+        accountRole: 1,
         userPassword: hashedPassword,
         accountStatus: 2,
       },

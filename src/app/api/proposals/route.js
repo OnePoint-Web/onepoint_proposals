@@ -14,8 +14,6 @@ export async function POST(req){
         const postresult = proposalSchema.safeParse(body)
 
         if (!postresult.success) {
-            console.log("ZOD ERROR:", postresult.error.flatten())
-
             return NextResponse.json(
                 { error: postresult.error.flatten() },
                 { status: 400 }
@@ -23,7 +21,6 @@ export async function POST(req){
         }
 
         const data = postresult.data
-        console.log(data)
 
         const slug = await generateUniqueSlug('proposal', data.proposalTitle)
 
@@ -41,7 +38,6 @@ export async function POST(req){
                     proposedSolution: data.proposedSolution,
                     proposalDescription: data.proposalDescription,
                     createdBy: user.userId,
-                    statusId: 1,
                     timelines:  {create: data.timelines},
                     selectedMembers: {create: data.selectedMembers},
                     slaOffers: {create: data.slaOffers},

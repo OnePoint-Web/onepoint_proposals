@@ -47,20 +47,19 @@
                 width: 15px;
                 height: 15px;
                 border: 1px solid var(--field-stroke);
-                border-radius: 3px; 
-            }
-
-
-            input[type="checkbox"]{
-                opacity: 0;
-                width: 15px;
-                height: 15px;
+                border-radius: 3px;
                 cursor: pointer;
-                accent-color: white;
+                transition: background-color 0.15s, border-color 0.15s;
+                flex-shrink: 0;
+
+                &.checked {
+                    background-color: var(--brand-red);
+                    border-color: var(--brand-red);
+                }
             }
 
-            input[type="checkbox"]:checked ~ .checkbox{
-                background-color: red;
+            label {
+                cursor: pointer;
             }
         }
         

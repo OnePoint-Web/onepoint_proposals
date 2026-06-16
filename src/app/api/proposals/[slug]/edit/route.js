@@ -12,8 +12,6 @@ export async function PATCH(req){
         const user = await requireUser()
         const data = await req.json()
 
-        console.log('DATA', data)
-
         const existing = await prisma.proposal.findUnique({
             where: { proposalId: data.proposalId },
             select: { proposalTitle: true, slug: true }
@@ -99,8 +97,8 @@ export async function PATCH(req){
         })
 
         return NextResponse.json(
-            { message: "Package created", ...result },
-            { status: 201 }
+            { message: "Proposal updated", ...result },
+            { status: 200 }
         )
 
     }catch (err) {

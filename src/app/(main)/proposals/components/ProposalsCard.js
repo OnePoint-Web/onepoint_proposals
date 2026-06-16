@@ -3,7 +3,6 @@ import styles from './ProposalsCard.module.scss'
 import Button from '@/components/ui/button/Button.js'
 import {useRouter} from 'next/navigation'
 import {Icons} from '@/components/icons/icons.js'
-import { slugify } from 'zod'
 
 
 
@@ -39,10 +38,9 @@ export default function ProposalsCard(
                 <div className={`${styles['container-child']} ${styles.one}`}>
                     <p>Created: <span>{dateCreated}</span></p>
 
-                    {
-                        status === 5 && (<p>Approved: <span>{statusUpdateDate}</span></p>)
-                        
-                    }
+                    {status === 'Approved' && (
+                        <p>Approved: <span>{statusUpdateDate}</span></p>
+                    )}
                     
                 </div>
 

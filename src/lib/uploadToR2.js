@@ -19,14 +19,18 @@ export async function uploadToR2(file, { folder = 'uploads', uploadedBy = null }
   const key = `${folder}/${uniqueName}`
   const buffer = Buffer.from(await file.arrayBuffer())
 
-  await r2.send(
-    new PutObjectCommand({
-      Bucket: process.env.R2_BUCKET_NAME,
-      Key: key,
-      Body: buffer,
-      ContentType: file.type || 'application/octet-stream',
-    })
-  )
+  try {
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: key,
+        Body: buffer,
+        ContentType: file.type || 'application/octet-stream',
+      })
+    )
+  } catch (err) {
+    throw new Error(`R2 upload failed for key "${key}": ${err.message}`)
+  }
 
   const media = await prisma.media.create({
     data: {

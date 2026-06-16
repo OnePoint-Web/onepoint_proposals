@@ -52,8 +52,10 @@ export async function PATCH(req, { params }) {
         }
 
         if (newPassword) {
-            if (authUser.role !== 1) {
-                return NextResponse.json({ error: 'Only superadmin can reset passwords' }, { status: 403 })
+            const isSuperAdmin = authUser.role === 1
+            const isOwnAccount = authUser.userId === userId
+            if (!isSuperAdmin && !isOwnAccount) {
+                return NextResponse.json({ error: 'You can only reset your own password' }, { status: 403 })
             }
             if (newPassword.length < 8) {
                 return NextResponse.json({ error: 'Password must be at least 8 characters' }, { status: 400 })

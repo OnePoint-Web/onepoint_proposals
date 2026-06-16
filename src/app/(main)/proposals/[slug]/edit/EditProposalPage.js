@@ -169,10 +169,6 @@ export default function EditProposalPage({proposalData}){
 
 
     useEffect(() => {
-        console.log('PROPOSALSTATE', proposalData)
-    }, [proposalState])
-
-    useEffect(() => {
         if (proposalData.proposalType === 'Product Proposal') {
             fetch('/api/products?limit=1000')
             .then(res => res.json())
@@ -294,8 +290,6 @@ export default function EditProposalPage({proposalData}){
     const handleUpdateSubmit = async (e, status) => {
             e.preventDefault()
 
-            console.log('Clicking submit', proposalState)
-
             const payload = {
                 ...buildProposalPayload(proposalState),
                 statusId: status    
@@ -340,10 +334,11 @@ export default function EditProposalPage({proposalData}){
 
                     <hr></hr>
 
-                    <Input 
+                    <Input
                         label='Edit proposal title:'
                         width='full'
                         placeholder='Enter new proposal title here...'
+                        value={proposalState.proposalTitle}
                         onChange={(e) => {
                             dispatch({
                                 type: 'UPDATE_PROPOSAL_TITLE',
@@ -408,6 +403,7 @@ export default function EditProposalPage({proposalData}){
 
                             <VideoPlayer
                                 size='full'
+                                url={proposalState.execVideoUrl ?? ''}
                             />
 
                         </div>
@@ -416,6 +412,11 @@ export default function EditProposalPage({proposalData}){
                             <Input
                                 label='Video URL:'
                                 width='full'
+                                value={proposalState.execVideoUrl ?? ''}
+                                onChange={(e) => dispatch({
+                                    type: 'UPDATE_PROPOSAL_FIELD',
+                                    payload: { execVideoUrl: e.target.value }
+                                })}
                             />
                         </div>
                     </div>
@@ -451,7 +452,6 @@ export default function EditProposalPage({proposalData}){
                     <Input
                         value={proposalState.proposalDescription}
                         onChange={(e) => {
-                            console.log('type')
                             dispatch({
                                 type: 'UPDATE_PROPOSAL_FIELD',
                                 payload: {proposalDescription: e.target.value }
