@@ -128,7 +128,7 @@ export default function EditProductPage({productData}){
                 {isSuccess && <p className={styles.success}>Product updated successfully</p>}
 
                 <Button
-                    label={isSubmitting ? 'Applying changes..' : 'Update Product'}
+                    label={isSubmitting ? 'Updating product...' : 'Update Product'}
                     size='xs'
                     color='dark'
                     action='submit'
