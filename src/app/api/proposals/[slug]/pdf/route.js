@@ -1,4 +1,5 @@
-import puppeteer from "puppeteer";
+import puppeteer from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
@@ -15,7 +16,11 @@ export async function GET(req, { params }) {
     .trim()
     .replace(/\s+/g, '-')
 
-  const browser = await puppeteer.launch({ headless: true });
+const browser = await puppeteer.launch({
+  args: chromium.args,
+  executablePath: await chromium.executablePath(),
+  headless: true,
+});
   const page = await browser.newPage();
 
   await page.setExtraHTTPHeaders({
