@@ -22,6 +22,12 @@
         object-fit: cover;
     }
 
+    .img-placeholder {
+        width: 100%;
+        aspect-ratio: 7 / 10;
+        background-color: var(--field-stroke);
+    }
+
     .buttons-container{
         position: absolute;
         top: 0;

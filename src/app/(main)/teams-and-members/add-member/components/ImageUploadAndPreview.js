@@ -19,8 +19,8 @@ export default function ImageUploadAndPreview({ onFileSelect }) {
   const handleChange = (e) => {
     const file = e.target.files[0]
 
-    if (file && file.size > 2_000_000) {
-      alert("Image is too large. File size must not exceed 2MB")
+    if (file && file.size > 15_000_000) {
+      alert("Image is too large. File size must not exceed 15MB")
       return
     }
 

@@ -9,7 +9,10 @@ export default function MemberCard({name, image, role, description, onClick, onD
 
     return(
         <div className={styles['member-card']} onClick={onClick}>
-            <img src={image}/>
+            {image
+                ? <img src={image} alt={name} />
+                : <div className={styles['img-placeholder']} />
+            }
 
             {onDelete && (
                 <div className={styles['buttons-container']}>

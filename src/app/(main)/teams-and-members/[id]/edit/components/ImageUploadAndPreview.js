@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react'
 import Cropper from 'react-easy-crop'
 import { getCroppedImage } from '@/lib/getCroppedImage'
 
-export default function ImageUploadAndPreview({ onFileSelect, initialImage=null}) {
+export default function ImageUploadAndPreview({ onFileSelect, onRemove, initialImage=null}) {
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
 
@@ -14,7 +14,7 @@ export default function ImageUploadAndPreview({ onFileSelect, initialImage=null}
 
     useEffect(() => {
     if (initialImage) {
-      setImage(initialImage);
+      setCroppedImage(initialImage)
     }
   }, [initialImage]);
 
@@ -25,8 +25,8 @@ export default function ImageUploadAndPreview({ onFileSelect, initialImage=null}
   const handleChange = (e) => {
     const file = e.target.files[0]
 
-    if (file && file.size > 2_000_000) {
-      alert("Image is too large. File size must not exceed 2MB")
+    if (file && file.size > 15_000_000) {
+      alert("Image is too large. File size must not exceed 15MB")
       return
     }
 
@@ -49,6 +49,7 @@ export default function ImageUploadAndPreview({ onFileSelect, initialImage=null}
     setCroppedImage(null)
     setCrop({ x: 0, y: 0 })
     setZoom(1)
+    onRemove?.()
   }
 
   const onCropComplete = (_, croppedAreaPixels) => {
@@ -116,7 +117,7 @@ export default function ImageUploadAndPreview({ onFileSelect, initialImage=null}
       </div>
 
       {/* ACTIONS */}
-      {image && (
+      {(image || croppedImage) && (
         <div className={styles['image-actions']}>
 
           <div className={styles['action-button']} onClick={handleClick}>

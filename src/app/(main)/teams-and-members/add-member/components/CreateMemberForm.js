@@ -34,8 +34,8 @@ export default function CreateMemberForm(){
             formData.append(key, value)
             })
 
-            if (imageFile && imageFile.size > 2_000_000) {
-            alert("Image is too large")
+            if (imageFile && imageFile.size > 15_000_000) {
+            alert("Image is too large. File size must not exceed 15MB")
             return
             }
 
@@ -60,7 +60,7 @@ export default function CreateMemberForm(){
             setIsSuccess(true)
 
         } catch (err) {
-            console.error(err)
+            console.error('IMAGE FILE ERROR: ', err)
             setIsSuccess(false)
         }
     }
@@ -123,8 +123,8 @@ export default function CreateMemberForm(){
         <fieldset className={styles['field-set']}>
 
             <hr></hr>
-            <h3>Upload Member Image</h3>
-            <p>Image file must not exceed 2MB (350 x 500 px)</p>
+            <h3>Upload Member Image <span style={{fontWeight: 400, color: 'var(--text-light)', fontSize: '13px'}}>(Optional)</span></h3>
+            <p>Image file must not exceed 15MB (350 x 500 px recommended)</p>
             
             <ImageUploadAndPreview onFileSelect={setImageFile} imageSet={imageFile}/>
                 

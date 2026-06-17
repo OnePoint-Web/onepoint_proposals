@@ -32,7 +32,7 @@ export async function POST(req) {
           memberName: parsed.member_name,
           memberRole: parsed.role,
           description: parsed.description,
-          memberImage: imageUrl,
+          memberImage: imageUrl ?? '',
           isActive: true
         },
         select: {
