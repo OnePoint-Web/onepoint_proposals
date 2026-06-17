@@ -3,45 +3,61 @@ import chromium from "@sparticuz/chromium";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
+export const runtime = "nodejs";
+
 export async function GET(req, { params }) {
-  const { slug } = await params;
+  try {
+    const { slug } = await params;
 
-  const proposal = await prisma.proposal.findUnique({
-    where: { slug },
-    select: { proposalTitle: true },
-  });
+    const proposal = await prisma.proposal.findUnique({
+      where: { slug },
+      select: { proposalTitle: true },
+    });
 
-  const safeTitle = (proposal?.proposalTitle ?? slug)
-    .replace(/[^a-zA-Z0-9\s-]/g, '')
-    .trim()
-    .replace(/\s+/g, '-')
+    const safeTitle = (proposal?.proposalTitle ?? slug)
+      .replace(/[^a-zA-Z0-9\s-]/g, "")
+      .trim()
+      .replace(/\s+/g, "-");
 
-const browser = await puppeteer.launch({
-  args: chromium.args,
-  executablePath: await chromium.executablePath(),
-  headless: true,
-});
-  const page = await browser.newPage();
+    const browser = await puppeteer.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
 
-  await page.setExtraHTTPHeaders({
-    "x-pdf-secret": process.env.PDF_SECRET,
-  });
+    const page = await browser.newPage();
 
-  await page.goto(`${process.env.NEXT_PUBLIC_APP_URL}/pdf/proposals/${slug}`, {
-    waitUntil: "networkidle0",
-  });
+    await page.setExtraHTTPHeaders({
+      "x-pdf-secret": process.env.PDF_SECRET,
+    });
 
-  const pdfBuffer = await page.pdf({
-    format: "A4",
-    printBackground: true,
-  });
+    await page.goto(
+      `${process.env.NEXT_PUBLIC_APP_URL}/pdf/proposals/${slug}`,
+      {
+        waitUntil: "networkidle0",
+      }
+    );
 
-  await browser.close();
+    const pdfBuffer = await page.pdf({
+      format: "A4",
+      printBackground: true,
+    });
 
-  return new NextResponse(pdfBuffer, {
-    headers: {
-      "Content-Type": "application/pdf",
-      "Content-Disposition": `inline; filename="${safeTitle}.pdf"`,
-    },
-  });
+    await browser.close();
+
+    return new NextResponse(pdfBuffer, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="${safeTitle}.pdf"`,
+      },
+    });
+
+  } catch (error) {
+    console.error("PDF ERROR:", error);
+
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    );
+  }
 }
