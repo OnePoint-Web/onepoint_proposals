@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: [
+    "@sparticuz/chromium",
+    "puppeteer-core",
+  ],
+   outputFileTracingIncludes: {
+    "/api/proposals/**": [
+      "./node_modules/@sparticuz/chromium/bin/**",
+    ],
+  },
   reactCompiler: true,
   images: {
     remotePatterns: [
@@ -19,6 +28,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "media.1pt.com.au",
       },
+      
     ],
   },
 }
