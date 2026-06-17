@@ -233,10 +233,10 @@ export default function EditPackagePage({packageData}){
             dispatch={dispatch}
         />
 
-           { isSuccess && <p className={styles.success}>Package created successfully</p>}
+           { isSuccess && <p className={styles.success}>Package updated successfully</p>}
 
-            <Button 
-                label={isSubmitting ? 'Applying changes..' : 'Update Package'}
+            <Button
+                label={isSubmitting ? 'Updating package...' : 'Update Package'}
                 size='xs'
                 color='dark'
                 action='submit'

@@ -133,7 +133,7 @@ export default function CreateMemberForm(){
            { isSuccess && <p className={styles.success}>Member added successfully</p>}
 
             <Button 
-                label={isSubmitting ? 'Creating account..' : 'Add Client'}
+                label={isSubmitting ? 'Adding member...' : 'Add Member'}
                 size='xs'
                 color='dark'
                 action='submit'

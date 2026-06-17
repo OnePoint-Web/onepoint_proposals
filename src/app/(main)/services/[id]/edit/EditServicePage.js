@@ -99,7 +99,7 @@ export default function EditServicePage({serviceData}){
                 {isSuccess && <p className={styles.success}>Service updated successfully</p>}
 
                 <Button
-                    label={isSubmitting ? 'Applying changes..' : 'Update Service'}
+                    label={isSubmitting ? 'Updating service...' : 'Update Service'}
                     size='xs'
                     color='dark'
                     action='submit'
