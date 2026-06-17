@@ -20,6 +20,7 @@ export default function CreateMemberForm(){
     const {id} =  params
     const [isSuccess, setIsSuccess] = useState(false);
     const [imageFile, setImageFile] = useState(null)
+    const [imageRemoved, setImageRemoved] = useState(false)
     const [member, setMember] = useState({})
     const [toggleModal, setToggleModal] = useState(false)
 
@@ -57,13 +58,15 @@ export default function CreateMemberForm(){
             formData.append(key, value)
             })
 
-            if (imageFile && imageFile.size > 2_000_000) {
-            alert("Image is too large")
+            if (imageFile && imageFile.size > 15_000_000) {
+            alert("Image is too large. File size must not exceed 15MB")
             return
             }
 
             if (imageFile) {
             formData.append('image', imageFile)
+            } else if (imageRemoved) {
+            formData.append('removeImage', 'true')
             }
 
             const res = await fetch(`/api/members/${id}/edit`, {
@@ -152,9 +155,13 @@ export default function CreateMemberForm(){
 
             <hr></hr>
             <h3>Edit Member Image</h3>
-            <p>Image file must not exceed 2MB (350 x 500 px)</p>
-            
-            <ImageUploadAndPreview onFileSelect={setImageFile} imageSet={imageFile} initialImage={member.memberImage}/>
+            <p>Image file must not exceed 15MB (350 x 500 px recommended)</p>
+
+            <ImageUploadAndPreview
+                onFileSelect={(file) => { setImageFile(file); setImageRemoved(false) }}
+                onRemove={() => { setImageFile(null); setImageRemoved(true) }}
+                initialImage={member.memberImage}
+            />
                 
         </fieldset >
 

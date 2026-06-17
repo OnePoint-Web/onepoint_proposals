@@ -16,6 +16,7 @@ export async function PATCH(req, { params }) {
         const role = formData.get("role")
         const description = formData.get("description")
         const image = formData.get("image")
+        const removeImage = formData.get("removeImage") === "true"
 
         const updateData = {
             memberName: member_name,
@@ -26,6 +27,8 @@ export async function PATCH(req, { params }) {
         if (image && image.size > 0) {
             const { url } = await uploadToR2(image, { folder: 'members', uploadedBy: authUser.userId })
             updateData.memberImage = url
+        } else if (removeImage) {
+            updateData.memberImage = null
         }
 
         const result = await prisma.$transaction(async (tx) => {

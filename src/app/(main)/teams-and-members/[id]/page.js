@@ -71,9 +71,9 @@ export default function MemberPage({}){
                 <hr></hr>
 
                 <div className={styles['profile-child']}>
-                    
-                        <img src={member.memberImage}></img>
-                 
+
+                        {member.memberImage && <img src={member.memberImage} alt={member.memberName} />}
+
                     <div className={styles['profile-section']}>
                         <table>
                             <tbody>
