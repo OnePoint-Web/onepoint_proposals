@@ -99,10 +99,11 @@ export default function Login(){
 
                 <Button
                     color='red'
-                    label='Login'
+                    label={isSubmitting ? 'Logging in...' : 'Login'}
                     fit='full'
                     size='md'
                     action='submit'
+                    disabled={isSubmitting}
                 />
                    
                 </Form>
