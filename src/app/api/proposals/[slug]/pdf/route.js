@@ -22,7 +22,7 @@ export async function GET(req, { params }) {
     "x-pdf-secret": process.env.PDF_SECRET,
   });
 
-  await page.goto(`http://localhost:3000/pdf/proposals/${slug}`, {
+  await page.goto(`${process.env.NEXT_PUBLIC_APP_URL}/pdf/proposals/${slug}`, {
     waitUntil: "networkidle0",
   });
 
