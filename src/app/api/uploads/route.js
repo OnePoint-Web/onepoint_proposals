@@ -10,7 +10,7 @@ export async function POST(req) {
             return NextResponse.json({ message: 'No image provided' }, { status: 400 })
         }
 
-        if (file.size > 2_000_000) {
+        if (file.size > 15_000_000) {
             return NextResponse.json({ message: 'Image is too large' }, { status: 400 })
         }
 
