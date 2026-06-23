@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import styles from './Sidebar.module.scss'
 import {Icons} from '../../icons/icons.js'
 import Link from 'next/link'
@@ -13,6 +14,7 @@ const ServicesIcon = Icons.services
 const UsersIcon = Icons.users;
 const ClientsIcon = Icons.clients
 const TeamsIcon = Icons.teamIcon
+const DiscoveryIcon = Icons.discovery
 
 export default function Sidebar(){
 
@@ -21,7 +23,15 @@ export default function Sidebar(){
     return(
         <aside className={styles.sidebar}>
           <div className={styles.logo}>
-            
+            <Image
+              src='/new_logo.png'
+              alt='OnePoint logo'
+              className={styles.logoImage}
+              height={36}
+              width={120}
+              style={{ objectFit: 'contain' }}
+              priority
+            />
           </div>
 
           <div className={styles['sidebar-container']}>
@@ -115,6 +125,20 @@ export default function Sidebar(){
                         Add Member
                     </Link>
                     
+                <Link
+                    href='/discovery-session'
+                    className={styles['item']}>
+                    <DiscoveryIcon className={styles['icon']}/>
+                    Discovery Session
+                </Link>
+
+                    <Link href='/discovery-session' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/discovery-session' ? styles.active : ''}`}>
+                        List Sessions
+                    </Link>
+                    <Link href='/discovery-session/new' className={`${styles['item']} ${styles['sub-item']} ${pathname === '/discovery-session/new' ? styles.active : ''}`}>
+                        New Session
+                    </Link>
+
                 <p className={styles['item-section']}> ACCOUNTS </p>
                 <hr></hr>
 

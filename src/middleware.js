@@ -27,6 +27,8 @@ export const config = {
     "/clients/:path*",
     "/proposals/:path*",
     "/products/:path*",
-    "/services/:path*"
+    "/services/:path*",
+    "/discovery-session/:path*",
+    "/discovery-session"
   ]
 }

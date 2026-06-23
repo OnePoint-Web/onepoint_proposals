@@ -9,6 +9,9 @@
         height: 70px;
         width: 80%; 
         margin-inline: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         border-bottom: 1px solid var(--brand-red);
     }
 

@@ -4,8 +4,11 @@ const nextConfig = {
     "@sparticuz/chromium",
     "puppeteer-core",
   ],
-   outputFileTracingIncludes: {
+  outputFileTracingIncludes: {
     "/api/proposals/**": [
+      "./node_modules/@sparticuz/chromium/bin/**",
+    ],
+    "/api/discovery/**": [
       "./node_modules/@sparticuz/chromium/bin/**",
     ],
   },
