@@ -38,6 +38,13 @@ export async function POST(req){
             { status: 403 }
         )
     }
+
+    if (user.accountRole === 3) {
+        return NextResponse.json(
+            { type: 'error', message: 'Client accounts must log in via the client portal' },
+            { status: 403 }
+        )
+    }
     
     const secret = new TextEncoder().encode(process.env.JWT_SECRET)
 

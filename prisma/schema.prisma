@@ -32,6 +32,7 @@ model User {
 
   proposals Proposal[]
   clientProfile ClientProfile?
+  discoverySessions DiscoverySession[]
 }
 
 model AccountStatus {
@@ -458,6 +459,25 @@ model ActivityLogs{
 // user_updated
 // user_deleted
 
+}
+
+// Discovery Sessions
+model DiscoverySession {
+  sessionId         Int      @id @default(autoincrement())
+  title             String
+  clientName        String
+  companyName       String?
+  industry          String?
+  services          String?
+  website           String?
+  additionalContext String?  @db.Text
+  overview          String?  @db.Text
+  questions         String?  @db.Text
+  createdBy         Int
+  dateCreated       DateTime @default(now())
+  dateUpdated       DateTime @updatedAt
+
+  user User @relation(fields: [createdBy], references: [userId])
 }
 
 // model NotificationRules{
