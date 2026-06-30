@@ -72,7 +72,7 @@ export default function MemberPage({}){
 
                 <div className={styles['profile-child']}>
 
-                        {member.memberImage && <img src={member.memberImage} alt={member.memberName} />}
+                        <img src={member.memberImage || '/profile-placeholder.png'} alt={member.memberName} />
 
                     <div className={styles['profile-section']}>
                         <table>
