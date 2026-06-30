@@ -21,17 +21,33 @@ export default function ServiceCreationForm(){
         price: '',
         description: '',
     })
+    const [errors, setErrors] = useState({})
 
     const updateField = (field, value) => {
         setFormData(prev => ({
             ...prev,
             [field]: value,
         }))
+        if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+
+    const validate = () => {
+        const next = {}
+        if (!formData.service.trim()) next.service = 'Service name is required'
+        if (formData.price === '' || formData.price === null) {
+            next.price = 'Price is required'
+        } else if (Number(formData.price) < 0) {
+            next.price = 'Price must be a positive number'
+        }
+        if (!formData.description.trim()) next.description = 'Description is required'
+        setErrors(next)
+        return Object.keys(next).length === 0
     }
 
     const onSubmit = async (e) => {
         e.preventDefault()
         if (isSubmitting) return
+        if (!validate()) return
 
         setIsSubmitting(true)
         setIsSuccess(false)
@@ -78,6 +94,8 @@ export default function ServiceCreationForm(){
                         hideLabel={true}
                         placeholder='Service name...'
                         value={formData.service}
+                        error={errors.service}
+                        errorMessage={errors.service}
                         onChange={(e) => updateField('service', e.target.value)}
                     />
                 </FormInputContainer>
@@ -90,6 +108,8 @@ export default function ServiceCreationForm(){
                         hideLabel={true}
                         placeholder='Service price...'
                         value={formData.price}
+                        error={errors.price}
+                        errorMessage={errors.price}
                         onChange={(e) => updateField('price', e.target.value)}
                     />
                 </FormInputContainer>
@@ -100,6 +120,8 @@ export default function ServiceCreationForm(){
                     width='full'
                     placeholder='Service description...'
                     value={formData.description}
+                    error={errors.description}
+                    errorMessage={errors.description}
                     onChange={(e) => updateField('description', e.target.value)}
                 />
             </fieldset>

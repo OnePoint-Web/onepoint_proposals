@@ -23,17 +23,33 @@ export default function ProductCreationForm(){
         price: '',
         description: '',
     })
+    const [errors, setErrors] = useState({})
 
     const updateField = (field, value) => {
         setFormData(prev => ({
             ...prev,
             [field]: value,
         }))
+        if (errors[field]) setErrors(prev => ({ ...prev, [field]: '' }))
+    }
+
+    const validate = () => {
+        const next = {}
+        if (!formData.product.trim()) next.product = 'Product name is required'
+        if (formData.price === '' || formData.price === null) {
+            next.price = 'Price is required'
+        } else if (Number(formData.price) < 0) {
+            next.price = 'Price must be a positive number'
+        }
+        if (!formData.description.trim()) next.description = 'Description is required'
+        setErrors(next)
+        return Object.keys(next).length === 0
     }
 
     const onSubmit = async (e) => {
         e.preventDefault()
         if (isSubmitting) return
+        if (!validate()) return
 
         setIsSubmitting(true)
         setIsSuccess(false)
@@ -92,6 +108,8 @@ export default function ProductCreationForm(){
                         hideLabel={true}
                         placeholder='Product name...'
                         value={formData.product}
+                        error={errors.product}
+                        errorMessage={errors.product}
                         onChange={(e) => updateField('product', e.target.value)}
                     />
                 </FormInputContainer>
@@ -104,6 +122,8 @@ export default function ProductCreationForm(){
                         hideLabel={true}
                         placeholder='Product price...'
                         value={formData.price}
+                        error={errors.price}
+                        errorMessage={errors.price}
                         onChange={(e) => updateField('price', e.target.value)}
                     />
                 </FormInputContainer>
@@ -114,6 +134,8 @@ export default function ProductCreationForm(){
                     width='full'
                     placeholder='Product description...'
                     value={formData.description}
+                    error={errors.description}
+                    errorMessage={errors.description}
                     onChange={(e) => updateField('description', e.target.value)}
                 />
             </fieldset>
