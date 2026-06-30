@@ -3,7 +3,7 @@ import Form, {FormInputContainer} from '@/components/ui/form/Form.js'
 import Input from '@/components/ui/input/Input'
 import Button from '@/components/ui/button/Button'
 import styles from './UserCreationForm.module.scss'
-import {useState, useEffect} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {useForm} from "react-hook-form"
 
 import {zodResolver} from '@hookform/resolvers/zod'
@@ -16,6 +16,7 @@ export default function CreateUserForm(){
         id: '',
         name: ''
     }])
+    const defaultRoleRef = useRef('')
 
     const {
         register, 
@@ -39,7 +40,9 @@ export default function CreateUserForm(){
 
             console.log('FORMATED', formattedRoles)
             setRoles(formattedRoles)
-            setValue("role", String(roles[0].roleId))
+            const defaultId = String(formattedRoles[0]?.id ?? '')
+            defaultRoleRef.current = defaultId
+            setValue("role", defaultId)
         })
         .catch(err => console.error(err))
 
@@ -47,6 +50,7 @@ export default function CreateUserForm(){
 
     const onSubmit = async (data) => {
         if (isSubmitting) return
+        setIsSuccess(false)
         try{
                 const res = await fetch("/api/users", {
                 method: "POST",
@@ -70,6 +74,7 @@ export default function CreateUserForm(){
         }
 
         reset()
+        if (defaultRoleRef.current) setValue("role", defaultRoleRef.current)
         setIsSuccess(true)
         console.log("Success:", result)
 

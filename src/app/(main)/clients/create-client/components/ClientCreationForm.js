@@ -26,6 +26,7 @@ export default function CreateClientForm(){
 
     const onSubmit = async (data) => {
         if (isSubmitting) return
+        setIsSuccess(false)
         try{
                 const res = await fetch("/api/clients", {
                 method: "POST",
