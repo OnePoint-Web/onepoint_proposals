@@ -20,8 +20,9 @@ export default function VideoPlayer({
                 {video && (
                     <iframe
                         src={video.embedUrl}
-                        allow="autoplay; fullscreen; picture-in-picture"
+                        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
                         allowFullScreen
+                        referrerPolicy="strict-origin-when-cross-origin"
                     />    
                 )}
 
