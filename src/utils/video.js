@@ -14,14 +14,15 @@ export function parseVideoUrl(url) {
     }
   }
 
-  // Vimeo
-  const vimeoMatch = url.match(/vimeo\.com\/.*?(\d+)/)
+  // Vimeo — captures optional privacy hash for "anyone with the link" private videos
+  // Private URLs: vimeo.com/ID/HASH → embed must include ?h=HASH
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)(?:\/([a-zA-Z0-9]+))?/)
   if (vimeoMatch) {
-    return {
-      type: 'vimeo',
-      id: vimeoMatch[1],
-      embedUrl: `https://player.vimeo.com/video/${vimeoMatch[1]}`
-    }
+    const [, id, hash] = vimeoMatch
+    const embedUrl = hash
+      ? `https://player.vimeo.com/video/${id}?h=${hash}`
+      : `https://player.vimeo.com/video/${id}`
+    return { type: 'vimeo', id, embedUrl }
   }
 
   // Direct file

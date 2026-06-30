@@ -91,10 +91,9 @@ export function proposalReducer(state, action) {
     case 'SET_PROPOSAL_TYPE':
       return {
       ...createInitialProposal({ proposalType: action.payload, clientType: state.clientType }),
-      clientId: null,
+      clientId: state.clientId,
       proposalTitle: state.proposalTitle,
       executiveSummary: state.executiveSummary,
-      
     };
 
     case 'SET_CLIENT_TYPE': {
