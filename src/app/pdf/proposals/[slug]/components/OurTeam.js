@@ -13,7 +13,7 @@ export default function OurTeam({ proposal }) {
                     {proposal.selectedMembers.map((m, i) => (
                         <div key={i} className={styles['team-card']}>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src={m.teamMember.memberImage} alt={m.teamMember.memberName} />
+                            <img src={m.teamMember.memberImage || '/profile-placeholder.png'} alt={m.teamMember.memberName} />
                             <div className={styles['team-card-info']}>
                                 <p className={styles['team-name']}>{m.teamMember.memberName}</p>
                                 <p className={styles['team-role']}>{m.teamMember.memberRole}</p>
