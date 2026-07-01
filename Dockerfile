@@ -32,6 +32,7 @@ ENV NODE_ENV=production
 
 # Shared libraries required by the Chromium binary bundled in @sparticuz/chromium
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssl \
     libnss3 \
     libnspr4 \
     libgbm1 \

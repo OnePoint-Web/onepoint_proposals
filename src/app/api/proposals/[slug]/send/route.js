@@ -5,10 +5,11 @@ import { prisma } from '@/lib/prisma'
 import { requireUser } from '@/lib/getUserHelper'
 import { recordActivity } from '@/services/activity/record-activity'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function buildEmailHtml(firstName, lastName, proposalTitle, viewLink) {
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
     return `
         <!DOCTYPE html>
         <html>
