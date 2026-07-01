@@ -1,0 +1,44 @@
+services:
+  app:
+    build: .
+    container_name: onepoint_proposals_app
+    restart: unless-stopped
+    depends_on:
+      - mysql
+
+    env_file:
+      - .env.production
+
+    ports:
+      - "3000:3000"
+
+    networks:
+      - proposal-network
+
+  mysql:
+    image: mariadb:11
+
+    container_name: onepoint_mysql
+
+    restart: unless-stopped
+
+    env_file:
+      - .env.production  
+
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DATABASE_ROOT_PASSWORD}
+      MARIADB_DATABASE: ${DATABASE_NAME}
+      MARIADB_USER: ${DATABASE_USER}
+      MARIADB_PASSWORD: ${DATABASE_USER}
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+    networks:
+      - proposal-network
+
+volumes:
+  mysql_data:
+
+networks:
+  proposal-network:

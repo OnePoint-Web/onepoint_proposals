@@ -12,6 +12,10 @@ RUN npm ci
 # ---------- Stage 2: Build the application ----------
 FROM node:22-slim AS builder
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    openssl \
+    && rm -rf /var/lib/apt/lists/*
+    
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
