@@ -3,15 +3,13 @@ import { Resend } from 'resend'
 import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { requireUser } from '@/lib/getUserHelper'
-import { recordActivity } from '@/services/activity/record-activity'
-import { CLIENT_PORTAL_TEMP_PASSWORD } from '@/lib/constants'
 import { buildProposalEmailHtml } from '@/lib/proposalEmailTemplate'
 
 export async function POST(req, { params }) {
     const resend = new Resend(process.env.RESEND_API_KEY)
     const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     try {
-        const user = await requireUser()
+        await requireUser()
         const { slug } = await params
         const { recipients } = await req.json()
 
@@ -32,7 +30,7 @@ export async function POST(req, { params }) {
                 statusId: true,
                 clientProfile: {
                     select: {
-                        user: { select: { firstName: true, lastName: true, username: true, userEmail: true } }
+                        user: { select: { firstName: true, lastName: true } }
                     }
                 }
             }
@@ -43,14 +41,14 @@ export async function POST(req, { params }) {
         }
 
         if (proposal.statusId !== 1) {
-            return NextResponse.json({ error: 'Only published proposals can be sent' }, { status: 400 })
+            return NextResponse.json({ error: 'Only published proposals can be test sent' }, { status: 400 })
         }
 
-        const { firstName, lastName, username, userEmail: mainClientEmail } = proposal.clientProfile.user
+        const { firstName, lastName } = proposal.clientProfile.user
         const portalUrl = process.env.PORTAL_URL ?? 'http://localhost:3001'
         const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 
-        // Pre-generate one token per recipient and look up portal accounts — before transaction
+        // Pre-generate one token per test recipient — before transaction
         const recipientData = await Promise.all(
             recipients.map(async (email) => {
                 const token = crypto.randomBytes(32).toString('hex')
@@ -62,60 +60,38 @@ export async function POST(req, { params }) {
             })
         )
 
-        // Transaction: update status, create all share tokens, record activity
-        await prisma.$transaction(async (tx) => {
-            await tx.proposal.update({
-                where: { proposalId: proposal.proposalId },
-                data: { statusId: 3, statusUpdated: new Date() }
-            })
-
-            await Promise.all(
-                recipientData.map(({ email, token, isPortalUser, portalUserId }) =>
-                    tx.proposalShareToken.create({
-                        data: {
-                            token,
-                            proposalId: proposal.proposalId,
-                            recipientEmail: email,
-                            isPortalUser,
-                            portalUserId,
-                            expiresAt
-                        }
-                    })
-                )
+        // Only create the share tokens — proposal status and activity log are untouched for test sends
+        await prisma.$transaction(
+            recipientData.map(({ email, token, isPortalUser, portalUserId }) =>
+                prisma.proposalShareToken.create({
+                    data: {
+                        token,
+                        proposalId: proposal.proposalId,
+                        recipientEmail: email,
+                        isPortalUser,
+                        portalUserId,
+                        expiresAt
+                    }
+                })
             )
+        )
 
-            await recordActivity({
-                tx,
-                action: 'proposal_sent',
-                userId: user.userId,
-                title: 'Proposal Sent',
-                message: `Sent proposal "${proposal.proposalTitle}" to ${recipients.join(', ')}`,
-                entityType: 'proposals',
-                entityId: slug
-            })
-        })
-
-        // Send emails after successful transaction
+        // Send emails — test sends never include client portal credentials
         await Promise.all(
-            recipientData.map(({ email, token }) => {
-                const isMainClient = email.toLowerCase() === mainClientEmail.toLowerCase()
-                const credentials = isMainClient
-                    ? { username, password: CLIENT_PORTAL_TEMP_PASSWORD }
-                    : null
-
-                return resend.emails.send({
+            recipientData.map(({ email, token }) =>
+                resend.emails.send({
                     from: `${process.env.RESEND_FROM_NAME} <${process.env.RESEND_FROM_EMAIL}>`,
                     to: email,
-                    subject: `Proposal: ${proposal.proposalTitle}`,
-                    html: buildProposalEmailHtml(firstName, lastName, proposal.proposalTitle, `${portalUrl}/view/${token}`, credentials)
+                    subject: `[TEST] Proposal: ${proposal.proposalTitle}`,
+                    html: buildProposalEmailHtml(firstName, lastName, proposal.proposalTitle, `${portalUrl}/view/${token}`, null, true)
                 })
-            })
+            )
         )
 
         return NextResponse.json({ success: true })
 
     } catch (err) {
-        console.error('Send proposal error:', err)
+        console.error('Send test proposal email error:', err)
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
     }
 }
