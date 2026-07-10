@@ -13,6 +13,11 @@ export default function ProposalPageHead({ proposalData }) {
     const [isSending, setIsSending] = useState(false)
     const [sendError, setSendError] = useState(null)
 
+    const [testRecipients, setTestRecipients] = useState([])
+    const [isSendingTest, setIsSendingTest] = useState(false)
+    const [testSendError, setTestSendError] = useState(null)
+    const [testSendSuccess, setTestSendSuccess] = useState(false)
+
     const toggleDeleteProposal = async () => {
         try {
             const res = await fetch(`/api/proposals/${proposalData.slug}`, {
@@ -47,6 +52,27 @@ export default function ProposalPageHead({ proposalData }) {
             setSendError(err.message)
         } finally {
             setIsSending(false)
+        }
+    }
+
+    const handleSendTestEmail = async () => {
+        if (isSendingTest || testRecipients.length === 0) return
+        setTestSendError(null)
+        setTestSendSuccess(false)
+        setIsSendingTest(true)
+        try {
+            const res = await fetch(`/api/proposals/${proposalData.slug}/send-test`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ recipients: testRecipients })
+            })
+            const data = await res.json()
+            if (!res.ok) throw new Error(data.error || 'Failed to send test email')
+            setTestSendSuccess(true)
+        } catch (err) {
+            setTestSendError(err.message)
+        } finally {
+            setIsSendingTest(false)
         }
     }
 
@@ -128,6 +154,27 @@ export default function ProposalPageHead({ proposalData }) {
                     <p className={styles['note-message']}>
                         Proposals cannot be edited and undone once sent. Please review proposal before sending out to client.
                     </p>
+
+                    <hr />
+
+                    <div className={`${styles['proposal-head-section']} ${styles['center']}`}>
+                        <p>Send Test Email</p>
+                        <p className={styles['recipient-hint']}>
+                            Sends this proposal to the emails below for review only. Does not mark the proposal as sent, notify the client, or appear in the activity log.
+                        </p>
+                        <EmailsInputBar
+                            tags={testRecipients}
+                            setTags={setTestRecipients}
+                        />
+                        {testSendError && <p className={styles['send-error']}>{testSendError}</p>}
+                        {testSendSuccess && <p className={styles.success}>Test email sent.</p>}
+                        <Button
+                            label={isSendingTest ? 'Sending...' : 'Send Test Email'}
+                            color='dark'
+                            onClick={handleSendTestEmail}
+                            disabled={isSendingTest || testRecipients.length === 0}
+                        />
+                    </div>
                 </>
             )}
 
