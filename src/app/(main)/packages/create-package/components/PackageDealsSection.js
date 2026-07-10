@@ -7,9 +7,6 @@ import {SortableContext, arrayMove} from '@dnd-kit/sortable';
 import { DndContext } from '@dnd-kit/core'
 
 export default function PackageDealSection({dealsState, dispatch}){
-    
-   
-    console.log('DEALS STATE:', dealsState)
 
     const addDeal = () => {
         dispatch({ type: 'ADD_DEAL' })

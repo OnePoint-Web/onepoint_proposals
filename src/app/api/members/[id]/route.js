@@ -18,7 +18,6 @@ export async function GET(_req, {params}) {
         return NextResponse.json({ data: member }, { status: 200 });
 
     } catch(err){
-        console.log(err)
         return NextResponse.json({ message: 'Server error' }, { status: 500 });
     }
 }

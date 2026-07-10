@@ -19,7 +19,6 @@ export default function TimelineItem({timeline, id, scopes, dispatch}){
     };
 
     const handleDeleteTimeline = (timelineId) => {
-        console.log('clicked', timelineId)
         dispatch({
             type: 'DELETE_TIMELINE',
             payload: { timelineId }

@@ -38,7 +38,6 @@ export default function CreateUserForm(){
                 name: role.role
             })).filter(r => r.id !== 3)
 
-            console.log('FORMATED', formattedRoles)
             setRoles(formattedRoles)
             const defaultId = String(formattedRoles[0]?.id ?? '')
             defaultRoleRef.current = defaultId
@@ -59,7 +58,6 @@ export default function CreateUserForm(){
             })
 
         const result = await res.json()
-        console.log(result)
 
         if (!res.ok) {
             if (result.field) {
@@ -76,7 +74,6 @@ export default function CreateUserForm(){
         reset()
         if (defaultRoleRef.current) setValue("role", defaultRoleRef.current)
         setIsSuccess(true)
-        console.log("Success:", result)
 
         }catch(err){
             setIsSuccess(false)
@@ -84,7 +81,6 @@ export default function CreateUserForm(){
         }
     }
 
-    console.log(roles)
     return(
         <Form 
         header='Create User'

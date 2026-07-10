@@ -12,7 +12,6 @@ export function calculateProposalPricing({
   basePrice,
 }) {
 
-  console.log(basePrice, proposalType)
   let subtotal = 0
   let totalItemDiscount = 0
   let baseAmount = 0

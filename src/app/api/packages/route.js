@@ -14,8 +14,6 @@ export async function POST(req){
         const data = createPackageSchema.parse(body)
         const slug = await generateUniqueSlug('package', data.package)
 
-        console.log('prismadata', data.dealItems)
-
         const duplicate = await prisma.package.findFirst({
             where: { package: data.package }
         })

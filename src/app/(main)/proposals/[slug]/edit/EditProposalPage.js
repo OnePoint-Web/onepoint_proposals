@@ -317,7 +317,7 @@ export default function EditProposalPage({proposalData}){
                 
 
             }catch(err){
-                console.log("Error submitting",err)
+                console.error("Error submitting",err)
             }
     }
 

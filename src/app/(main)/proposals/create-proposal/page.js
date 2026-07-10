@@ -62,11 +62,9 @@ export default function CreateProposal(){
         }
 
         const parsedResult = proposalSchema.safeParse(cleanedState)
-        console.log(parsedResult)
-       
+
         if (!parsedResult.success) {
             const formattedErrors = mapZodErrors(parsedResult.error) // use issues now
-            console.log('Zod Errors', formattedErrors)
             dispatch({ type: 'SET_VALIDATION_ERRORS', payload: formattedErrors })
             setIsSubmitting(false)
             setIsSuccess(false)
@@ -89,8 +87,7 @@ export default function CreateProposal(){
             })
 
             const result = await res.json()
-            console.log(result)
-            
+
             if (!res.ok) {
                 if (result.field) {
                 setError(result.field, {
@@ -108,8 +105,7 @@ export default function CreateProposal(){
                     setSubmitMessage('Error creating proposal')
                     return
             }
-            
-            console.log("Success:", result)
+
             setIsSubmitting(false)
             setIsSuccess(true)
             setToggleModal(true)

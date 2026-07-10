@@ -48,7 +48,6 @@ export async function POST(req){
                 User_userEmail_key: "email"
             }
             const field = fieldMap[prismaField] ?? "unknown"
-            console.log("Duplicate field(1):", field)
 
             return NextResponse.json(
                 { field, message: `Account with ${field} already exists` },
@@ -172,8 +171,6 @@ export async function POST(req){
                     where,
                 }),
             ]);
-
-            console.log(users)
 
             return Response.json({
                 data: users,

@@ -102,7 +102,6 @@ export async function GET(req){
         )
 
     }catch(err){
-        console.log('Error creating service')
         return NextResponse.json(
         {message: 'Error creating service'}, 
         {status: 500})

@@ -74,7 +74,6 @@ export async function recordActivity({
                 successPayload.notification = notification
             }
 
-            console.log('Activity Created')
             return successPayload
         
     }catch(err){

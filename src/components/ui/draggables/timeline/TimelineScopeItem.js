@@ -31,7 +31,6 @@ export default function TimelineScopeItem({ scopes, timelineId, dispatch }) {
     }
 
     const deleteScope = (scopeId) => {
-      console.log('clicked')
       dispatch({
         type: 'DELETE_SCOPE',
         payload: { timelineId, scopeId: scopeId }

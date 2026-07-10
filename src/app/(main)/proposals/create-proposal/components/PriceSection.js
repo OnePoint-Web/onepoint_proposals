@@ -150,8 +150,6 @@ export default function PriceSection({dispatch, proposalState}){
                         type: "UPDATE_PROPOSAL_FIELD",
                         payload: {discountType: e.target.value, discountValue: 0}
                     })
-
-                    console.log(proposalState.discountType)
                 }}
                 />
 
