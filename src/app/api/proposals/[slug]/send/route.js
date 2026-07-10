@@ -68,6 +68,8 @@ function buildEmailHtml(firstName, lastName, proposalTitle, viewLink) {
 }
 
 export async function POST(req, { params }) {
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     try {
         const user = await requireUser()
         const { slug } = await params
