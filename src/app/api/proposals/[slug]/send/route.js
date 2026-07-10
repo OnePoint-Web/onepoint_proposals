@@ -4,11 +4,20 @@ import crypto from 'crypto'
 import { prisma } from '@/lib/prisma'
 import { requireUser } from '@/lib/getUserHelper'
 import { recordActivity } from '@/services/activity/record-activity'
+import { CLIENT_PORTAL_TEMP_PASSWORD } from '@/lib/constants'
 
 
-function buildEmailHtml(firstName, lastName, proposalTitle, viewLink) {
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+function buildEmailHtml(firstName, lastName, proposalTitle, viewLink, credentials) {
+    const credentialsBlock = credentials ? `
+                                <table cellpadding="0" cellspacing="0" width="100%" style="background:#F8F9FC;border-radius:8px;margin:0 0 32px;">
+                                    <tr>
+                                        <td style="padding:20px 24px;">
+                                            <p style="color:#1A1A2E;font-size:14px;font-weight:bold;margin:0 0 12px;">Your Client Portal Login</p>
+                                            <p style="color:#4A5568;font-size:14px;margin:0 0 4px;">Username: <strong>${credentials.username}</strong></p>
+                                            <p style="color:#4A5568;font-size:14px;margin:0;">Password: <strong>${credentials.password}</strong></p>
+                                        </td>
+                                    </tr>
+                                </table>` : ''
 
     return `
         <!DOCTYPE html>
@@ -47,6 +56,7 @@ function buildEmailHtml(firstName, lastName, proposalTitle, viewLink) {
                                     If the button above does not work, copy and paste this link into your browser:
                                 </p>
                                 <p style="color:#F22044;font-size:13px;margin:0 0 32px;word-break:break-all;">${viewLink}</p>
+                                ${credentialsBlock}
                                 <p style="color:#4A5568;font-size:14px;margin:0;">
                                     Regards,<br/><strong>OnePoint IT</strong>
                                 </p>
@@ -92,7 +102,7 @@ export async function POST(req, { params }) {
                 statusId: true,
                 clientProfile: {
                     select: {
-                        user: { select: { firstName: true, lastName: true } }
+                        user: { select: { firstName: true, lastName: true, username: true, userEmail: true } }
                     }
                 }
             }
@@ -106,7 +116,7 @@ export async function POST(req, { params }) {
             return NextResponse.json({ error: 'Only published proposals can be sent' }, { status: 400 })
         }
 
-        const { firstName, lastName } = proposal.clientProfile.user
+        const { firstName, lastName, username, userEmail: mainClientEmail } = proposal.clientProfile.user
         const portalUrl = process.env.PORTAL_URL ?? 'http://localhost:3001'
         const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
 
@@ -157,14 +167,19 @@ export async function POST(req, { params }) {
 
         // Send emails after successful transaction
         await Promise.all(
-            recipientData.map(({ email, token }) =>
-                resend.emails.send({
+            recipientData.map(({ email, token }) => {
+                const isMainClient = email.toLowerCase() === mainClientEmail.toLowerCase()
+                const credentials = isMainClient
+                    ? { username, password: CLIENT_PORTAL_TEMP_PASSWORD }
+                    : null
+
+                return resend.emails.send({
                     from: `${process.env.RESEND_FROM_NAME} <${process.env.RESEND_FROM_EMAIL}>`,
                     to: email,
                     subject: `Proposal: ${proposal.proposalTitle}`,
-                    html: buildEmailHtml(firstName, lastName, proposal.proposalTitle, `${portalUrl}/view/${token}`)
+                    html: buildEmailHtml(firstName, lastName, proposal.proposalTitle, `${portalUrl}/view/${token}`, credentials)
                 })
-            )
+            })
         )
 
         return NextResponse.json({ success: true })

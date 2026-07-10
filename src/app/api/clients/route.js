@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma"
 import bcrypt from 'bcryptjs'
 import { jwtVerify } from "jose"
 import { cookies } from "next/headers"
+import { CLIENT_PORTAL_TEMP_PASSWORD } from "@/lib/constants"
 
 
 
@@ -27,7 +28,7 @@ export async function POST(req){
 
         const data = createClientSchema.parse(body)
 
-        const hashedPassword = await bcrypt.hash(data.password, 12)
+        const hashedPassword = await bcrypt.hash(CLIENT_PORTAL_TEMP_PASSWORD, 12)
 
         const {payload} = await jwtVerify(token, new TextEncoder().encode(process.env.JWT_SECRET))
 

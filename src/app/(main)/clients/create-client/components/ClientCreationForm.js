@@ -125,40 +125,10 @@ export default function CreateClientForm(){
                 />
             </FormInputContainer>
 
-            <FormInputContainer
-                label='Password'
-            >
+            <p className={styles.hint}>
+                The client will be able to log in using the standard client portal password.
+            </p>
 
-                <Input
-                    label='Password'
-                    type='password'
-                    width="medium"
-                    hideLabel={true}
-                    placeholder='Account password...'
-                    error={errors.password ? 'error' : ''}
-                    errorMessage={errors.password && errors.password.message}
-                    rules={{...register("password")}}
-                />
-                
-            </FormInputContainer>
-
-            <FormInputContainer
-                label='Confirm Password'
-            >
-
-                <Input
-                    label='Password'
-                    type='password'
-                    width="medium"
-                    hideLabel={true}
-                    placeholder='Confirm password'
-                    error={errors.confirm_password ? 'error' : ''}
-                    errorMessage={errors.confirm_password && errors.confirm_password.message}
-                    rules={{...register("confirm_password")}}
-                />
-            </FormInputContainer>
-            
-            
         </fieldset>
 
         
