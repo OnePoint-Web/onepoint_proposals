@@ -13,6 +13,16 @@ const nextConfig = {
     ],
   },
   reactCompiler: true,
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store' },
+        ],
+      },
+    ]
+  },
   images: {
     remotePatterns: [
       {

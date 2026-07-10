@@ -9,10 +9,14 @@ export async function requireUser() {
     throw new Error("Unauthorized")
   }
 
-  const { payload } = await jwtVerify(
-    token,
-    new TextEncoder().encode(process.env.JWT_SECRET)
-  )
+  try {
+    const { payload } = await jwtVerify(
+      token,
+      new TextEncoder().encode(process.env.JWT_SECRET)
+    )
 
-  return payload
+    return payload
+  } catch {
+    throw new Error("Unauthorized")
+  }
 }

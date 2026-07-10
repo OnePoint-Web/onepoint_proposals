@@ -155,6 +155,7 @@ export default function CreateProposal(){
                         label='Save Draft'
                         color='dark'
                         size ='md'
+                        disabled={isSubmitting}
                         onClick={(e) => handleSubmit(e, 0)}
                     />
                 </div>

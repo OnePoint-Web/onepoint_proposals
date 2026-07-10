@@ -88,6 +88,20 @@ export async function POST(req){
 
     }catch (err) {
 
+        if (err.message === "Unauthorized") {
+            return NextResponse.json(
+                { error: "Session expired. Please log in again." },
+                { status: 401 }
+            )
+        }
+
+        if (err.code === "P2002") {
+            return NextResponse.json(
+                { error: "A proposal with this title was just created. Please try again." },
+                { status: 409 }
+            )
+        }
+
         // Fallback for non-Prisma errors
         console.error("Unhandled error:", err)
 
