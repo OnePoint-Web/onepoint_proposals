@@ -50,8 +50,6 @@ export default function MemberPage({}){
                 result = await res.json();
             }
 
-            console.log("Deleted:", result);
-
             setToggleDeletedModal(false);
 
             router.push("/teams-and-members");

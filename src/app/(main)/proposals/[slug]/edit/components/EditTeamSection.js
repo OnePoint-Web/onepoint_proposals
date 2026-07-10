@@ -37,7 +37,6 @@ export default function EditTeamSection({
                     label={member.memberName}
                     checked={membersState.some(m => m.memberId === member.memberId)}
                     onChange={() =>{
-                        console.log(membersState)
                         dispatch({
                             type: 'TOGGLE_TEAM_MEMBER',
                             payload: {

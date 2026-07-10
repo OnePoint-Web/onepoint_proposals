@@ -1,6 +1,7 @@
 # ---------- Stage 1: Install dependencies ----------
 # node:22-slim (Debian) required — @sparticuz/chromium bundles a glibc binary
 # that will not run on Alpine (musl libc)
+# --
 FROM node:22-slim AS deps
 
 WORKDIR /app

@@ -62,7 +62,6 @@ export default function EditPackagePage({packageData}){
             }))
         }))
 
-        console.log('PREPAREDEALS', payload)
         return payload
     }
 
@@ -83,7 +82,6 @@ export default function EditPackagePage({packageData}){
                 deal.dealItem && deal.dealEntries.length > 0 // remove empty deals
             )
 
-            console.log('CLEANEDDEALS', payload)
             return payload
     }
     
@@ -107,16 +105,12 @@ export default function EditPackagePage({packageData}){
                 : undefined // prevents empty create
         }))
 
-        console.log("DEALSPAYLOAD", dealsPayload)
-
         const payload = {
             ...data,
             packageId: packageData.packageId,
             dealItems: dealsPayload
-            
-        }
 
-        console.log(payload)
+        }
 
         try{
             const res = await fetch(`/api/packages/${packageData.slug}/edit`, {
@@ -126,7 +120,6 @@ export default function EditPackagePage({packageData}){
             })
 
         const result = await res.json()
-        console.log(result)
 
         if (!res.ok) {
             if (result.field) {
@@ -148,7 +141,6 @@ export default function EditPackagePage({packageData}){
 
         reset()
         setIsSuccess(true)
-        console.log("Success:", result)
 
         }catch(err){
             setIsSuccess(false)

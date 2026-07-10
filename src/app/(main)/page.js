@@ -8,7 +8,6 @@ export default async function Home() {
   const token = cookieStore.get("auth_token")?.value
 
   if (!token) {
-    console.log('no token')
     redirect("/login")
   }
 

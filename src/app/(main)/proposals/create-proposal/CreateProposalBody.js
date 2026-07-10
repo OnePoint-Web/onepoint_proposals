@@ -149,9 +149,7 @@
                                 type: 'SELECT_PACKAGE',
                                 payload: selectedPackage
                             })
-
-                            console.log('PACKAGE', packages)
-                        }} 
+                        }}
                     />
                 </div>
 

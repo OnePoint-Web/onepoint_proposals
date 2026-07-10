@@ -44,7 +44,6 @@ export default function PackageCreationForm(){
             }))
         }))
 
-        console.log('PREPAREDEALS', payload)
         return payload
     }
 
@@ -65,7 +64,6 @@ export default function PackageCreationForm(){
                 deal.dealItem && deal.dealEntries.length > 0 // remove empty deals
             )
 
-            console.log('CLEANEDDEALS', payload)
             return payload
     }
     const onSubmit = async (data) => {
@@ -88,15 +86,11 @@ export default function PackageCreationForm(){
                 : undefined // prevents empty create
         }))
 
-        console.log("DEALSPAYLOAD", dealsPayload)
-
         const payload = {
             ...data,
             dealItems: dealsPayload
-            
-        }
 
-        console.log(payload)
+        }
 
         try{
             const res = await fetch("/api/packages", {
@@ -106,7 +100,6 @@ export default function PackageCreationForm(){
             })
 
         const result = await res.json()
-        console.log(result)
 
         if (!res.ok) {
             if (result.field) {
@@ -128,7 +121,6 @@ export default function PackageCreationForm(){
 
         reset()
         setIsSuccess(true)
-        console.log("Success:", result)
 
         }catch(err){
             setIsSuccess(false)

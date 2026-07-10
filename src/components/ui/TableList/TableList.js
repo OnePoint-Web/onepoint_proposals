@@ -7,7 +7,6 @@ export default function TableList({
     linkTo,
     idKey
 }){
-    console.log(data)
     return(
         <div className={styles['table-container']}>
             <table>

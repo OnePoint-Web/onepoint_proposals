@@ -8,7 +8,6 @@ import { DndContext } from '@dnd-kit/core'
 export default function EditDealsSection({deals, dispatch}){
 
     const addDeal = () => {
-        console.log('clicked')
         dispatch({ type: 'ADD_DEAL' })
     }
 
@@ -19,7 +18,6 @@ export default function EditDealsSection({deals, dispatch}){
         })
     }
     const handleDragEnd = (event) => {
-        console.log('dragging')
         const { active, over } = event;
 
         if (!over || active.id === over.id) return;

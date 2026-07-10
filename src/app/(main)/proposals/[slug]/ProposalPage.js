@@ -10,7 +10,6 @@ import {useMemo} from 'react'
 
 export default function ProposalPage({proposalData, slug}){
 
-    console.log(proposalData)
     const execSummary = useMemo(() => {
         return DOMPurify.sanitize(proposalData.executiveSummary ?? "");
     }, [proposalData.executiveSummary]);
@@ -22,9 +21,6 @@ export default function ProposalPage({proposalData, slug}){
     const proposedSolution = useMemo(() => {
         return DOMPurify.sanitize(proposalData.proposedSolution ?? "");
     }, [proposalData.proposedSolution]);
-
-    console.log(proposalData)
-
 
     const calculateItemDiscounts = (offers) => {
 

@@ -15,7 +15,6 @@ export default function useAuthAccess(access) {
       try {
 
         if (!user){
-          console.log('user error')
            setIsAccessible(false)
            return
         }

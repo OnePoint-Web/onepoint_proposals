@@ -26,8 +26,6 @@ export async function PATCH(req, _params){
             )
         }
 
-        console.log(body.packageId)
-
         const existing = await prisma.package.findUnique({
             where: { packageId: body.packageId },
             select: { package: true, slug: true }
@@ -93,7 +91,6 @@ export async function PATCH(req, _params){
         }
 
         if (err instanceof Prisma.PrismaClientKnownRequestError) {
-            console.log('ERROR:', err)
             if (err.code === "P2002") {
                 return NextResponse.json(
                     { message: "Duplicate value detected", field: err.meta?.target },

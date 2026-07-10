@@ -13,9 +13,6 @@ export default function ExecutiveSummary({proposal}){
         return DOMPurify.sanitize(proposal.executiveSummary ?? "");
     }, [proposal.executiveSummary]);
 
-    console.log(executiveSummary)
-
-
     return(
         <div className={styles['section']}>
             <div className={styles['exec-body']}>

@@ -35,7 +35,6 @@ export default function CreateClientForm(){
             })
 
         const result = await res.json()
-        console.log(result)
 
         if (!res.ok) {
             if (result.field) {
@@ -51,7 +50,6 @@ export default function CreateClientForm(){
 
         reset()
         setIsSuccess(true)
-        console.log("Success:", result)
 
         }catch(err){
             setIsSuccess(false)
