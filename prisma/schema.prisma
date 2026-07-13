@@ -164,7 +164,7 @@ model TeamMember{
   memberName String
   memberRole String
   memberImage String
-  description String
+  description String @db.LongText
   isActive Boolean @default(true)
   deleted Boolean @default(false) //updated: add
   dateCreated DateTime @default(now())
@@ -205,7 +205,7 @@ model SlaOffer {
   basePrice Decimal @db.Decimal(10, 2)
   discountType String
   discountValue Decimal? @db.Decimal(10, 2)
-  discountDescription String?
+  discountDescription String? @db.LongText
   taxableAmount Decimal @db.Decimal(10, 2)
   taxApplicable Boolean
   taxRate Decimal @db.Decimal(10, 2)
@@ -237,7 +237,7 @@ model Package{
 model DealItem {
   dealItemId Int @id @default(autoincrement())
   packageId Int
-  dealItem String
+  dealItem String @db.LongText
   itemType String
   displayOrder Int
   dateCreated DateTime @default(now())
@@ -250,7 +250,7 @@ model DealItem {
 model DealEntry{
   itemEntryId Int @id @default(autoincrement())
   dealItemId Int
-  itemEntry String
+  itemEntry String @db.LongText
   displayOrder Int
   dateCreated DateTime @default(now())
 
@@ -261,7 +261,7 @@ model PackageDealItem {
   packageDealItemId Int @id @default(autoincrement())
   slaOfferId Int
   isCustom Boolean @default(false)
-  item String
+  item String @db.LongText
   itemType String
   displayOrder Int
   dateCreated DateTime @default(now())
@@ -274,7 +274,7 @@ model PackageDealItem {
 model PackageDealEntry{
   itemEntryId Int @id @default(autoincrement())
   packageDealItemId Int
-  itemEntry String
+  itemEntry String @db.LongText
   displayOrder Int
   dateCreated DateTime @default(now())
 
@@ -291,7 +291,7 @@ model ServiceProductOffer {
   subTotal Decimal @db.Decimal(10, 2)
   discountType String
   discountValue Decimal? @db.Decimal(10, 2)
-  discountDescription String? 
+  discountDescription String? @db.LongText
   taxableAmount Decimal @db.Decimal(10, 2)
   taxApplicable Boolean //updated
   taxRate Decimal? @db.Decimal(10, 2)
@@ -335,8 +335,8 @@ model OfferEntry {
   totalPrice Decimal @db.Decimal(10, 2)
   itemDiscountType String?
   itemDiscountValue Decimal? @db.Decimal(10, 2)
-  itemDiscountDescription String?
-  description String?
+  itemDiscountDescription String? @db.LongText
+  description String? @db.LongText
   displayOrder Int
   isSelected Boolean @default(true)
   dateCreated DateTime @default(now())
